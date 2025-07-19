@@ -1,0 +1,26 @@
+<div class="mobile-nav">
+  <button mat-icon-button [matMenuTriggerFor]="mobileMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <mat-menu #mobileMenu="matMenu">
+    <button mat-menu-item>
+      <span>Texto1</span>
+    </button>
+    <button mat-menu-item>
+      <span>Texto1</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item>
+      <mat-icon>login</mat-icon>
+      <span>Iniciar Sesión</span>
+    </button>
+
+    <button mat-menu-item>
+      <mat-icon>person_add</mat-icon>
+      <span>Registrarse</span>
+    </button>
+  </mat-menu>
+</div>

@@ -1,0 +1,62 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  color: black;
+  padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.desktop-nav{
+    margin-left: 5%;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-placeholder {
+  width: 32px;
+  height: 32px;
+  background-color: #b3e5fc;
+  border-radius: 6px;
+}
+
+.titulo {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.menu {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.register-button {
+  color: white;
+}
+
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Responsive: esconder menú grande y mostrar hamburguesa en móviles */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  .mobile-only {
+    display: block;
+  }
+}

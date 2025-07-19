@@ -1,0 +1,14 @@
+.logo-icon{
+    width: 15%;
+  
+}
+
+.logo-container{
+    display:  flex;
+    align-items: center;
+}
+.logo-text{
+    margin-left: 5%;
+    font-weight: bold;
+     font-size: 2em;
+}
