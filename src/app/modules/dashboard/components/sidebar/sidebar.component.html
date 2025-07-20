@@ -1,0 +1,97 @@
+<!-- sidebar.component.html -->
+<mat-sidenav-container class="sidebar-container">
+  <mat-sidenav 
+    #sidenav 
+    mode="side" 
+    opened="true" 
+    class="sidebar"
+    [fixedInViewport]="true"
+    [fixedTopGap]="0">
+    
+    <!-- Header -->
+    <div class="sidebar-header">
+      <h2 class="logo">
+        <span class="logo-text">Mi cita</span>
+        <span class="version">v2.0.0</span>
+      </h2>
+    </div>
+
+    <!-- Navigation Menu -->
+    <div class="sidebar-content">
+      <nav class="navigation-menu">
+        <ng-container *ngFor="let menuItem of menuItems">
+          
+          <!-- Group Title -->
+          <div class="menu-group" *ngIf="menuItem.type === 'group'">
+            <div class="group-title">
+              <span>{{ menuItem.title }}</span>
+            </div>
+            
+            <!-- Group Items -->
+            <div class="group-items">
+              <ng-container *ngFor="let item of menuItem.children">
+                
+                <!-- Simple Item -->
+                <div class="menu-item" 
+                     *ngIf="item.type === 'item'"
+                     [class.active]="item.id === activeItem"
+                     (click)="selectItem(item)">
+                  <mat-icon class="item-icon">{{ item.icon }}</mat-icon>
+                  <span class="item-text">{{ item.title }}</span>
+                </div>
+                
+                <!-- Collapsible Item -->
+                <div class="menu-item collapsible" *ngIf="item.type === 'collapse'">
+                  <div class="collapse-header" 
+                       [class.active]="item.id === activeItem"
+                       (click)="toggleCollapse(item.id)">
+                    <div class="collapse-content">
+                      <mat-icon class="item-icon">{{ item.icon }}</mat-icon>
+                      <span class="item-text">{{ item.title }}</span>
+                    </div>
+                    <mat-icon class="expand-icon" 
+                              [class.rotated]="isExpanded(item.id)">
+                      expand_more
+                    </mat-icon>
+                  </div>
+                  
+                  <!-- Collapsible Content -->
+                  <div class="collapse-content-wrapper" 
+                       [class.expanded]="isExpanded(item.id)">
+                    <div class="collapse-items">
+                      <div class="sub-menu-item" 
+                           *ngFor="let subItem of item.children"
+                           [class.active]="subItem.id === activeItem"
+                           (click)="selectItem(subItem)">
+                        <span class="sub-item-text">{{ subItem.title }}</span>
+                        <mat-icon class="arrow-icon" *ngIf="subItem.children">
+                          chevron_right
+                        </mat-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+              </ng-container>
+            </div>
+          </div>
+          
+        </ng-container>
+      </nav>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content Area -->
+  <mat-sidenav-content class="main-content">
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>
+
+<!-- Mobile Toggle Button -->
+<button mat-fab 
+        class="mobile-toggle" 
+        (click)="sidenav.toggle()"
+        *ngIf="isMobile">
+  <mat-icon>menu</mat-icon>
+</button>
