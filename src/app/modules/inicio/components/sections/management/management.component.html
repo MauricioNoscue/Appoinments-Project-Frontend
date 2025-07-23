@@ -1,1 +1,38 @@
-<p>management works!</p>
+<!-- features.component.html -->
+<section class="features-section" #featuresSection>
+  <div class="features-container">
+    <!-- Header de la sección -->
+    <div class="section-header">
+      <div class="section-icon">
+        <i class="fas fa-stethoscope"></i>
+      </div>
+      <h2 class="section-title">
+        Tus citas médicas, simplificadas
+      </h2>
+      <p class="section-description">
+        Optimiza la gestión de tu consultorio con herramientas para programar fácilmente, 
+        coordinar la atención, y mejorar el seguimiento clínico.
+      </p>
+    </div>
+
+    <!-- Grid de funcionalidades -->
+    <div class="features-grid">
+      <div 
+        *ngFor="let feature of features; let i = index" 
+        class="feature-card"
+        [style.transition-delay]="i * 150 + 'ms'">
+        
+        <div class="card-icon" [style.background-color]="feature.color">
+          <i [class]="feature.icon" [style.color]="feature.iconColor"></i>
+        </div>
+        
+        <div class="card-content">
+          <h3 class="card-title">{{ feature.title }}</h3>
+          <p class="card-description">{{ feature.description }}</p>
+        </div>
+
+       
+      </div>
+    </div>
+  </div>
+</section>

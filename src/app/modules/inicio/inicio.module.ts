@@ -10,6 +10,8 @@ import { IconIncioComponent } from '../../shared/components/icons/icon-incio/ico
 import { BodyComponent } from './components/body/body.component';
 import { HomePanelComponent } from './pages/home-panel/home-panel.component';
 import { HomeComponent } from './components/sections/home/home.component';
+import { ManagementComponent } from './components/sections/management/management.component';
+import { AppointmentManagementComponent } from './components/sections/appointment-management-component/appointment-management-component.component';
 
 
 @NgModule({
@@ -19,7 +21,8 @@ import { HomeComponent } from './components/sections/home/home.component';
     HeaderComponent,
     BodyComponent,
     HomePanelComponent,
-    HomeComponent
+    HomeComponent,
+    ManagementComponent,AppointmentManagementComponent
     
     
   ],

@@ -1,0 +1,23 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+app-header {
+  flex-shrink: 0;
+  z-index: 10;
+  background-color: white; /* o el color que uses */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* opcional para estilo */
+}
+
+.body-scroll {
+  flex-grow: 1;
+  overflow-y: auto;
+}

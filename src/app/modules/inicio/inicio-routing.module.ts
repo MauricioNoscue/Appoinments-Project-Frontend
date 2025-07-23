@@ -5,6 +5,7 @@ import { HomePanelComponent } from './pages/home-panel/home-panel.component';
 const routes: Routes = [
   {path:'',component: HomePanelComponent}
 
+  
 
 ];
 

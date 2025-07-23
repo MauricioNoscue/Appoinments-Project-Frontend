@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, map, shareReplay } from 'rxjs';
 
 @Component({
@@ -13,7 +14,13 @@ export class HeaderComponent implements OnInit  {
   
   isHandset$!: Observable<boolean>;
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(private breakpointObserver: BreakpointObserver,private router: Router) {}
+
+
+  entrar(){
+    this.router.navigate(['/dashboard'])
+  }
+
 
   ngOnInit() {
     this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset)

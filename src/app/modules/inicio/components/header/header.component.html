@@ -15,7 +15,7 @@
 
   <!-- Botones de usuario para desktop -->
   <div class="desktop-actions" *ngIf="!(isHandset$ | async)">
-    <app-nav-link Texto="Iniciar Sesión"></app-nav-link>
+    <app-nav-link Texto="Iniciar Sesión"   (click)="entrar()" ></app-nav-link>
     <app-button-basic text="¡Regístrate!"></app-button-basic>
   </div>
 
