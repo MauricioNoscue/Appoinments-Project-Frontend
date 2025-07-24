@@ -1,0 +1,35 @@
+<div class="contenedor-padre">
+    <div class="contenedor-login">
+        <div class="seccion-imagen">
+            <!-- Aquí va tu logo o contenido de la imagen -->
+        </div>
+        <div class="seccion-formulario">
+            <h2 class="titulo-login">Inicio de sesión</h2>
+            
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-control">
+                </div>
+                
+                <div class="text-end mb-3">
+                    <a href="#" class="texto-olvidaste">¿Olvidó su contraseña?</a>
+                </div>
+                
+                <button type="button" class="btn btn-primary btn-login w-100" (click)="entrar()">
+    Inicia Sesión
+</button>
+                
+                <div class="text-center mt-3">
+                    <span >¿No tienes cuenta? </span>
+                    <a href="#" class="enlace-registro">Regístrate</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

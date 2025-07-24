@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit  {
 
 
   entrar(){
-    this.router.navigate(['/dashboard'])
+    this.router.navigate(['/auth'])
   }
 
 
