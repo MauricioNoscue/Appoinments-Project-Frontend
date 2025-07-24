@@ -1,0 +1,29 @@
+<div class="dashboard-container">
+  <!-- Header fijo arriba -->
+  <header class="header-fixed">
+    <!-- Botón hamburguesa para móvil -->
+    <button 
+      class="mobile-menu-btn" 
+      (click)="drawer.toggle()"
+      *ngIf="isMobile">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1 class="header-title">Panel de {{ tipoUsuario | titlecase }}</h1>
+  </header>
+
+  <!-- Tu drawer container original -->
+  <mat-drawer-container class="drawer-container" hasBackdrop="false">
+    <mat-drawer 
+      #drawer
+      [mode]="isMobile ? 'over' : 'side'"
+      [opened]="!isMobile"
+      class="sidebar-drawer">
+      
+      <app-sidebar [menuItems]="menuItems"></app-sidebar>
+    </mat-drawer>
+
+    <mat-drawer-content class="main-content">
+      <router-outlet></router-outlet>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

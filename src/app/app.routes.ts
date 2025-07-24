@@ -7,12 +7,11 @@ export const routes: Routes = [
       import('./modules/inicio/inicio.module').then(m => m.InicioModule)
   },
 
-  {
-    path: 'dashboard',
+   {
+    path: 'admin',
     loadChildren: () =>
-      import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
+      import('./modules/admin/admin.module').then(m => m.AdminModule)
   },
-
 
 
 

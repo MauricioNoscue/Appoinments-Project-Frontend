@@ -1,0 +1,156 @@
+    <div class="container-fluid p-4">
+        <!-- Hero Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="hero-card">
+                    <div class="hero-date">Apr 13, 2021 2:12 pm</div>
+                    <div class="hero-title">Good Day, Dr. Nicholls!</div>
+                    <div class="hero-subtitle">Have a Nice Monday!</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Row -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <app-card-basic
+                    label="Citas del año"
+                    number="1,250"
+                    change="+12%"
+                    type="basic">
+                </app-card-basic>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <app-card-basic
+                    label="Citas del año"
+                    number="1,250"
+                    change="+12%"
+                    type="basic">
+                </app-card-basic>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <app-card-basic
+                    label="Citas del año"
+                    number="1,250"
+                    change="+12%"
+                    type="basic">
+                </app-card-basic>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="appointment-status-card">
+                    <div class="stat-label">Appointment Status</div>
+                    <div class="stat-number">1,250</div>
+                    <div class="stat-change">Total +12%</div>
+                    <div class="status-tabs">
+                        <div class="status-tab tab-scheduled">Scheduled</div>
+                        <div class="status-tab tab-completed">Completed</div>
+                        <div class="status-tab tab-cancelled">Cancelled</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Row -->
+        <div class="row">
+            <!-- Chart Section -->
+            <div class="col-lg-6 mb-4">
+                <div class="chart-container">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5>Comportamiento del año</h5>
+                        <a href="#" class="text-primary">View Details</a>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="chart-circle">
+                                <div class="chart-center">
+                                    <div class="chart-total">72</div>
+                                    <div class="chart-label">Total Value</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mt-3">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Label</th>
+                                            <th>Value</th>
+                                            <th>%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="legend-color" style="background: #17a2b8;"></span>Label 1</td>
+                                            <td>12</td>
+                                            <td>28.6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="legend-color" style="background: #007bff;"></span>Label 2</td>
+                                            <td>22</td>
+                                            <td>42.9%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="legend-color" style="background: #6f42c1;"></span>Label 3</td>
+                                            <td>12</td>
+                                            <td>28.6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="legend-color" style="background: #e83e8c;"></span>Label 4</td>
+                                            <td>12</td>
+                                            <td>28.6%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="legend-color" style="background: #fd7e14;"></span>Label 5</td>
+                                            <td>7</td>
+                                            <td>14.3%</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="legend-color" style="background: #ffc107;"></span>Label 6</td>
+                                            <td>7</td>
+                                            <td>14.3%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-danger btn-sm mt-2">Exportar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Staff Section -->
+            <div class="col-lg-6 mb-4">
+                <div class="chart-container">
+                    <h5 class="mb-4">Nuestro personal</h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <app-staff-card
+   name="Jorge Enrique Bayter"
+profession="Cirujano"
+  backgroundColor="#a8e6cf"
+   imageUrl="assets/images/doc.jpeg"
+   logoUrl="assets/images/hospital-logo.png">
+ </app-staff-card>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="staff-card" style="background: linear-gradient(135deg, #ffd3a5, #fd9853);">
+                                <div class="staff-avatar" style="background: #ff9800;">JE</div>
+                                <div class="status-indicator" style="background: #ff9800;"></div>
+                                <h6>Jorge Enrique Bayter</h6>
+                                <small class="text-muted">Profesión<br>Cirujano</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="staff-card" style="background: linear-gradient(135deg, #fbc2eb, #a6c1ee);">
+                                <div class="staff-avatar" style="background: #9c27b0;">JE</div>
+                                <div class="status-indicator" style="background: #9c27b0;"></div>
+                                <h6>Jorge Enrique Bayter</h6>
+                                <small class="text-muted">Profesión<br>Cirujano</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

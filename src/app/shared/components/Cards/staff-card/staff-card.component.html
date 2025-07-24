@@ -1,0 +1,25 @@
+<div class="staff-card-modern" 
+     [style.background-color]="backgroundColor"
+     [style.width]="width"
+     [style.height]="height">
+  
+  <!-- Logo en esquina superior derecha -->
+  <div class="logo-corner" *ngIf="logoUrl">
+    <img [src]="logoUrl" alt="Logo" class="corner-logo">
+  </div>
+  
+  <!-- Imagen del doctor -->
+  <div class="doctor-image-container">
+    <img *ngIf="imageUrl" 
+         [src]="imageUrl" 
+         [alt]="name" 
+         class="doctor-image">
+  </div>
+  
+  <!-- Información del doctor -->
+  <div class="doctor-info">
+    <h2 class="doctor-name">{{ name }}</h2>
+    <div class="profession-label">Profesión</div>
+    <div class="doctor-profession">{{ profession }}</div>
+  </div>
+</div>

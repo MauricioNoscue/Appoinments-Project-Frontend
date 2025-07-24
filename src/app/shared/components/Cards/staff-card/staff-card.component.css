@@ -1,0 +1,116 @@
+.staff-card-modern {
+  background: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 100%);
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  position: relative;
+  text-align: center;
+  color: #333;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.staff-card-modern:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* Logo en esquina */
+.logo-corner {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 2;
+}
+
+.corner-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  object-fit: cover;
+}
+
+/* Contenedor de imagen del doctor */
+.doctor-image-container {
+  margin: 20px 0 30px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-height: 140px;
+}
+
+.doctor-image {
+  width: 140px;
+  height: 140px;
+  border-radius: 20px;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.doctor-image:hover {
+  transform: scale(1.05);
+}
+
+/* Información del doctor */
+.doctor-info {
+  text-align: center;
+  margin-top: auto;
+}
+
+.doctor-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 20px 0;
+  line-height: 1.3;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.profession-label {
+  font-size: 0.9rem;
+  color: #5a6c7d;
+  margin-bottom: 5px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.doctor-profession {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #34495e;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .staff-card-modern {
+    margin: 5px;
+    padding: 20px 15px;
+  }
+  
+  .doctor-name {
+    font-size: 1.2rem;
+  }
+  
+  .doctor-image {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .doctor-image-container {
+    min-height: 120px;
+  }
+  
+  .corner-logo {
+    width: 40px;
+    height: 40px;
+  }
+}

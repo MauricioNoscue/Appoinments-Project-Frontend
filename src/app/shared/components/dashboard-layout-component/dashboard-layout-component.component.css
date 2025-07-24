@@ -1,0 +1,96 @@
+
+/* dashboard-layout.component.css - SOLO LOS AJUSTES NECESARIOS */
+.dashboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-fixed {
+  position: fixed;
+  top: 0;
+  left: 280px; /* Desktop: después del sidebar */
+  right: 0;
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  transition: left 0.3s ease;
+}
+
+.mobile-menu-btn {
+  background: none;
+  border: none;
+  margin-right: 15px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-menu-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600;
+}
+
+.drawer-container {
+  flex: 1;
+  margin-top: 60px; /* Espacio para el header */
+}
+
+.sidebar-drawer {
+  width: 280px;
+  border: none;
+}
+
+.main-content {
+  background: #f5f7fa;
+  padding: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header-fixed {
+    left: 0; /* Header ocupa todo el ancho en móvil */
+  }
+  
+  .sidebar-drawer {
+    width: 280px;
+  }
+  
+  .main-content {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .header-fixed {
+    height: 50px;
+    padding: 0 15px;
+  }
+  
+  .header-title {
+    font-size: 16px;
+  }
+  
+  .drawer-container {
+    margin-top: 50px;
+  }
+  
+  .sidebar-drawer {
+    width: 100%;
+    max-width: 300px;
+  }
+}

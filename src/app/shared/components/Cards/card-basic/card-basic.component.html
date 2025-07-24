@@ -1,0 +1,15 @@
+<div [ngClass]="type === 'basic' ? 'stat-card' : 'appointment-status-card'">
+  <div class="stat-label">{{ label }}</div>
+  <div class="stat-number">{{ number }}</div>
+  <div class="stat-change">{{ change }}</div>
+  
+  <!-- Status tabs solo para type='status' -->
+  <div class="status-tabs" *ngIf="type === 'status' && statusTabs.length > 0">
+    <div 
+      *ngFor="let tab of statusTabs" 
+      class="status-tab"
+      [ngClass]="'tab-' + tab.type">
+      {{ tab.label }}
+    </div>
+  </div>
+</div>
