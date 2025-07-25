@@ -7,5 +7,5 @@ export interface MenuItem {
   classes?: string;
   target?: boolean;
   breadcrumbs?: boolean;
-  children?: MenuItem[];
+  children?: MenuItem[] ;
 }
