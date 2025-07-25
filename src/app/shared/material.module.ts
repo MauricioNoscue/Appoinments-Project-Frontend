@@ -11,6 +11,12 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
 // Agrega más según necesites
 
 const materialModules = [
@@ -22,12 +28,17 @@ const materialModules = [
   MatDividerModule,
   MatSidenavModule, MatSidenavModule,
   MatIconModule,
-  MatButtonModule,
   MatListModule,
   MatExpansionModule,
   MatRippleModule,
   MatTooltipModule,
-  MatDividerModule
+  MatDividerModule,
+  MatChipsModule,
+  CommonModule,
+  FormsModule,
+  MatFormFieldModule,
+  MatCardModule,
+  MatTableModule,
 
 ];
 
