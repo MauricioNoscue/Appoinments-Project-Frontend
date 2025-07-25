@@ -11,7 +11,7 @@ import { FormComponent } from './pages/Security/form/form.component';
 
 
 @NgModule({
-  declarations: [DashboardAdminComponent,DoctorComponent,RolComponent,FormComponent],
+  declarations: [DashboardAdminComponent,DoctorComponent,RolComponent,FormComponent,],
   imports: [
     CommonModule,
     AdminRoutingModule, SharedModule 

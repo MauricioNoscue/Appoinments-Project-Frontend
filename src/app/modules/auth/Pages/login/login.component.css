@@ -1,0 +1,115 @@
+.contenedor-padre {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+}
+
+.contenedor-login {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 900px;
+    width: 100%;
+    min-height: 500px;
+    display: flex;
+}
+
+.seccion-imagen {
+    background-image: url('/assets/fonts/image-login.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex: 1;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.seccion-formulario {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+}
+
+.titulo-login {
+    color: #4a90e2;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.form-control {
+    border: none;
+    border-bottom: 2px solid #e1e8ed;
+    border-radius: 0;
+    padding: 12px 0;
+    background: transparent;
+}
+
+.form-control:focus {
+    border-bottom-color: #4a90e2;
+    box-shadow: none;
+    background: transparent;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-weight: 600;
+}
+
+.enlace-registro {
+    color: #4a90e2;
+    text-decoration: none;
+}
+
+.texto-olvidaste {
+    color: #999;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contenedor-login {
+        flex-direction: column;
+        max-width: 400px;
+    }
+    
+    .seccion-imagen {
+        min-height: 200px;
+        order: 1;
+    }
+    
+    .seccion-formulario {
+        order: 2;
+        padding: 30px;
+    }
+    
+    .titulo-login {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .contenedor-padre {
+        padding: 10px;
+    }
+    
+    .seccion-formulario {
+        padding: 20px;
+    }
+}
