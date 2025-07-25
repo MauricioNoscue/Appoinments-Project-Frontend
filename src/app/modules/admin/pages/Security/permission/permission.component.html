@@ -1,1 +1,94 @@
-<p>permission works!</p>
+<!-- Barra superior -->
+<div class="top-bar">
+  <h6>Roles</h6>
+</div>
+
+<!-- Controles de selección y acciones -->
+<div class="controls">
+  <select id="permisos" class="permiso-select" aria-label="Tipo de permiso">
+    <option>Doctor</option>
+    <option>Administrador</option>
+  </select>
+
+  <div class="acciones">
+    <button>
+      <span class="iconos">
+        <i class="fas fa-user-circle"></i>
+      </span>
+      Agregar rol
+    </button>
+
+    <div>
+      <input type="text" placeholder="Buscar">
+    </div>
+  </div>
+</div>
+
+<!-- Estilos de iconos (solo una vez) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Tarjetas de roles -->
+<div class="role-grid">
+
+<!-- Doctor -->
+<div class="role-card">
+  <!-- Botón de tres puntos -->
+  <button class="options-btn" title="Más opciones">
+    <i class="fas fa-ellipsis-v"></i>
+  </button>
+
+  <div class="role-icon doctor">DC</div>
+  <h3>Doctor</h3>
+  <p>Rol encargado de la gestión y atención médica.</p>
+  <div class="card-actions">
+    <button class="edit-btn">
+      <i class="fas fa-pen"></i> Editar
+    </button>
+    <button class="delete-btn" title="Eliminar">
+      <i class="fas fa-trash-alt"></i>
+    </button>
+  </div>
+</div>
+
+
+  <!-- Administrador -->
+  <div class="role-card">
+    <!-- Botón de tres puntos -->
+  <button class="options-btn" title="Más opciones">
+    <i class="fas fa-ellipsis-v"></i>
+  </button>
+
+    <div class="role-icon admin">AD</div>
+    <h3>Administrador</h3>
+    <p>Rol encargado de gestión administrativa del sistema.</p>
+    <div class="card-actions">
+      <button class="edit-btn">
+        <i class="fas fa-pen"></i> Editar
+      </button>
+      <button class="delete-btn"title="Eliminar">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Paciente -->
+  <div class="role-card">
+    <!-- Botón de tres puntos -->
+  <button class="options-btn" title="Más opciones">
+    <i class="fas fa-ellipsis-v"></i>
+  </button>
+
+    <div class="role-icon patient">PC</div>
+    <h3>Paciente</h3>
+    <p>Rol con permisos limitados, acceso a citas y consultas.</p>
+    <div class="card-actions">
+      <button class="edit-btn">
+        <i class="fas fa-pen"></i> Editar
+      </button>
+      <button class="delete-btn"title="Eliminar">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+
+</div>

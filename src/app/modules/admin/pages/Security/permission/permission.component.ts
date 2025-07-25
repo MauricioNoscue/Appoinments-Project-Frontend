@@ -2,10 +2,8 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-permission',
-  imports: [],
+  standalone: false,
   templateUrl: './permission.component.html',
-  styleUrl: './permission.component.css'
+  styleUrl: './permission.component.css',
 })
-export class PermissionComponent {
-
-}
+export class PermissionComponent {}

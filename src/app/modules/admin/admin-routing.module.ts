@@ -5,22 +5,19 @@ import { DashboardAdminComponent } from './pages/dashboard-admin/dashboard-admin
 import { DoctorComponent } from './pages/doctor/doctor.component';
 import { FormComponent } from './pages/Security/form/form.component';
 import { RolComponent } from './pages/Security/rol/rol.component';
+import { PermissionComponent } from './pages/Security/permission/permission.component';
 
 const routes: Routes = [
-
   {
     path: '',
-    component: DashboardLayoutComponentComponent, 
+    component: DashboardLayoutComponentComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardAdminComponent },
-      {path:'doctor',component: DoctorComponent},
-      {path:'security/form',component: FormComponent},
-      {path:'security/rol',component: RolComponent},
-
-
-
-
+      { path: 'doctor', component: DoctorComponent },
+      { path: 'security/form', component: FormComponent },
+      { path: 'security/rol', component: RolComponent },
+      { path: 'security/permission', component: PermissionComponent },
     ],
   },
 ];
