@@ -11,7 +11,7 @@ import { MaterialModule } from "../../shared/material.module";
 
 
 @NgModule({
-  declarations: [DashboardAdminComponent,DoctorComponent,RolComponent,FormComponent],
+  declarations: [DashboardAdminComponent,DoctorComponent,RolComponent,FormComponent,],
   imports: [
     CommonModule,
     AdminRoutingModule, SharedModule,

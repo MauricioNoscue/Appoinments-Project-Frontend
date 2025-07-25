@@ -17,6 +17,7 @@ export class DashboardLayoutComponentComponent  implements OnInit{
   constructor(private router: Router) {}
 
   ngOnInit(): void {
+
     this.initializeFromRoute();
     this.checkScreenSize(); // AGREGAR ESTA LÍNEA
   }

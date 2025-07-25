@@ -1,0 +1,8 @@
+.fondo-componente {
+    background-image: url('/assets/fonts/auth-font.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    width: 100%;
+}
