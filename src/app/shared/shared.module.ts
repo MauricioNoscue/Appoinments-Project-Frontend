@@ -10,13 +10,22 @@ import { DashboardLayoutComponentComponent } from './components/dashboard-layout
 import { RouterModule } from '@angular/router';
 import { CardBasicComponent } from './components/Cards/card-basic/card-basic.component';
 import { StaffCardComponent } from './components/Cards/staff-card/staff-card.component';
+import { ModalFormComponent } from './components/Modal/modal-form/modal-form.component';
+import { DialogContainerComponent } from './components/Modal/dialog-container/dialog-container.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 const sharedComponents =[
   MobileMenuComponent,
   IconIncioComponent,
   NavLinkComponent,
-  ButtonBasicComponent,SidebarComponent,DashboardLayoutComponentComponent,CardBasicComponent,StaffCardComponent
+  ButtonBasicComponent,
+  SidebarComponent,
+  DashboardLayoutComponentComponent,
+  CardBasicComponent,
+  StaffCardComponent,
+  ModalFormComponent,
+  DialogContainerComponent 
 
 ]
 
@@ -27,7 +36,7 @@ const sharedComponents =[
   declarations: [sharedComponents],
   imports: [
     CommonModule,
-    MaterialModule,RouterModule 
+    MaterialModule,RouterModule ,ReactiveFormsModule
   ],
   exports: [
    sharedComponents,DashboardLayoutComponentComponent
