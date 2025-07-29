@@ -32,9 +32,18 @@ export class FormComponent implements OnInit {
     );
   }
 
-  eliminar(id: number) {
-    console.log('Formulario a eliminar:', id);
+  eliminar(id: number): void {
+    const confirmado = confirm('¿Estás seguro de eliminar este formulario?');
+
+    if (confirmado) {
+      this.service.eliminar(id).subscribe({
+        next: () => this.recargarListado(),
+        error: (err) => console.error('Error al eliminar:', err)
+      });
+    }
   }
+
+
   recargarListado(): void {
     this.service.traerTodo().subscribe({
       next: (formularios: FormList[]) => {
@@ -48,11 +57,12 @@ export class FormComponent implements OnInit {
 
 
   abrirFormulario(modo: 'create' | 'edit', data?: FormC): void {
+    console.log('Abrir formulario en modo:', modo, 'con datos:', data);
     const dialogRef = this.dialog.open(DialogContainerComponent, {
       width: '600px',
       data: {
         component: FormFormComponent,
-        payload: data
+        payload: { modo, data }
       }
     });
 
@@ -67,6 +77,4 @@ export class FormComponent implements OnInit {
       }
     });
   }
-
-
 }

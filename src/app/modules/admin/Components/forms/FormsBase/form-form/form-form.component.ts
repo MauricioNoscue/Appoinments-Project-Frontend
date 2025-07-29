@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, Inject } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { FormC } from "../../../../../../shared/Models/security/FormModel";
 import { MaterialModule } from "../../../../../../shared/material.module";
@@ -16,18 +16,17 @@ export class FormFormComponent implements OnInit {
 
   formForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    @Inject('MODAL_DATA') private modalData: {modo: 'create' | 'edit', data?: FormC}
+  ){
     this.formForm = this.createForm();
   }
 
   ngOnInit(): void {
-    if (this.data && this.modo === 'edit') {
-      this.formForm.patchValue({
-        id: this.data.id,
-        name: this.data.name,
-        url: this.data.url,
-        description: this.data.description
-      });
+    console.log('Modal Data:', this.modalData);
+    if (this.modalData.modo === 'edit' && this.modalData.data) {
+      this.formForm.patchValue(this.modalData.data);
     }
   }
 
@@ -40,12 +39,17 @@ export class FormFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.formForm.valid) {
-      this.formSubmit.emit(this.formForm.value);
-    } else {
-      Object.values(this.formForm.controls).forEach(control => control.markAsTouched());
-    }
+  if (this.formForm.valid) {
+    const payload: FormC = {
+      ...this.formForm.value,
+      ...(this.modalData.modo === 'edit' && this.modalData.data?.id ? { id: this.modalData.data.id } : {})
+    };
+    this.formSubmit.emit(payload);
+  } else {
+    Object.values(this.formForm.controls).forEach(control => control.markAsTouched());
   }
+}
+
 
   getFieldError(fieldName: string): string {
     const field = this.formForm.get(fieldName);
