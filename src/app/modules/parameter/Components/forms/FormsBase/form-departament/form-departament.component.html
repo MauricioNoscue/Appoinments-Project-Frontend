@@ -1,0 +1,31 @@
+<div class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        {{ modo === 'edit' ? 'Editar' : 'Registrar' }} Departamento
+      </h2>
+    </div>
+
+    <form [formGroup]="departamentForm" (ngSubmit)="onSubmit()" class="role-form">
+      <!-- Nombre del Departamento -->
+      <div class="form-group">
+        <label for="name" class="form-label">Nombre</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="form-input"
+          placeholder="Ingresa el nombre del departamento"
+          [class.error]="getFieldError('name')"
+        />
+        <div class="error-message" *ngIf="getFieldError('name')">
+          {{ getFieldError('name') }}
+        </div>
+      </div>
+
+      <button type="submit" class="register-button" [disabled]="departamentForm.invalid">
+        {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
+      </button>
+    </form>
+  </div>
+</div>

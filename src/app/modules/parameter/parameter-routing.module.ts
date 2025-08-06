@@ -4,6 +4,8 @@ import { DashboardLayoutComponentComponent } from '../../shared/components/dashb
 import { ParameterDashboardComponent } from './pages/parameter-dashboard/parameter-dashboard.component';
 import { CityComponent } from './pages/city/city.component';
 import { InstitutionsComponent } from './pages/institutions/institutions.component';
+import { BranchComponent } from './pages/branch/branch.component';
+import { DepartamentComponent } from './pages/departament/departament.component';
 
 const routes: Routes = [
   {
@@ -14,6 +16,8 @@ const routes: Routes = [
       { path: 'dashboard', component: ParameterDashboardComponent },
       { path: 'city', component: CityComponent },
       { path: 'institutions', component: InstitutionsComponent },
+      { path: 'branch', component: BranchComponent },
+      { path: 'departament', component: DepartamentComponent },
     ],
   },
 ];
