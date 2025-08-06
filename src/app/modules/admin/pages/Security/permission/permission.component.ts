@@ -83,10 +83,21 @@ export class PermissionComponent implements OnInit {
   constructor(private service: PermissionService, private dialog: MatDialog) {}
 
   dataSource: PermissionList[] = [];
+  displayedColumns: string[] = [
+    'index',
+    'name',
+    'description',
+    'status',
+    'detail',
+    'actions',
+  ];
   searchTerm: string = '';
 
   ngOnInit(): void {
-    this.cargarPermisos();
+    // this.cargarPermisos();
+    this.service.traerTodo().subscribe((permission) => {
+      this.dataSource = permission;
+    });
   }
 
   get filteredDataSource(): PermissionList[] {
@@ -109,11 +120,16 @@ export class PermissionComponent implements OnInit {
   cargarPermisos(): void {
     this.service.traerTodo().subscribe({
       next: (permisos: PermissionList[]) => {
-        console.log('Permisos obtenidos:', permisos);
         this.dataSource = permisos;
       },
-      error: (err) => console.error('Error al cargar permisos:', err),
+      error: (err) => {
+        console.error('Error al cargar permisos:', err);
+      },
     });
+    // this.service.traerTodo().subscribe((data) => {
+    //   console.log('Permisos obtenidos: ', data);
+    //   this.dataSource = data;
+    // });
   }
 
   abrirDialog(modo: 'create' | 'edit', data?: PermissionC): void {
