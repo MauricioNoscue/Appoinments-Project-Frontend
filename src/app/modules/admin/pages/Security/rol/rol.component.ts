@@ -7,7 +7,7 @@ import { DialogContainerComponent } from '../../../../../shared/components/Modal
 import { RolCreatedComponent } from '../../../Components/forms/FormsCreate/rol-created/rol-created.component';
 import { RolEditComponent } from '../../../Components/forms/FormsEdit/rol-edit/rol-edit.component';
 import { CardViewRolComponent } from '../../../Components/cards/card-view-rol/card-view-rol.component';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-rol',
 standalone:false,
@@ -56,12 +56,23 @@ ngOnInit(): void {
 displayedColumns: string[] = ['index', 'name', 'description', 'status', 'detail', 'actions'];
   searchTerm: string = '';
 
-  eliminar(id : number){
-
-    this.service.eliminar(id).subscribe(()=>{
-      this.cargarRoles();
-    })
-    console.log('id a eliminar  ',id)
-  }
-
+ eliminar(id: number) {
+  Swal.fire({
+    title: '¿Estás seguro de eliminar este rol?',
+    text: '¡No podrás revertir esto!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.service.eliminar(id).subscribe(() => {
+        this.cargarRoles();
+        Swal.fire('Eliminado', 'El registro ha sido eliminado.', 'success');
+      });
+    }
+  });
+}
 }

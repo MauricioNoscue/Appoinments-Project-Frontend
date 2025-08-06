@@ -6,6 +6,7 @@ import { ModuleCreatedComponent } from '../../../Components/forms/FormsCreate/mo
 import { ModuleEditComponent } from '../../../Components/forms/FormsEdit/module-edit/module-edit.component';
 import { CardViewModuleComponent } from '../../../Components/cards/card-view-module/card-view-module.component';
 import { DialogContainerComponent } from '../../../../../shared/components/Modal/dialog-container/dialog-container.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-module',
@@ -54,12 +55,25 @@ ngOnInit(): void {
   this.cargarModules();
 }
 
-eliminar(id : number){
 
-    this.service.eliminar(id).subscribe(()=>{
-      this.cargarModules();
-    })
-    console.log('id a eliminar  ',id)
-  }
+ eliminar(id: number) {
+  Swal.fire({
+    title: '¿Estás seguro de eliminar este usuario?',
+    text: '¡No podrás revertir esto!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.service.eliminar(id).subscribe(() => {
+        this.cargarModules();
+        Swal.fire('Eliminado', 'El registro ha sido eliminado.', 'success');
+      });
+    }
+  });
+}
 
 }

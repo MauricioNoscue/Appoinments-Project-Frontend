@@ -6,12 +6,12 @@ export const menuAdmin: MenuItem[] = [
 
      {
       id: 'navigation',
-      title: 'Navigation',
+      title: 'Inicio',
       type: 'group',
       children: [
         {
           id: 'dashboard',
-          title: 'Dashboard',
+          title: 'Incio',
           type: 'item',
           classes: 'nav-item',
           url: '/admin/dashboard',
@@ -21,70 +21,8 @@ export const menuAdmin: MenuItem[] = [
         }
       ]
     },
-    {
-      id: 'auth',
-      title: 'Authentication',
-      type: 'group',
-      children: [
-        {
-          id: 'login',
-          title: 'Login',
-          type: 'item',
-          classes: 'nav-item',
-          url: '/auth/login',
-          icon: 'login',
-          target: true,
-          breadcrumbs: false
-        },
-        {
-          id: 'register',
-          title: 'Register',
-          type: 'item',
-          classes: 'nav-item',
-          url: '/auth/register',
-          icon: 'person_add',
-          target: true,
-          breadcrumbs: false
-        }
-      ]
-    },
-    {
-      id: 'ui-components',
-      title: 'UI Components',
-      type: 'group',
-      children: [
-        {
-          id: 'typography',
-          title: 'Typography',
-          type: 'item',
-          classes: 'nav-item',
-          url: '/ui/typography',
-          icon: 'text_fields',
-          target: false,
-          breadcrumbs: true
-        },
-        {
-          id: 'color',
-          title: 'Color',
-          type: 'item',
-          classes: 'nav-item',
-          url: '/ui/color',
-          icon: 'palette',
-          target: false,
-          breadcrumbs: true
-        },
-        {
-          id: 'tables',
-          title: 'Tables',
-          type: 'item',
-          classes: 'nav-item',
-          url: '/ui/tables',
-          icon: 'table_chart',
-          target: false,
-          breadcrumbs: true
-        }
-      ]
-    },
+   
+   
     {
       id: 'Módulos',
       title: 'Módulos',

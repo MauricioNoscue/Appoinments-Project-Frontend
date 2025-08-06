@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UsuarioListado } from '../../../../../shared/Models/security/userModel';
 import { DialogContainerComponent } from '../../../../../shared/components/Modal/dialog-container/dialog-container.component';
 import { UserCreateComponent } from '../../../Components/forms/FormsCreate/user-create/user-create.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user',
@@ -62,4 +63,26 @@ displayedColumns: string[] = [
   'actions'          // botones de editar/eliminar
 ];
 
+
+
+
+ eliminar(id: number) {
+  Swal.fire({
+    title: '¿Estás seguro de eliminar este usuario?',
+    text: '¡No podrás revertir esto!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.service.eliminar(id).subscribe(() => {
+        this.cargarUsers();
+        Swal.fire('Eliminado', 'El registro ha sido eliminado.', 'success');
+      });
+    }
+  });
+}
 }
