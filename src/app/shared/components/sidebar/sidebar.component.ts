@@ -1,6 +1,7 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MenuItem } from '../../Models/ManuItemModel';
 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,7 +18,7 @@ export class SidebarComponent implements OnInit {
   expandedItems: Set<string> = new Set();
   isMobile: boolean = false;
 
-  constructor() {
+  constructor(private router: Router) {
     this.checkScreenSize();
   }
 
@@ -51,18 +52,16 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  selectItem(item: MenuItem): void {
-    this.activeItem = item.id;
-    
-    // Aquí puedes agregar la lógica de navegación
-    if (item.url) {
-      // Ejemplo: this.router.navigate([item.url]);
-      console.log('Navigating to:', item.url);
-    }
-    
-    // Emitir evento si es necesario
-    this.onItemSelected(item);
+selectItem(item: MenuItem): void {
+  this.activeItem = item.id;
+
+  if (item.url) {
+    this.router.navigate([ item.url]);
+
   }
+
+  this.onItemSelected(item);
+}
 
   toggleCollapse(itemId: string): void {
     if (this.expandedItems.has(itemId)) {

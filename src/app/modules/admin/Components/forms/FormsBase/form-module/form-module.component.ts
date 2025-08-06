@@ -1,33 +1,34 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { RolC, RolCreated, RolUpdated } from '../../../../../../shared/Models/security/RolModel';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ModuleCreated, ModuleEdid } from '../../../../../../shared/Models/security/moduleModel';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-form-rol',
+  selector: 'app-form-module',
 standalone:false,
-
-  templateUrl: './form-rol.component.html',
-  styleUrl: './form-rol.component.css'
+  templateUrl: './form-module.component.html',
+  styleUrl: './form-module.component.css'
 })
-export class FormRolComponent implements OnInit {
+export class FormModuleComponent implements OnInit {
 
+
+  
  @Input() modo: 'create' | 'edit' = 'create';
-  @Input() data?:RolUpdated;
-  @Output() formSubmit = new EventEmitter<RolCreated |RolUpdated>();
+  @Input() data?:ModuleEdid;
+  @Output() formSubmit = new EventEmitter<ModuleCreated |ModuleEdid>();
 
   rolForm: FormGroup;
 
-
-  constructor(private fb: FormBuilder) {
+constructor(private fb: FormBuilder) {
     this.rolForm = this.createForm();
   }
 
-  ngOnInit(): void {
+
+    ngOnInit(): void {
     if (this.data && this.modo === 'edit') {
       this.rolForm.patchValue({
         id:this.data?.id,
-        name: this.data.name,
-        description: this.data.description
+        name: this.data.Name,
+        description: this.data.Description
       });
 
     
@@ -42,7 +43,7 @@ export class FormRolComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+    onSubmit(): void {
     if (this.rolForm.valid) {
       this.formSubmit.emit(this.rolForm.value);
     } else {
@@ -64,4 +65,5 @@ export class FormRolComponent implements OnInit {
     }
     return '';
   }
+
 }

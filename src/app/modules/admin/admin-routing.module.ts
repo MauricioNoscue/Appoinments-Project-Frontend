@@ -6,6 +6,8 @@ import { DoctorComponent } from './pages/doctor/doctor.component';
 import { FormComponent } from './pages/Security/form/form.component';
 import { RolComponent } from './pages/Security/rol/rol.component';
 import { PermissionComponent } from './pages/Security/permission/permission.component';
+import { UserComponent } from './pages/Security/user/user.component';
+import { ModuleComponent } from './pages/Security/module/module.component';
 
 const routes: Routes = [
 
@@ -19,6 +21,10 @@ const routes: Routes = [
       {path:'security/form',component: FormComponent},
       {path:'security/rol',component: RolComponent},
       {path:'security/permission',component: PermissionComponent},
+      {path:'security/user',component: UserComponent},
+      {path:'security/module',component: ModuleComponent},
+
+
 
 
 

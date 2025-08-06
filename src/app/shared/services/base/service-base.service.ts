@@ -22,8 +22,8 @@ export class ServiceBaseService<TList,TCreate,TUpdate> {
     return this.http.get<TList>(`${this.urlBase}/${id}`);
     }
 
-  public crear(data: TCreate): Observable<TList> {
-    return this.http.post<TList>(this.urlBase, data);
+  public crear(data: TCreate): Observable<any> {
+    return this.http.post<any>(this.urlBase, data);
   }
 
  public actualizar(item: TUpdate): Observable<boolean> {

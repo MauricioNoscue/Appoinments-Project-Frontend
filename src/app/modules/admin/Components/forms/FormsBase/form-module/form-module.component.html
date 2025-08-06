@@ -2,7 +2,7 @@
 <div class="modal-overlay">
   <div class="modal-container">
     <div class="modal-header">
-      <h2 class="modal-title">Registrar Rol</h2>
+      <h2 class="modal-title">Registrar Modulo</h2>
       <div class="icon-container">
         <svg viewBox="0 0 24 24" class="role-icon">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -16,14 +16,14 @@
     <form [formGroup]="rolForm" (ngSubmit)="onSubmit()" class="role-form">
       <!-- Nombre del rol -->
       <div class="form-group">
-        <label for="nombre" class="form-label">Nombre del rol</label>
+        <label for="nombre" class="form-label">Nombre del Modulo</label>
         <input
           type="text"
           id="nombre"
           formControlName="name"
           class="form-input"
           [class.error]="getFieldError('nombre')"
-          placeholder="Ingresa el nombre del rol"
+          placeholder="Ingresa el nombre del Modulo"
         >
         <div class="error-message" *ngIf="getFieldError('nombre')">
           {{ getFieldError('nombre') }}
@@ -39,7 +39,7 @@
           formControlName="description"
           class="form-textarea"
           [class.error]="getFieldError('descripcion')"
-          placeholder="Describe las responsabilidades y alcance de este rol..."
+          placeholder="Describe las responsabilidades y alcance de este Modulo..."
           rows="6"
         ></textarea>
         <div class="error-message" *ngIf="getFieldError('descripcion')">

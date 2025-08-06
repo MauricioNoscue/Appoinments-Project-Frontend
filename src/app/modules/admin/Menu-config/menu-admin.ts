@@ -14,7 +14,7 @@ export const menuAdmin: MenuItem[] = [
           title: 'Dashboard',
           type: 'item',
           classes: 'nav-item',
-          url: '/dashboard',
+          url: '/admin/dashboard',
           icon: 'dashboard',
           target: false,
           breadcrumbs: true
@@ -91,41 +91,58 @@ export const menuAdmin: MenuItem[] = [
       type: 'group',
       children: [
         {
-          id: 'menu-levels',
-          title: 'Menu Levels',
+          id: 'menu-secutiry',
+          title: 'Seguridad',
           type: 'collapse',
           icon: 'layers',
           children: [
             {
-              id: 'level-1-1',
-              title: 'Level 1.1',
+              id: 'rol1-1',
+              title: 'Roles',
               type: 'item',
-              url: '/menu/level1-1'
+              url: 'admin/security/rol'
             },
             {
-              id: 'level-1-2',
-              title: 'Menu Level 2.2',
+              id: 'User-1-2',
+              title: 'Usuarios',
               type: 'item',
-              url: '/menu/level1-2'
+              url: 'admin/security/user'
             },
             {
-              id: 'level-1-3',
-              title: 'Menu Level 2.3',
+              id: 'module-1-3',
+              title: 'Modulos',
               type: 'item',
-              url: '/menu/level1-3'
+              url: 'admin/security/module'
             }
           ]
+        },    {
+      id: 'menu-security-2',
+      title: 'Parámetros',
+      type: 'collapse',
+      icon: 'layers',
+      children: [
+        {
+          id: 'rol-2',
+          title: 'Roles',
+          type: 'item',
+          url: 'admin/security/rol'
         },
         {
-          id: 'sample-page',
-          title: 'Sample Page',
+          id: 'user-2',
+          title: 'Usuarios',
           type: 'item',
-          classes: 'nav-item',
-          url: '/sample-page',
-          icon: 'description',
-          target: false,
-          breadcrumbs: true
+          url: 'admin/security/user'
+        },
+        {
+          id: 'module-2',
+          title: 'Módulos',
+          type: 'item',
+          url: 'admin/security/module'
         }
+      ]
+     }
+        
       ]
     }
 ]
+

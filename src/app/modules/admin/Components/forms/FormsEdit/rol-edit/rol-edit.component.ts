@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { RolC } from '../../../../../../shared/Models/security/RolModel';
+import { RolC, RolUpdated } from '../../../../../../shared/Models/security/RolModel';
 import { MatDialogRef } from '@angular/material/dialog';
+import { RolService } from '../../../../../../shared/services/rol.service';
 
 @Component({
   selector: 'app-rol-edit',
@@ -11,27 +12,31 @@ standalone:false,
 })
 export class RolEditComponent {
 
- rolData: RolC;
+ rolData: RolUpdated;
 
   constructor(
   @Inject('MODAL_DATA') private data: any,
-  private dialogRef: MatDialogRef<RolEditComponent>
+  private dialogRef: MatDialogRef<RolEditComponent>,private service : RolService
 ) {
   this.rolData = {
     id: data?.id,
-    nombre: data?.name || '',
-    descripcion: data?.description || '',
-    permisos: data?.permisos || []
+    name: data?.name || '',
+    description: data?.description || '',
   };
 }
+
 onFormSubmit(form: any) {
   const result = {
     ...form,
     id: this.data?.id
   };
 
-  console.log('Datos a editar:', result);
-  this.dialogRef.close(result);
+
+
+  this.service.actualizar(result).subscribe(()=>{
+    this.dialogRef.close(true);
+  })
+  
 }
 
 }

@@ -1,3 +1,4 @@
+import { CardViewModuleComponent } from './Components/cards/card-view-module/card-view-module.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -12,12 +13,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RolCreatedComponent } from './Components/forms/FormsCreate/rol-created/rol-created.component';
 import { FormRolComponent } from './Components/forms/FormsBase/form-rol/form-rol.component';
 import { RolEditComponent } from './Components/forms/FormsEdit/rol-edit/rol-edit.component';
+import { UserComponent } from './pages/Security/user/user.component';
+import { ModuleComponent } from './pages/Security/module/module.component';
+import { FormModuleComponent } from './Components/forms/FormsBase/form-module/form-module.component';
+import { ModuleCreatedComponent } from './Components/forms/FormsCreate/module-created/module-created.component';
+import { ModuleEditComponent } from './Components/forms/FormsEdit/module-edit/module-edit.component';
+import { FormUserComponent } from './Components/forms/FormsBase/form-user/form-user.component';
+import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/user-create.component';
 
 
 @NgModule({
   declarations: [DashboardAdminComponent,
     DoctorComponent,RolComponent,FormComponent,RolCreatedComponent,
-    FormRolComponent,RolEditComponent],
+    FormRolComponent,RolEditComponent,UserComponent,ModuleComponent,ModuleComponent,FormModuleComponent,ModuleCreatedComponent,ModuleEditComponent,CardViewModuleComponent,FormUserComponent,UserCreateComponent],
   imports: [
     CommonModule,
     AdminRoutingModule, SharedModule,

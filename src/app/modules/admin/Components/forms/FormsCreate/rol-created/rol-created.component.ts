@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { RolC, RolList } from '../../../../../../shared/Models/security/RolModel';
+import { RolC, RolCreated, RolList } from '../../../../../../shared/Models/security/RolModel';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { RolService } from '../../../../../../shared/services/rol.service';
 
 @Component({
   selector: 'app-rol-created',
@@ -11,14 +13,17 @@ standalone:false,
   styleUrl: './rol-created.component.css'
 })
 export class RolCreatedComponent  {
-constructor(private dialogRef: MatDialogRef<RolCreatedComponent>) {}
+constructor(private dialogRef: MatDialogRef<RolCreatedComponent>,private route: Router, private service : RolService) {}
 
   onFormSubmit(form: any) {
-    console.log('Rol a crear:', form);
 
-    // Aquí haces luego:
-    // this.rolService.crear(form).subscribe(...)
+this.service.crear(form).subscribe(data=>{
 
-    this.dialogRef.close(); // Cierra el modal
+  console.log(data)
+ this.dialogRef.close(true);
+
+})
+    
+   
   }
 }

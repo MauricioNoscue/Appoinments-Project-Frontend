@@ -8,14 +8,13 @@ export interface RolList{
 
 
 export interface RolCreated{
-     name: string,
-    description:string
+     Name: string,
+    Description:string
 }
 
 export interface RolC {
   id?: number;
   nombre: string;
-  permisos: string[];
   descripcion: string;
 }
 

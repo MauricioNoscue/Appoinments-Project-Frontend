@@ -10,4 +10,7 @@ export class RolService extends ServiceBaseService<RolList,RolCreated,RolUpdated
   constructor() { 
     super('rol')
   }
+
+  
+
 }

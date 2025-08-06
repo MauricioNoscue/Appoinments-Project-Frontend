@@ -6,30 +6,39 @@
         <div class="seccion-formulario">
             <h2 class="titulo-login">Inicio de sesión</h2>
             
-            <form>
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <div class="mb-3">
-                    <label class="form-label">Correo Electrónico</label>
-                    <input type="email" class="form-control">
+                    <label    class="form-label">Correo Electrónico</label>
+                    <input  formControlName="email"   type="email" class="form-control">
+                    <div class="error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                    Email inválido.
+                </div>
+  
                 </div>
                 
                 <div class="mb-3">
                     <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-control">
+                    <input   formControlName="password"   type="password" class="form-control">
+                     <div class="error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        Contraseña requerida (mín. 6 caracteres).
+      </div>
                 </div>
                 
                 <div class="text-end mb-3">
                     <a href="#" class="texto-olvidaste">¿Olvidó su contraseña?</a>
                 </div>
                 
-                <button type="button" class="btn btn-primary btn-login w-100" (click)="entrar()">
-    Inicia Sesión
-</button>
+                <button type="submit" class="btn btn-primary btn-login w-100" [disabled]="loginForm.invalid">
+                Inicia Sesión
+            </button>
                 
-                <div class="text-center mt-3">
+               
+            </form>
+
+             <div class="text-center mt-3">
                     <span >¿No tienes cuenta? </span>
                     <a href="#" class="enlace-registro">Regístrate</a>
                 </div>
-            </form>
         </div>
     </div>
 </div>
