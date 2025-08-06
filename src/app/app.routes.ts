@@ -16,6 +16,11 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./modules/auth/auth.module').then(m => m.AuthModule)
   },
+  {
+    path: 'parameter',
+    loadChildren: () =>
+      import('./modules/parameter/parameter.module').then(m => m.ParameterModule)
+  },
 
 
 
