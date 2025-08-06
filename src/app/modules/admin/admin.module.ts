@@ -12,16 +12,35 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RolCreatedComponent } from './Components/forms/FormsCreate/rol-created/rol-created.component';
 import { FormRolComponent } from './Components/forms/FormsBase/form-rol/form-rol.component';
 import { RolEditComponent } from './Components/forms/FormsEdit/rol-edit/rol-edit.component';
+import { FormPermissionComponent } from './Components/forms/FormsBase/form-permission/form-permission.component';
+import { FormEditPermissionComponent } from './Components/forms/FormsEdit/form-edit-permission/form-edit-permission.component';
+import { FormCreatePermissionComponent } from './Components/forms/FormsCreate/form-create-permission/form-create-permission.component';
+import { PermissionCreatedComponent } from './Components/forms/FormsCreate/permission-created/permission-created.component';
+import { PermissionEditComponent } from './Components/forms/FormsEdit/permission-edit/permission-edit.component';
+import { PermissionComponent } from './pages/Security/permission/permission.component';
 
 
 @NgModule({
-  declarations: [DashboardAdminComponent,
-    DoctorComponent,RolComponent,FormComponent,RolCreatedComponent,
-    FormRolComponent,RolEditComponent],
+  declarations: [
+    DashboardAdminComponent,
+    DoctorComponent,
+    RolComponent,
+    FormComponent,
+    RolCreatedComponent,
+    FormRolComponent,
+    RolEditComponent,
+    FormPermissionComponent,
+    FormEditPermissionComponent,
+    PermissionCreatedComponent,
+    PermissionEditComponent,
+    PermissionComponent,
+  ],
   imports: [
     CommonModule,
-    AdminRoutingModule, SharedModule,
-    MaterialModule,ReactiveFormsModule
-]
+    AdminRoutingModule,
+    SharedModule,
+    MaterialModule,
+    ReactiveFormsModule,
+  ],
 })
-export class AdminModule { }
+export class AdminModule {}

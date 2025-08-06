@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class PermissionService extends ServiceBaseService<PermissionState,PermissionCreated,PermissionEdit> {
+export class PermissionService extends ServiceBaseService<PermissionList,PermissionCreated,PermissionEdit> {
   constructor() {
     super('Permission');
   }

@@ -1,6 +1,6 @@
 <!-- Barra superior -->
 <div class="top-bar">
-  <h6>Roles</h6>
+  <h6>Permisos</h6>
 </div>
 
 <!-- Controles de selección y acciones -->
@@ -14,16 +14,16 @@
 
   <!-- Btn -->
   <div class="acciones">
-    <button>
+    <button mat-button (click)="abrirDialog('create')">
       <span class="iconos">
         <i class="fas fa-user-circle"></i>
       </span>
-      Agregar rol
+      Agregar permiso
     </button>
 
     <!-- Search -->
     <div>
-      <input type="text" placeholder="Buscar">
+      <input type="text" placeholder="Buscar" [(ngModel)]="searchTerm">
     </div>
   </div>
 </div>
@@ -31,68 +31,29 @@
 <!-- Estilos de iconos (solo una vez) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Tarjetas de roles -->
+<!-- Tarjetas de permisos -->
 <div class="role-grid">
+  <div class="role-card" *ngFor="let permiso of filteredDataSource; let i = index">
+    <div class="role-content">
+      <!-- Iniciales como ícono -->
+      <div class="role-icon">
+        {{ permiso.permission.name.substring(0, 2).toUpperCase() }}
+      </div>
 
-<!-- Doctor -->
-<div class="role-card">
-  <!-- Botón de tres puntos -->
-  <button class="options-btn" title="Más opciones">
-    <i class="fas fa-ellipsis-v"></i>
-  </button>
+      <div class="role-text">
+        <h3>{{ permiso.permission.name }}</h3>
+        <p>{{ permiso.permission.description }}</p>
+      </div>
+    </div>
 
-  <div class="role-icon doctor">DC</div>
-  <h3>Doctor</h3>
-  <p>Rol encargado de la gestión y atención médica.</p>
-  <div class="card-actions">
-    <button class="edit-btn">
-      <i class="fas fa-pen"></i> Editar
-    </button>
-    <button class="delete-btn" title="Eliminar">
-      <i class="fas fa-trash-alt"></i>
-    </button>
-  </div>
-</div>
-
-
-  <!-- Administrador -->
-  <div class="role-card">
-    <!-- Botón de tres puntos -->
-  <button class="options-btn" title="Más opciones">
-    <i class="fas fa-ellipsis-v"></i>
-  </button>
-
-    <div class="role-icon admin">AD</div>
-    <h3>Administrador</h3>
-    <p>Rol encargado de gestión administrativa del sistema.</p>
     <div class="card-actions">
-      <button class="edit-btn">
+       <button class="edit-btn" mat-button (click)="abrirDialog('edit', permiso.permission)">
         <i class="fas fa-pen"></i> Editar
       </button>
-      <button class="delete-btn"title="Eliminar">
+      <button class="delete-btn" title="Eliminar" (click)="eliminar(permiso.id)">
         <i class="fas fa-trash-alt"></i>
       </button>
     </div>
   </div>
-
-  <!-- Paciente -->
-  <div class="role-card">
-    <!-- Botón de tres puntos -->
-  <button class="options-btn" title="Más opciones">
-    <i class="fas fa-ellipsis-v"></i>
-  </button>
-
-    <div class="role-icon patient">PC</div>
-    <h3>Paciente</h3>
-    <p>Rol con permisos limitados, acceso a citas y consultas.</p>
-    <div class="card-actions">
-      <button class="edit-btn">
-        <i class="fas fa-pen"></i> Editar
-      </button>
-      <button class="delete-btn"title="Eliminar">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-    </div>
-  </div>
-
 </div>
+

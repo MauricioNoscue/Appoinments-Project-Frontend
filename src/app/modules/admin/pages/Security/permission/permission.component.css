@@ -74,6 +74,7 @@ body {
 }
 
 /* --- Tarjetas de Roles --- */
+
 .role-grid {
   display: flex;
   gap: 24px;
@@ -84,40 +85,64 @@ body {
 
 .role-card {
   background-color: white;
-  padding: 20px;
-  width: 260px;
+  padding: 16px 19  px;
+  width: 300px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
   text-align: center;
   transition: transform 0.3s;
 }
 
+.role-content {
+  display: flex;
+  padding-top:20px ;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
 .role-icon {
-  width: 50px;
-  height: 50px;
+  width: 130px;
+  height: 80px;
   border-radius: 50%;
   color: white;
   font-weight: bold;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 10px;
-  font-size: 18px;
+  font-size: 24px;
+  margin-right: 16px;
+  margin-left: 16px;
 }
 
-.doctor {
-  background-color: #ff4d4f;
+.role-text h3 {
+  margin-top:30px;
+  font-size: 27px;
 }
 
-.admin {
-  background-color: #722ed1;
+.role-text p {
+  margin: 4px 4px 0;
+  font-size: 15px;
+  color: #555;
 }
 
-.patient {
-  background-color: #52c41a;
+
+.role-icon.admin {
+  background-color: #007bff;
 }
 
-.role-card h3 {
+.role-icon.doctor {
+  background-color: #28a745;
+}
+
+.role-icon.patient {
+  background-color: #ffc107;
+}
+
+.role-icon.default-role {
+  background-color: #6c757d;
+}
+
+/* .role-card h3 {
   margin: 10px 0 5px;
 }
 
@@ -125,7 +150,7 @@ body {
   font-size: 14px;
   color: #666;
   margin-bottom: 15px;
-}
+} */
 
 /* --- Acciones en Tarjeta --- */
 .card-actions {
