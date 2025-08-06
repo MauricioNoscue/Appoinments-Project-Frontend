@@ -1,0 +1,41 @@
+<div class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ modo === 'edit' ? 'Editar' : 'Registrar' }} Ciudad</h2>
+    </div>
+
+    <form [formGroup]="cityForm" (ngSubmit)="onSubmit()" class="role-form">
+      <!-- Nombre de la Ciudad -->
+      <div class="form-group">
+        <label for="name" class="form-label">Nombre de la Ciudad</label>
+        <input 
+          id="name" 
+          type="text" 
+          formControlName="name" 
+          class="form-input" 
+          placeholder="Ingresa el nombre de la ciudad" 
+          [class.error]="getFieldError('name')" 
+        />
+        <div class="error-message" *ngIf="getFieldError('name')">{{ getFieldError('name') }}</div>
+      </div>
+
+      <!-- Departamento ID -->
+      <div class="form-group">
+        <label for="departamentId" class="form-label">ID del Departamento</label>
+        <input 
+          id="departamentId" 
+          type="number" 
+          formControlName="departamentId" 
+          class="form-input" 
+          placeholder="Ingresa el ID del departamento" 
+          [class.error]="getFieldError('departamentId')" 
+        />
+        <div class="error-message" *ngIf="getFieldError('departamentId')">{{ getFieldError('departamentId') }}</div>
+      </div>
+
+      <button type="submit" class="register-button" [disabled]="cityForm.invalid">
+        {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
+      </button>
+    </form>
+  </div>
+</div>

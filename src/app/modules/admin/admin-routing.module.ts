@@ -10,10 +10,9 @@ import { UserComponent } from './pages/Security/user/user.component';
 import { ModuleComponent } from './pages/Security/module/module.component';
 
 const routes: Routes = [
-
   {
     path: '',
-    component: DashboardLayoutComponentComponent, 
+    component: DashboardLayoutComponentComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardAdminComponent },

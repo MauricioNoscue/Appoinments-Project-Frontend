@@ -13,6 +13,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RolCreatedComponent } from './Components/forms/FormsCreate/rol-created/rol-created.component';
 import { FormRolComponent } from './Components/forms/FormsBase/form-rol/form-rol.component';
 import { RolEditComponent } from './Components/forms/FormsEdit/rol-edit/rol-edit.component';
+import { FormPermissionComponent } from './Components/forms/FormsBase/form-permission/form-permission.component';
+import { FormEditPermissionComponent } from './Components/forms/FormsEdit/form-edit-permission/form-edit-permission.component';
+import { FormCreatePermissionComponent } from './Components/forms/FormsCreate/form-create-permission/form-create-permission.component';
+import { PermissionCreatedComponent } from './Components/forms/FormsCreate/permission-created/permission-created.component';
+import { PermissionEditComponent } from './Components/forms/FormsEdit/permission-edit/permission-edit.component';
+import { PermissionComponent } from './pages/Security/permission/permission.component';
 import { UserComponent } from './pages/Security/user/user.component';
 import { ModuleComponent } from './pages/Security/module/module.component';
 import { FormModuleComponent } from './Components/forms/FormsBase/form-module/form-module.component';
@@ -23,13 +29,34 @@ import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/
 
 
 @NgModule({
-  declarations: [DashboardAdminComponent,
-    DoctorComponent,RolComponent,FormComponent,RolCreatedComponent,
-    FormRolComponent,RolEditComponent,UserComponent,ModuleComponent,ModuleComponent,FormModuleComponent,ModuleCreatedComponent,ModuleEditComponent,CardViewModuleComponent,FormUserComponent,UserCreateComponent],
+  declarations: [
+    DashboardAdminComponent,
+    DoctorComponent,
+    RolComponent,
+    FormComponent,
+    RolCreatedComponent,
+    FormRolComponent,
+    RolEditComponent,
+    FormPermissionComponent,
+    FormEditPermissionComponent,
+    PermissionCreatedComponent,
+    PermissionEditComponent,
+    PermissionComponent,
+    UserComponent,
+    ModuleComponent,
+    FormModuleComponent,
+    ModuleCreatedComponent,
+    ModuleEditComponent,
+    CardViewModuleComponent,
+    FormUserComponent,
+    UserCreateComponent,
+  ],
   imports: [
     CommonModule,
-    AdminRoutingModule, SharedModule,
-    MaterialModule,ReactiveFormsModule
-]
+    AdminRoutingModule,
+    SharedModule,
+    MaterialModule,
+    ReactiveFormsModule,
+  ],
 })
-export class AdminModule { }
+export class AdminModule {}

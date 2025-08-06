@@ -10,7 +10,7 @@ import { CardViewRolComponent } from '../../../Components/cards/card-view-rol/ca
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-rol',
-standalone:false,
+ standalone:false,
   templateUrl: './rol.component.html',
   styleUrl: './rol.component.css'
 })

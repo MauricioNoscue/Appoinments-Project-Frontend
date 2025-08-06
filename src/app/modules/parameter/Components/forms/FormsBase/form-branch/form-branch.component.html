@@ -1,0 +1,83 @@
+<div class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ modo === 'edit' ? 'Editar' : 'Registrar' }} Sucursal</h2>
+    </div>
+
+    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="role-form">
+      <!-- Nombre -->
+      <div class="form-group">
+        <label for="name" class="form-label">Nombre</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="form-input"
+          placeholder="Ingresa el nombre de la sucursal"
+          [class.error]="getFieldError('name')"
+        />
+        <div class="error-message" *ngIf="getFieldError('name')">{{ getFieldError('name') }}</div>
+      </div>
+
+      <!-- Correo Electrónico -->
+      <div class="form-group">
+        <label for="email" class="form-label">Correo Electrónico</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          placeholder="Ingresa el correo de la sucursal"
+          [class.error]="getFieldError('email')"
+        />
+        <div class="error-message" *ngIf="getFieldError('email')">{{ getFieldError('email') }}</div>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-group">
+        <label for="phoneNumber" class="form-label">Teléfono</label>
+        <input
+          id="phoneNumber"
+          type="text"
+          formControlName="phoneNumber"
+          class="form-input"
+          placeholder="Ingresa el número de teléfono"
+          [class.error]="getFieldError('phoneNumber')"
+        />
+        <div class="error-message" *ngIf="getFieldError('phoneNumber')">{{ getFieldError('phoneNumber') }}</div>
+      </div>
+
+      <!-- Dirección -->
+      <div class="form-group">
+        <label for="address" class="form-label">Dirección</label>
+        <input
+          id="address"
+          type="text"
+          formControlName="address"
+          class="form-input"
+          placeholder="Ingresa la dirección"
+          [class.error]="getFieldError('address')"
+        />
+        <div class="error-message" *ngIf="getFieldError('address')">{{ getFieldError('address') }}</div>
+      </div>
+
+      <!-- Institución ID -->
+      <div class="form-group">
+        <label for="institutionId" class="form-label">ID de la Institución</label>
+        <input
+          id="institutionId"
+          type="number"
+          formControlName="institutionId"
+          class="form-input"
+          placeholder="Ingresa el ID de la institución"
+          [class.error]="getFieldError('institutionId')"
+        />
+        <div class="error-message" *ngIf="getFieldError('institutionId')">{{ getFieldError('institutionId') }}</div>
+      </div>
+
+      <button type="submit" class="register-button" [disabled]="branchForm.invalid">
+        {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
+      </button>
+    </form>
+  </div>
+</div>
