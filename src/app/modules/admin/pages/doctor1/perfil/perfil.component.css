@@ -1,0 +1,357 @@
+
+:host {
+  background-image: url("../../../../../../assets/images/fondo.png");
+  background-size: cover;
+  min-height: 90.6vh;
+  width: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* --- Barra Superior --- */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 8px 16px;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+}
+
+/* Texto de bienvenida */
+.top-bar h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Contenedor central: buscador */
+.search-container {
+  display: flex;
+  align-items: center;
+
+}
+
+.search-container input {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px 0 0 20px;
+  outline: none;
+  font-size: 14px;
+  min-width: 200px;
+  background-color: #f5f5f5;
+}
+
+.search-container button {
+  background-color: #6c8ef5;
+  border: none;
+  padding: 9.4px 10px;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-container button:hover {
+  background-color: #5a7ee0;
+}
+
+.search-container button i {
+  color: white;
+}
+
+/* Contenedor de iconos */
+.icon-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-container i {
+  font-size: 25px;
+  color: #6c8ef5;
+  cursor: pointer;
+}
+
+.icon-container i:hover {
+  color: #5a7ee0;
+}
+
+
+
+/* --- Tarjetas de Doctor --- */
+
+.role-grid {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 40px;
+}
+
+
+.role-amor {
+  background-image: url('../../../../../../assets/images/fondo-doctor.png');
+  background-size: cover;
+  padding: 16px 19px;
+  width: 250px;
+  height: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.3s;
+  /* margin-right: auto; */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+
+.doctor-info h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.info-row div {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 12px;
+  color: gray;
+}
+
+.value {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+
+.doctor-img {
+  width: 200px;
+  height: auto;
+  margin-top: 40px;
+  /* para que sobresalga un poco hacia arriba */
+}
+
+
+/* Tarjeta Información Personal */
+.personal-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  width: 280px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+}
+
+.personal-card h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.personal-card .edit-icon {
+  font-size: 14px;
+  color: #6c8ef5;
+  cursor: pointer;
+}
+
+.personal-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.personal-item i {
+  color: #6c8ef5;
+  font-size: 18px;
+}
+
+.personal-item .label {
+  font-size: 12px;
+  color: gray;
+  display: block;
+}
+
+.personal-item .value {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+}
+
+
+
+
+
+
+/* Tarjeta Información de Salud */
+.health-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  width: 280px;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  font-family: Arial, sans-serif;
+}
+
+.health-card h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.health-card .edit-icon {
+  font-size: 14px;
+  color: #6c8ef5;
+  cursor: pointer;
+}
+
+.health-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.health-item i {
+  color: #6c8ef5;
+  font-size: 18px;
+}
+
+.health-item .label {
+  font-size: 12px;
+  color: gray;
+  display: block;
+}
+
+.health-item .value {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+}
+
+
+.chart-card {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  width: 600px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chart-header h3 {
+  font-size: 16px;
+}
+
+.chart-header a {
+  font-size: 12px;
+  color: #6c8ef5;
+  text-decoration: none;
+}
+
+.chart-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.chart-table {
+  border-collapse: collapse;
+  width: 200px;
+}
+
+.chart-table th,
+.chart-table td {
+  text-align: left;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+
+
+
+/* tarjeta de contacto */
+.contact-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  width: 320px;
+}
+
+.contact-card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-icon {
+  font-size: 14px;
+  color: #7a73c9;
+  cursor: pointer;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.contact-item i {
+  font-size: 18px;
+  color: #7a73c9;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  color: gray;
+}
+
+.value {
+  display: block;
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  margin: 12px 0;
+}

@@ -8,13 +8,13 @@
       <!-- Nombre de la Institución -->
       <div class="form-group">
         <label for="name" class="form-label">Nombre de la Institución</label>
-        <input 
-          id="name" 
-          type="text" 
-          formControlName="name" 
-          class="form-input" 
-          placeholder="Ingresa el nombre de la institución" 
-          [class.error]="getFieldError('name')" 
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="form-input"
+          placeholder="Ingresa el nombre de la institución"
+          [class.error]="getFieldError('name')"
         />
         <div class="error-message" *ngIf="getFieldError('name')">{{ getFieldError('name') }}</div>
       </div>
@@ -22,13 +22,13 @@
       <!-- NIT -->
       <div class="form-group">
         <label for="nit" class="form-label">NIT</label>
-        <input 
-          id="nit" 
-          type="text" 
-          formControlName="nit" 
-          class="form-input" 
-          placeholder="Ingresa el NIT de la institución" 
-          [class.error]="getFieldError('nit')" 
+        <input
+          id="nit"
+          type="text"
+          formControlName="nit"
+          class="form-input"
+          placeholder="Ingresa el NIT de la institución"
+          [class.error]="getFieldError('nit')"
         />
         <div class="error-message" *ngIf="getFieldError('nit')">{{ getFieldError('nit') }}</div>
       </div>
@@ -36,30 +36,37 @@
       <!-- Email -->
       <div class="form-group">
         <label for="email" class="form-label">Email</label>
-        <input 
-          id="email" 
-          type="email" 
-          formControlName="email" 
-          class="form-input" 
-          placeholder="Ingresa el email de la institución" 
-          [class.error]="getFieldError('email')" 
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="form-input"
+          placeholder="Ingresa el email de la institución"
+          [class.error]="getFieldError('email')"
         />
         <div class="error-message" *ngIf="getFieldError('email')">{{ getFieldError('email') }}</div>
       </div>
 
       <!-- Ciudad ID -->
-      <div class="form-group">
-        <label for="cityId" class="form-label">ID de la Ciudad</label>
-        <input 
-          id="cityId" 
-          type="number" 
-          formControlName="cityId" 
-          class="form-input" 
-          placeholder="Ingresa el ID de la ciudad" 
-          [class.error]="getFieldError('cityId')" 
-        />
-        <div class="error-message" *ngIf="getFieldError('cityId')">{{ getFieldError('cityId') }}</div>
-      </div>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>ciudad</mat-label>
+        <mat-select formControlName="cityId">
+          <!-- Mensaje de carga si no hay departamentos -->
+          <mat-option value=  disabled *ngIf="citys.length === 0">
+            Cargando departamentos...
+          </mat-option>
+
+          <!-- Opciones de departamentos -->
+          <mat-option *ngFor="let cy of citys" [value]="cy.id">
+            {{ cy.name }}
+          </mat-option>
+        </mat-select>
+
+        <!-- Mensaje de error -->
+        <mat-error *ngIf="institutionForm.get('departamentId')?.invalid && institutionForm.get('departamentId')?.touched">
+          {{ getFieldError('departamentId') }}
+        </mat-error>
+      </mat-form-field>
 
       <button type="submit" class="register-button" [disabled]="institutionForm.invalid">
         {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}

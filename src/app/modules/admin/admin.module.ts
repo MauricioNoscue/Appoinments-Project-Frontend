@@ -28,12 +28,14 @@ import { FormUserComponent } from './Components/forms/FormsBase/form-user/form-u
 import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/user-create.component';
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
+import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
 
 
 @NgModule({
   declarations: [
     DashboardAdminComponent,
     DoctorComponent,
+    PerfilComponent,
     RolComponent,
     FormComponent,
     RolCreatedComponent,

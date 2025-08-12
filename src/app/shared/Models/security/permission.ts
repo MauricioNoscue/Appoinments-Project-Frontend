@@ -1,25 +1,18 @@
-export interface PermissionCreated {
-  permission: {
-    name: string;
-    description: string;
-  };
-}
-export interface PermissionEdit {
-  id: number;
-  permission: {
-    name: string;
-    description: string;
-  };
-}
+
+
 export interface PermissionList {
   id: number;
+  name: string;
+  description: string;
   isDeleted: boolean;
-  registrationDate: string | null; // ISO string
-  permission: {
+};
+
+export interface PermissionCreated {
     name: string;
     description: string;
-  };
 }
+
+
 export interface PermissionC {
     id?: number;
     name: string;
@@ -27,32 +20,11 @@ export interface PermissionC {
     description: string;
 }
 
-
-// export interface PermissionList {
-//   id: number;
-//   name: string;
-//   description: string;
-//   isDeleted: boolean;
-// };
-
-// export interface PermissionCreated {
-//     name: string;
-//     description: string;
-// }
-
-
-// export interface PermissionC {
-//     id?: number;
-//     name: string;
-//     permisos?: string[];
-//     description: string;
-// }
-
-// export interface PermissionEdit {
-//     id: number;
-//     name: string;
-//     description: string;
-// }
+export interface PermissionEdit {
+    id: number;
+    name: string;
+    description: string;
+}
 
 
 

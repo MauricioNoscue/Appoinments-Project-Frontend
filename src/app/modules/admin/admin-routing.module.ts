@@ -10,6 +10,7 @@ import { UserComponent } from './pages/Security/user/user.component';
 import { ModuleComponent } from './pages/Security/module/module.component';
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
+import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
 
 const routes: Routes = [
   {
@@ -18,20 +19,20 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardAdminComponent },
+
       {path:'doctor',component: DoctorComponent},
       {path:'security/form',component: FormComponent},
       {path:'security/rol',component: RolComponent},
-      {path:'security/permission',component: PermissionComponent},
       {path:'security/user',component: UserComponent},
       {path:'security/module',component: ModuleComponent},
       {path:'security/gestion/:id',component: UserRoleManagementComponent},
       {path:'security/gesper',component: PermissionManagementComponent},
 
 
-    ],
-  },
-];
 
+      { path: 'doctor', component: DoctorComponent },
+      { path: 'doctor1/perfil', component: PerfilComponent },
+      { path: 'security/form', component: FormComponent },]}]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
