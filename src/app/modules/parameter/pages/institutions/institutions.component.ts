@@ -37,7 +37,7 @@ export class InstitutionsComponent implements OnInit {
   constructor(private dialog: MatDialog, private institutionService: InstitutionService) { }
 
   dataSource: InstitutionList[] = [];
-  displayedColumns: string[] = ['index', 'name', 'nit', 'email', 'city', 'registrationDate', 'status', 'detail', 'actions'];
+  displayedColumns: string[] = ['index', 'name', 'nit', 'email', 'cityName', 'registrationDate', 'status', 'actions'];
   searchTerm: string = '';
 
   ngOnInit(): void {
@@ -60,7 +60,7 @@ export class InstitutionsComponent implements OnInit {
       item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       item.nit.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
       item.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      item.city.toLowerCase().includes(this.searchTerm.toLowerCase())
+      item.cityName.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
@@ -84,7 +84,7 @@ export class InstitutionsComponent implements OnInit {
 
   abrirFormulario(modo: 'create' | 'edit', data?: Institution): void {
     console.log('Abrir formulario en modo:', modo, 'con datos:', data);
-    
+
     // Importar dinámicamente el componente de formulario
     import('../../Components/forms/FormsBase/form-institution/form-institution.component').then(
       ({ FormInstitutionComponent }) => {

@@ -1,5 +1,6 @@
 // DTO para listar ciudades (basado en CityListDto del backend)
 export interface CityList {
+  id: number;
   departamentId: number;
   name: string;
   departamentName: string;
@@ -9,6 +10,7 @@ export interface CityList {
 export interface CityCreate {
   departamentId: number;
   name: string;
+
 }
 
 // DTO para editar ciudad (basado en CityEditDto del backend)
@@ -33,9 +35,13 @@ export interface City {
 
 // Interface extendida para el listado con propiedades adicionales del frontend
 export interface CityListExtended extends CityList {
-  id?: number;
   cityId?: number;
   isDeleted?: boolean;
   registrationDate?: Date;
   institutions?: any[];
 }
+export interface CityOption {
+  id: number;
+  name: string;
+}
+

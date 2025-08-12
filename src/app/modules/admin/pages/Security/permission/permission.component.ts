@@ -1,68 +1,3 @@
-// import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-// import { PermissionService } from '../../../../../shared/services/permission.service';
-// import { MatDialog } from '@angular/material/dialog';
-// import { DialogContainerComponent } from '../../../../../shared/components/Modal/dialog-container/dialog-container.component';
-// import { PermissionCreatedComponent } from '../../../Components/forms/FormsCreate/permission-created/permission-created.component';
-// import { PermissionList } from '../../../../../shared/Models/security/permission';
-// import { PermissionEditComponent } from '../../../Components/forms/FormsEdit/permission-edit/permission-edit.component';
-
-// @Component({
-//   selector: 'app-permission',
-//   standalone: false,
-//   templateUrl: './permission.component.html',
-//   styleUrl: './permission.component.css',
-//   encapsulation: ViewEncapsulation.None,
-// })
-// export class PermissionComponent implements OnInit {
-//   constructor(private service: PermissionService, private dialog: MatDialog) {}
-
-//   abrirDialog(tipo: 'create' | 'edit', datos?: any) {
-//     const componentMap = {
-//       create: PermissionCreatedComponent,
-//       edit: PermissionEditComponent,
-//     };
-
-//     this.dialog.open(DialogContainerComponent, {
-//       width: '600px',
-//       data: {
-//         component: componentMap[tipo],
-//         payload: datos,
-//       },
-//     });
-//   }
-
-//   dataSource: PermissionList[] = [];
-
-//   ngOnInit(): void {
-//     this.service.traerTodo().subscribe((permission) => {
-//       console.log('Permisos obtenidos: ', permission);
-//       this.dataSource = permission;
-//     });
-//   }
-
-//   displayedColumns: string[] = [
-//     'index',
-//     'name',
-//     'description',
-//     'status',
-//     'detail',
-//     'actions',
-//   ];
-//   searchTerm: string = '';
-
-//   eliminar(id: number) {
-//     console.log('id a eliminar  ', id);
-//   }
-
-//   getRoleClass(roleName: string): string {
-//     const lower = roleName.toLowerCase();
-//     if (lower.includes('admin')) return 'admin';
-//     if (lower.includes('doctor')) return 'doctor';
-//     if (lower.includes('paciente') || lower.includes('patient'))
-//       return 'patient';
-//     return 'default-role'; // clase por defecto
-//   }
-// }
 
 
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
@@ -83,12 +18,9 @@ export class PermissionComponent implements OnInit {
   constructor(private service: PermissionService, private dialog: MatDialog) {}
 
   dataSource: PermissionList[] = [];
-  displayedColumns: string[] = [
-    'index',
+  displayed: string[] = [
     'name',
     'description',
-    'status',
-    'detail',
     'actions',
   ];
   searchTerm: string = '';
@@ -102,7 +34,7 @@ export class PermissionComponent implements OnInit {
 
   get filteredDataSource(): PermissionList[] {
     return this.dataSource.filter((item) =>
-      item.permission.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
@@ -126,10 +58,7 @@ export class PermissionComponent implements OnInit {
         console.error('Error al cargar permisos:', err);
       },
     });
-    // this.service.traerTodo().subscribe((data) => {
-    //   console.log('Permisos obtenidos: ', data);
-    //   this.dataSource = data;
-    // });
+
   }
 
   abrirDialog(modo: 'create' | 'edit', data?: PermissionC): void {

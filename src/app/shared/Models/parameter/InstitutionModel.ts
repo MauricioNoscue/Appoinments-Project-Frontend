@@ -6,7 +6,7 @@ export interface InstitutionList {
   name: string;
   nit: string;
   email: string;
-  city: string;
+  cityName: string;
   branchs: any[]; // Array de sucursales relacionadas
 }
 
@@ -35,4 +35,8 @@ export interface Institution {
   email: string;
   city?: string;
   branchs?: any[];
+}
+export interface InstitutionOption {
+  id: number;
+  name: string;
 }

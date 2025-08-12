@@ -26,12 +26,14 @@ import { ModuleCreatedComponent } from './Components/forms/FormsCreate/module-cr
 import { ModuleEditComponent } from './Components/forms/FormsEdit/module-edit/module-edit.component';
 import { FormUserComponent } from './Components/forms/FormsBase/form-user/form-user.component';
 import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/user-create.component';
+import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
 
 
 @NgModule({
   declarations: [
     DashboardAdminComponent,
     DoctorComponent,
+    PerfilComponent,
     RolComponent,
     FormComponent,
     RolCreatedComponent,

@@ -5,6 +5,9 @@ import { Observable } from 'rxjs';
 
 
 export class ServiceBaseService<TList,TCreate,TUpdate> {
+  getAll() {
+    throw new Error("Method not implemented.");
+  }
 
   protected http = inject(HttpClient);
   protected urlBase: string;

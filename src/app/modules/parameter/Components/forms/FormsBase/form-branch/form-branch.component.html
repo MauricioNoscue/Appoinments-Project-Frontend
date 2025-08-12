@@ -61,19 +61,27 @@
         <div class="error-message" *ngIf="getFieldError('address')">{{ getFieldError('address') }}</div>
       </div>
 
-      <!-- Institución ID -->
-      <div class="form-group">
-        <label for="institutionId" class="form-label">ID de la Institución</label>
-        <input
-          id="institutionId"
-          type="number"
-          formControlName="institutionId"
-          class="form-input"
-          placeholder="Ingresa el ID de la institución"
-          [class.error]="getFieldError('institutionId')"
-        />
-        <div class="error-message" *ngIf="getFieldError('institutionId')">{{ getFieldError('institutionId') }}</div>
-      </div>
+      <!-- Selector de Institucion -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>institucion</mat-label>
+        <mat-select formControlName="institutionId">
+          <!-- Mensaje de carga si no hay departamentos -->
+          <mat-option value=  disabled *ngIf="institucions.length === 0">
+            Cargando departamentos...
+          </mat-option>
+
+          <!-- Opciones de departamentos -->
+          <mat-option *ngFor="let inst of institucions" [value]="inst.id">
+            {{ inst.name }}
+          </mat-option>
+        </mat-select>
+
+        <!-- Mensaje de error -->
+        <mat-error *ngIf="branchForm.get('institutionId')?.invalid && branchForm.get('institutionId')?.touched">
+          {{ getFieldError('institutionId') }}
+        </mat-error>
+      </mat-form-field>
+
 
       <button type="submit" class="register-button" [disabled]="branchForm.invalid">
         {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}

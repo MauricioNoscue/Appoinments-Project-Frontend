@@ -37,7 +37,7 @@ export class CityComponent implements OnInit {
   constructor(private dialog: MatDialog, private cityService: CityService) { }
 
   dataSource: CityList[] = [];
-  displayedColumns: string[] = ['index', 'name', 'departament', 'registrationDate', 'status', 'detail', 'actions'];
+  displayedColumns: string[] = ['index', 'name', 'departament', 'registrationDate', 'status', 'actions'];
   searchTerm: string = '';
 
   ngOnInit(): void {
@@ -82,7 +82,7 @@ export class CityComponent implements OnInit {
 
   abrirFormulario(modo: 'create' | 'edit', data?: City): void {
     console.log('Abrir formulario en modo:', modo, 'con datos:', data);
-    
+
     // Importar dinámicamente el componente de formulario
     import('../../Components/forms/FormsBase/form-city/form-city.component').then(
       ({ FormCityComponent }) => {

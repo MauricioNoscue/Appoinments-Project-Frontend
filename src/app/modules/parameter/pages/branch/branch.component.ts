@@ -17,17 +17,7 @@ import { DialogContainerComponent } from '../../../../shared/components/Modal/di
 @Component({
   selector: 'app-branch',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatTableModule,
-    MatChipsModule,
-    MatTooltipModule,
+  imports: [CommonModule,FormsModule,MatButtonModule,MatIconModule,MatFormFieldModule,MatInputModule,MatCardModule,MatTableModule,MatChipsModule,MatTooltipModule,
   ],
   templateUrl: './branch.component.html',
   styleUrl: './branch.component.css',
@@ -42,14 +32,13 @@ export class BranchComponent implements OnInit {
   displayedColumns: string[] = [
     'index',
     'name',
-    'departament',
     'email',
     'phoneNumber',
     'address',
     'institutionName',
     'registrationDate',
     'status',
-    'detail',
+
     'actions',
   ];
   searchTerm: string = '';

@@ -23,3 +23,8 @@ export interface DepartamentList {
   registrationDate: string | null; // en formato ISO
   name: string;
 }
+
+export interface DepartamentOption {
+  id: number;
+  name: string;
+}

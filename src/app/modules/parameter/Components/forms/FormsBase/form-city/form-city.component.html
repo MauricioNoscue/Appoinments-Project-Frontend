@@ -8,34 +8,46 @@
       <!-- Nombre de la Ciudad -->
       <div class="form-group">
         <label for="name" class="form-label">Nombre de la Ciudad</label>
-        <input 
-          id="name" 
-          type="text" 
-          formControlName="name" 
-          class="form-input" 
-          placeholder="Ingresa el nombre de la ciudad" 
-          [class.error]="getFieldError('name')" 
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="form-input"
+          placeholder="Ingresa el nombre de la ciudad"
+          [class.error]="getFieldError('name')"
         />
-        <div class="error-message" *ngIf="getFieldError('name')">{{ getFieldError('name') }}</div>
+        <div class="error-message" *ngIf="getFieldError('name')">
+          {{ getFieldError('name') }}
+        </div>
       </div>
 
-      <!-- Departamento ID -->
-      <div class="form-group">
-        <label for="departamentId" class="form-label">ID del Departamento</label>
-        <input 
-          id="departamentId" 
-          type="number" 
-          formControlName="departamentId" 
-          class="form-input" 
-          placeholder="Ingresa el ID del departamento" 
-          [class.error]="getFieldError('departamentId')" 
-        />
-        <div class="error-message" *ngIf="getFieldError('departamentId')">{{ getFieldError('departamentId') }}</div>
-      </div>
+      <!-- Selector de Departamento -->
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Departamento</mat-label>
+        <mat-select formControlName="departamentId">
+          <!-- Mensaje de carga si no hay departamentos -->
+          <mat-option value=  disabled *ngIf="departamentsm.length === 0">
+            Cargando departamentos...
+          </mat-option>
 
+          <!-- Opciones de departamentos -->
+          <mat-option *ngFor="let dept of departamentsm" [value]="dept.id">
+            {{ dept.name }}
+          </mat-option>
+        </mat-select>
+
+        <!-- Mensaje de error -->
+        <mat-error *ngIf="cityForm.get('departamentId')?.invalid && cityForm.get('departamentId')?.touched">
+          {{ getFieldError('departamentId') }}
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Botón de envío -->
       <button type="submit" class="register-button" [disabled]="cityForm.invalid">
         {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
       </button>
     </form>
   </div>
 </div>
+
+
