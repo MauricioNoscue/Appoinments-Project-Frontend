@@ -38,6 +38,7 @@ export class PermissionComponent implements OnInit {
     );
   }
 
+
   eliminar(id: number): void {
     const confirmado = confirm('¿Estás seguro de eliminar este permiso?');
 
@@ -76,10 +77,22 @@ export class PermissionComponent implements OnInit {
           this.service.crear(result).subscribe(() => this.cargarPermisos());
         } else {
           this.service
-            .actualizar(result)
+          .actualizar(result)
             .subscribe(() => this.cargarPermisos());
         }
       }
     });
   }
 }
+          // getIniciales(nombre: string): string {
+          //   if (!nombre) return '';
+
+          //   const palabras = nombre.trim().split(' ');
+
+          //   if (palabras.length === 1) {
+          //     return palabras[0].substring(0, 2).toUpperCase(); // Ej: "Doctor" → "DO"
+          //   }
+
+          //   // Ej: "Rol Médico" → "RM"
+          //   return (palabras[0][0] + palabras[1][0]).toUpperCase();
+          // }

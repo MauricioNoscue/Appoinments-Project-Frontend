@@ -1,52 +1,68 @@
 <!--botón de agregar formulario-->
 <div class="form-header">
-    <button mat-raised-button color="primary" class="btn-add"  (click)="abrirDialog('create')">
-        <mat-icon>assignment_add</mat-icon> Agregar formulario
-    </button>
+  <button
+    mat-raised-button
+    color="primary"
+    class="btn-add"
+    (click)="abrirDialog('create')"
+  >
+    <mat-icon>assignment_add</mat-icon> Agregar formulario
+  </button>
 
-    <div class="search-container">
-       <form class="d-flex barra" role="search">
-       <input class="form-control me-2 barra"
-       type="search"
-       placeholder="Buscar"
-       aria-label="Buscar"
-       [(ngModel)]="searchTerm" />
-      </form>
-    </div>
+  <div class="search-container">
+    <form class="d-flex barra" role="search">
+      <input
+        class="form-control me-2 barra"
+        type="search"
+        placeholder="Buscar"
+        aria-label="Buscar"
+        [(ngModel)]="searchTerm"
+      />
+    </form>
+  </div>
 </div>
-
 
 <!-- CONTENEDOR DE TARJETAS -->
 <div class="cards-container">
   <div class="card" *ngFor="let element of filteredDataSource">
-
     <div class="card-body">
-      <!-- Ícono circular con letras -->
-      <!-- <div class="role-icon">
-    {{ getIniciales(element.name) }}
-  </div>, -->
-
       <!-- Contenido: título, estado, descripción -->
       <div class="card-content">
-        <div class="title-row">
-          <h3>{{ element.name }}</h3>
-          <span class="status-dot"></span>
+
+        <div class="contenedor-header ">
+          <div class="role-icon">
+            <h3>{{ element.name.slice(0, 2) }}</h3>
+          </div>
+          <div class="card-text ">
+            <div class="title-row ">
+              <h3>{{ element.name }}</h3>
+              <div class="status-dot"></div>
+            </div>
+            <div class="description-row">
+              <p>{{ element.description }}</p>
+            </div>
+          </div>
         </div>
-        <p>{{ element.description }}</p>
 
         <!-- Botones -->
-        <div class="card-actions">
-          <button mat-button class="edit-btn" (click)="abrirDialog('edit', element)">
+        <div class="card-actions ">
+          <button
+            mat-button
+            class="edit-btn"
+            (click)="abrirDialog('edit', element)"
+          >
             <mat-icon>edit</mat-icon> Editar
           </button>
-          <button mat-icon-button color="warn" (click)="eliminar(element.id)" matTooltip="Eliminar">
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="eliminar(element.id)"
+            matTooltip="Eliminar"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </div>
       </div>
     </div>
-
   </div>
 </div>
-
-
