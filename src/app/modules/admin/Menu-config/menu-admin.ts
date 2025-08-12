@@ -48,10 +48,21 @@ export const menuAdmin: MenuItem[] = [
             },
             {
               id: 'module-1-3',
-              title: 'Modulos',
+              title: 'Módulos',
               type: 'item',
               url: 'admin/security/module'
+            }, {
+              id: 'module-1-3',
+              title: 'Formularios',
+              type: 'item',
+              url: 'admin/security/form'
+            },{
+              id: 'module-1-3',
+              title: 'Permisos',
+              type: 'item',
+              url: 'admin/security/permission'
             }
+            
           ]
         },    {
       id: 'menu-security-2',

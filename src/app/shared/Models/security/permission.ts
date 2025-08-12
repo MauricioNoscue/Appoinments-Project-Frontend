@@ -54,3 +54,11 @@ export interface PermissionC {
 //     description: string;
 // }
 
+
+
+ export interface PermissionListar {
+ id: number;
+  name: string; 
+   description: string;
+  isDeleted: boolean;
+};

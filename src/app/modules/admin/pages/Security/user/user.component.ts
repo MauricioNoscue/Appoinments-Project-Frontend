@@ -5,6 +5,7 @@ import { UsuarioListado } from '../../../../../shared/Models/security/userModel'
 import { DialogContainerComponent } from '../../../../../shared/components/Modal/dialog-container/dialog-container.component';
 import { UserCreateComponent } from '../../../Components/forms/FormsCreate/user-create/user-create.component';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -13,7 +14,7 @@ import Swal from 'sweetalert2';
   styleUrl: './user.component.css'
 })
 export class UserComponent implements OnInit {
-constructor(private service: UserService ,private dialog: MatDialog) {}
+constructor(private service: UserService ,private dialog: MatDialog,private route :Router) {}
 
 
 abrirDialog(tipo: 'create' | 'edit' | 'card', datos?: any) {
@@ -63,7 +64,9 @@ displayedColumns: string[] = [
   'actions'          // botones de editar/eliminar
 ];
 
-
+Detalle(id:number){
+  this.route.navigate(['/admin/security/gestion',id])
+}
 
 
  eliminar(id: number) {

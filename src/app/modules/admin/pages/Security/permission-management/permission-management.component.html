@@ -1,0 +1,67 @@
+<div class="tab-content">
+  <form [formGroup]="permissionsForm" class="permissions-form">
+    <h3>
+      <mat-icon>settings</mat-icon>
+      Asignar/Actualizar Permisos por Rol
+    </h3>
+
+    <!-- Role Selection -->
+    <mat-form-field class="full-width">
+      <mat-label>Seleccionar Rol</mat-label>
+      <mat-select formControlName="selectedRole" (selectionChange)="onRoleSelectionChange($event.value)">
+        <mat-option *ngFor="let role of availableRoles" [value]="role">
+          <div class="role-option">
+            <span class="role-name">{{ role.name }}</span>
+            <span class="role-description">{{ role.description }}</span>
+          </div>
+        </mat-option>
+      </mat-select>
+      <mat-hint>Selecciona el rol para gestionar sus permisos</mat-hint>
+      <mat-error *ngIf="permissionsForm.get('selectedRole')?.hasError('required')">
+        Debe seleccionar un rol
+      </mat-error>
+    </mat-form-field>
+
+    Permissions Assignment
+    <div *ngIf="selectedRoleForPermissions" class="permissions-assignment">
+      <h4>
+        <mat-icon>assignment_ind</mat-icon>
+        Permisos para: {{ selectedRoleForPermissions.name }}
+      </h4>
+
+      <div class="forms-permissions-grid">
+        <div *ngFor="let form of availableForms" class="form-permission-item">
+          <div class="form-info">
+            <h5>
+              <mat-icon>description</mat-icon>
+              {{ form.name }}
+            </h5>
+            <p class="form-description">{{ form.description }}</p>
+          </div>
+
+          <mat-form-field class="permission-select">
+            <mat-label>Permiso</mat-label>
+            <mat-select [value]="getSelectedPermissionForForm(form.id)" (selectionChange)="onPermissionChange(form.id, $event.value)">
+              <mat-option value="">Ninguno</mat-option>
+              <mat-option *ngFor="let permission of availablePermissions" [value]="permission.id">
+                {{ permission.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="button" [disabled]="!selectedRoleForPermissions || isLoading" (click)="onAssignPermissions()">
+          <mat-icon>add</mat-icon>
+          Asignar Permisos
+        </button>
+
+        <button mat-raised-button color="accent" type="button" [disabled]="!selectedRoleForPermissions || isLoading" (click)="onUpdatePermissions()">
+          <mat-icon>update</mat-icon>
+          Actualizar Permisos
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

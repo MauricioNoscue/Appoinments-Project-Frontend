@@ -26,6 +26,8 @@ import { ModuleCreatedComponent } from './Components/forms/FormsCreate/module-cr
 import { ModuleEditComponent } from './Components/forms/FormsEdit/module-edit/module-edit.component';
 import { FormUserComponent } from './Components/forms/FormsBase/form-user/form-user.component';
 import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/user-create.component';
+import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
+import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
 
 
 @NgModule({
@@ -49,7 +51,7 @@ import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/
     ModuleEditComponent,
     CardViewModuleComponent,
     FormUserComponent,
-    UserCreateComponent,
+    UserCreateComponent,UserRoleManagementComponent,PermissionManagementComponent
   ],
   imports: [
     CommonModule,

@@ -62,3 +62,15 @@ export interface PersonUpdate {
 }
 
 
+export interface UserDetailDto {
+  fullName: string;
+  fullLastName: string;
+  document: string;
+  phoneNumber: string;
+  email: string;
+  dateBorn: string;
+  registerDate: string;
+  gender: string;
+  healthRegime: string;
+  roles: string[];
+}

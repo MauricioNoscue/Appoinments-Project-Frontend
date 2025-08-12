@@ -8,6 +8,8 @@ import { RolComponent } from './pages/Security/rol/rol.component';
 import { PermissionComponent } from './pages/Security/permission/permission.component';
 import { UserComponent } from './pages/Security/user/user.component';
 import { ModuleComponent } from './pages/Security/module/module.component';
+import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
+import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
 
 const routes: Routes = [
   {
@@ -22,10 +24,8 @@ const routes: Routes = [
       {path:'security/permission',component: PermissionComponent},
       {path:'security/user',component: UserComponent},
       {path:'security/module',component: ModuleComponent},
-
-
-
-
+      {path:'security/gestion/:id',component: UserRoleManagementComponent},
+      {path:'security/gesper',component: PermissionManagementComponent},
 
 
     ],

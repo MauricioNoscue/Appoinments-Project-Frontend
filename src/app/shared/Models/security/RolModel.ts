@@ -26,3 +26,34 @@ export interface RolUpdated{
     description:string
 
 }
+
+export interface AssignRolesDto {
+  userId: number;
+  rolIds: number[];
+}
+export interface UpdateUserRolesDto {
+  userId: number;
+  rolIds: number[];
+}
+export interface PermissionAssignmentDto {
+  formId: number;
+  permissionId: number;
+}
+
+export interface AssignPermissionsDto {
+  rolId: number;
+  permissions: PermissionAssignmentDto[];
+}
+export interface UpdateRolFormPermissionsDto {
+  rolId: number;
+  permissions: PermissionAssignmentDto[];
+}
+
+export interface RolPermisosResponse {
+  rol: string;
+  permisos: {
+    form: string;
+    permiso: string;
+  }[];
+}
+

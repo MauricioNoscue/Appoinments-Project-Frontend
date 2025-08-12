@@ -18,6 +18,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
+import { SectionCardComponent } from './components/Cards/section-card/section-card.component';
 // Agrega más según necesites
 
 const materialModules = [
@@ -41,7 +45,7 @@ const materialModules = [
   MatCardModule,
   MatTableModule,
   MatDialogModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,MatSelectModule ,MatProgressSpinnerModule,MatTabsModule
 ];
 
 @NgModule({

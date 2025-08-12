@@ -12,6 +12,7 @@ import { CardBasicComponent } from './components/Cards/card-basic/card-basic.com
 import { StaffCardComponent } from './components/Cards/staff-card/staff-card.component';
 import { DialogContainerComponent } from './components/Modal/dialog-container/dialog-container.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SectionCardComponent } from './components/Cards/section-card/section-card.component';
 
 
 const sharedComponents =[
@@ -23,7 +24,7 @@ const sharedComponents =[
   DashboardLayoutComponentComponent,
   CardBasicComponent,
   StaffCardComponent,
-  DialogContainerComponent,
+  DialogContainerComponent,SectionCardComponent
   
 
 ]

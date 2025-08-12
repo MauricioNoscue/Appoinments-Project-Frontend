@@ -1,0 +1,162 @@
+<div class="user-role-management-container">
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-text">Cargando información...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading" class="main-content">
+    
+    <!-- User Information Header -->
+    <mat-card class="user-info-card" *ngIf="userDetail">
+      <mat-card-header>
+        <div mat-card-avatar class="user-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+        <mat-card-title>{{userDetail.fullName}} {{userDetail.fullLastName}}</mat-card-title>
+        <mat-card-subtitle>Gestión de Roles y Permisos</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="user-details-grid">
+
+          <app-section-card icono="badge" tittle="Documento" Value="{{userDetail.document}}"></app-section-card>
+
+          <app-section-card icono="email" tittle="Correo" Value="{{userDetail.email}}"></app-section-card>
+
+          <app-section-card icono="phone" tittle="Teléfono" Value="{{userDetail.phoneNumber}}"></app-section-card>
+
+          <app-section-card icono="wc" tittle="Género" Value="{{userDetail.gender}}"></app-section-card>
+
+          <app-section-card icono="medical_services" tittle="Régimen de Salud" Value="{{userDetail.healthRegime}}"></app-section-card>
+          
+          <app-section-card icono="calendar_today" tittle="Fecha de Registro:" Value="{{userDetail.registerDate | date:'dd/MM/yyyy'}}"></app-section-card>
+            
+        </div>
+
+        <!-- Current Roles -->
+        <div class="current-roles-section">
+          <h4>
+            <mat-icon>security</mat-icon>
+            Roles Actuales
+          </h4>
+          <div class="roles-chips">
+            <mat-chip-set *ngIf="userDetail.roles.length > 0">
+              <mat-chip *ngFor="let role of userDetail.roles" class="role-chip">
+                {{role}}
+              </mat-chip>
+            </mat-chip-set>
+            <p *ngIf="userDetail.roles.length === 0" class="no-roles-message">
+              No hay roles asignados
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabs for Management -->
+    <mat-card class="management-card">
+      <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="management-tabs">
+        
+        <!-- Current Permissions Tab -->
+        <mat-tab label="Permisos Actuales">
+          <div class="tab-content">
+            <div class="permissions-overview">
+              <h3>
+                <mat-icon>assignment</mat-icon>
+                Permisos por Rol
+              </h3>
+              
+              <div *ngIf="userRolesPermissions.length === 0" class="no-data-message">
+                <mat-icon>info</mat-icon>
+                <p>No hay permisos asignados para este usuario</p>
+              </div>
+
+              <mat-expansion-panel *ngFor="let rolePermission of userRolesPermissions" class="role-permission-panel">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    <mat-icon>security</mat-icon>
+                    {{rolePermission.rol}}
+                  </mat-panel-title>
+                  <mat-panel-description>
+                    {{rolePermission.permisos.length}} permisos asignados
+                  </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <div class="permissions-by-form">
+                  <div *ngFor="let formPermissions of getRolePermissionsByForm(rolePermission) | keyvalue" class="form-permissions">
+                    <div class="form-header">
+                      <mat-icon>description</mat-icon>
+                      <strong>{{formPermissions.key}}</strong>
+                    </div>
+                    <div class="permissions-list">
+                      <mat-chip-set>
+                        <mat-chip *ngFor="let permission of formPermissions.value" class="permission-chip">
+                          {{permission}}
+                        </mat-chip>
+                      </mat-chip-set>
+                    </div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Role Management Tab -->
+        <mat-tab label="Gestionar Roles">
+          <div class="tab-content">
+            <form [formGroup]="rolesForm" class="roles-form">
+              <h3>
+                <mat-icon>manage_accounts</mat-icon>
+                Asignar/Actualizar Roles
+              </h3>
+              
+              <mat-form-field class="full-width">
+                <mat-label>Seleccionar Roles</mat-label>
+                <mat-select multiple formControlName="selectedRoles">
+                  <mat-option *ngFor="let role of availableRoles" [value]="role.id">
+                    <div class="role-option">
+                      <span class="role-name">{{role.name}}</span>
+                      <span class="role-description">{{role.description}}</span>
+                    </div>
+                  </mat-option>
+                </mat-select>
+                <mat-hint>Selecciona uno o más roles para asignar al usuario</mat-hint>
+                <mat-error *ngIf="rolesForm.get('selectedRoles')?.hasError('required')">
+                  Debe seleccionar al menos un rol
+                </mat-error>
+              </mat-form-field>
+
+
+
+              <div class="form-actions">
+                <button mat-raised-button 
+                        color="primary" 
+                        type="button"
+                        [disabled]="rolesForm.invalid || isLoading"
+                        (click)="onAssignRoles()">
+                  <mat-icon>add</mat-icon>
+                  Asignar Roles
+                </button>
+                
+                <button mat-raised-button 
+                        color="accent" 
+                        type="button"
+                        [disabled]="rolesForm.invalid || isLoading"
+                        (click)="onUpdateRoles()">
+                  <mat-icon>update</mat-icon>
+                  Actualizar Roles
+                </button>
+              </div>
+              
+            </form>
+          </div>
+        </mat-tab>
+
+
+      </mat-tab-group>
+    </mat-card>
+  </div>
+</div>
