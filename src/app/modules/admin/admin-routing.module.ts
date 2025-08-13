@@ -11,6 +11,10 @@ import { ModuleComponent } from './pages/Security/module/module.component';
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
 import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
+import { BranchComponent } from '../parameter/pages/branch/branch.component';
+import { CityComponent } from '../parameter/pages/city/city.component';
+import { DepartamentComponent } from '../parameter/pages/departament/departament.component';
+import { InstitutionsComponent } from '../parameter/pages/institutions/institutions.component';
 
 const routes: Routes = [
   {
@@ -32,7 +36,16 @@ const routes: Routes = [
 
       { path: 'doctor', component: DoctorComponent },
       { path: 'doctor1/perfil', component: PerfilComponent },
-      { path: 'security/form', component: FormComponent },]}]
+      { path: 'security/form', component: FormComponent },
+    
+    { path: 'city', component: CityComponent },
+          { path: 'institutions', component: InstitutionsComponent },
+          { path: 'branch', component: BranchComponent },
+          { path: 'departament', component: DepartamentComponent },
+    
+    
+    
+    ]}]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
