@@ -37,7 +37,14 @@ const routes: Routes = [
       { path: 'consultorio', component: ConsultorioComponent },
       { path: 'consultorio/crear', component: FormConsultorioComponent },
       { path: 'consultorio/editar/:id', component: FormConsultorioComponent },
+      { path: 'branch', component: BranchComponent },
+      { path: 'city', component: CityComponent },
+      { path: 'departament', component: DepartamentComponent },
+      { path: 'institusions', component: InstitutionsComponent },
 
+
+
+      
       { path: 'doctor', component: DoctorComponent },
       // { path: 'doctor1/perfil', component: PerfilComponent },
       { path: 'security/form', component: FormComponent },

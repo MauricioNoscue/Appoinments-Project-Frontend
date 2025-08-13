@@ -18,6 +18,15 @@ export const menuAdmin: MenuItem[] = [
           icon: 'dashboard',
           target: false,
           breadcrumbs: true
+        },{
+          id: 'Consultorios',
+          title: 'Consultorios',
+          type: 'item',
+          classes: 'nav-item',
+          url: '/admin/consultorio',
+          icon: 'dashboard',
+          target: false,
+          breadcrumbs: true
         }
       ]
     },
@@ -74,7 +83,7 @@ export const menuAdmin: MenuItem[] = [
           id: 'rol-2',
           title: 'Instituciones',
           type: 'item',
-          url: 'admin/institutions'
+          url: 'admin/institusions'
         },
         {
           id: 'user-2',
