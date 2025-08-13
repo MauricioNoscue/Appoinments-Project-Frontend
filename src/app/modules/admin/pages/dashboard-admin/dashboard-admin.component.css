@@ -168,6 +168,73 @@
             font-size: 0.9rem;
         }
 
-        .tab-scheduled { background-color: #e3f2fd; color: #1976d2; }
-        .tab-completed { background-color: #e8f5e8; color: #388e3c; }
-        .tab-cancelled { background-color: #fce4ec; color: #d32f2f; }
+
+/* Contenedor general */
+.dashboard-wrapper {
+  background-color: #f8f9fa;
+}
+
+/* Hero */
+.hero-card {
+  background: linear-gradient(135deg, #007bff, #6f42c1);
+  color: white;
+}
+
+/* Estado de citas */
+.appointment-card .stat-label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.status-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.status-tab {
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.85rem;
+}
+
+.tab-scheduled { background-color: #FACC15; }
+.tab-completed { background-color: #28a745; }
+.tab-canceled { background-color: #da203c; }
+
+/* Tabla de comportamiento */
+.legend-color {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 5px;
+}
+
+/* Staff */
+.staff-card {
+  position: relative;
+  color: white;
+}
+
+.staff-avatar {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.status-indicator {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-indicator.activo { background-color: #28a745; }
+.status-indicator.ocupado { background-color: #ffc107; }
+.status-indicator.inactivo { background-color: #dc3545; }
