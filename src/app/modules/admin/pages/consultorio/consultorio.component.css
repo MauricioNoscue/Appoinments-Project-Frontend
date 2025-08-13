@@ -1,0 +1,163 @@
+/* ===== Barra superior ===== */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.toolbar h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.toolbar .actions {
+  margin-left: auto;
+  /* 👉 empuja todo a la derecha */
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ===== Botón “Agregar formulario” ===== */
+.btn-add {
+  background: #ff0b0b;
+  /* fondo blanco */
+  color: #6a84f5;
+  /* morado/azulado */
+  border-radius: 14px;
+  padding: 10px 18px;
+  box-shadow: 0 6px 14px rgba(106, 132, 245, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  filter: brightness(0.95);
+}
+
+.btn-add mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+}
+
+.btn-text {
+  display: inline-block;
+  line-height: 1.05;
+  text-align: left;
+  font-weight: 600;
+}
+
+/* ===== Buscador ===== */
+.search-form {
+  display: flex;
+}
+
+.search-input {
+  width: 260px;
+  background: #fff;
+  border: 1px solid #e6e9f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: #6b7280;
+}
+
+/* ===== Tarjetas ===== */
+.consultorios-container {
+  padding: 20px;
+}
+
+.consultorios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.card-info {
+  padding: 12px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.card-header button {
+  margin: 0;
+  color: #1976d2;
+}
+
+.card-header mat-icon {
+  color: #1976d2;
+}
+
+.ubicacion {
+  font-size: 14px;
+  color: #555;
+}
+
+.estado {
+  color: green;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar .actions {
+    margin-left: 0;
+    justify-content: space-between;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,65 @@
+<h2>{{ modo === 'crear' ? 'Crear consultorio' : 'Editar consultorio' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()" class="form-grid">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Nombre</mat-label>
+    <input
+      matInput
+      formControlName="nombre"
+      placeholder="Ingrese el nombre del consultorio"
+    />
+    <mat-error *ngIf="form.get('nombre')?.hasError('required')">
+      El nombre es obligatorio.
+    </mat-error>
+    <mat-error *ngIf="form.get('nombre')?.hasError('maxlength')">
+      Máximo 60 caracteres.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Ubicación</mat-label>
+    <input
+      matInput
+      formControlName="ubicacion"
+      placeholder="Ingrese la ubicación"
+    />
+    <mat-error *ngIf="form.get('ubicacion')?.hasError('required')">
+      La ubicación es obligatoria.
+    </mat-error>
+    <mat-error *ngIf="form.get('ubicacion')?.hasError('maxlength')">
+      Máximo 80 caracteres.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Estado</mat-label>
+    <mat-select formControlName="estado">
+      <mat-option value="En uso">En uso</mat-option>
+      <mat-option value="Disponible">Disponible</mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('estado')?.hasError('required')">
+      Debes seleccionar un estado.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>URL Imagen</mat-label>
+    <input
+      matInput
+      formControlName="imagen"
+      placeholder="Ingrese la URL de la imagen"
+    />
+    <mat-error *ngIf="form.get('imagen')?.hasError('required')">
+      La URL de la imagen es obligatoria.
+    </mat-error>
+  </mat-form-field>
+
+  <div class="form-actions">
+    <button mat-stroked-button type="button" (click)="cancelar()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+      {{ modo === 'crear' ? 'Guardar' : 'Guardar cambios' }}
+    </button>
+  </div>
+
+</form>

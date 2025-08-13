@@ -9,7 +9,7 @@ import { DoctorComponent } from './pages/doctor/doctor.component';
 import { RolComponent } from './pages/Security/rol/rol.component';
 import { FormComponent } from './pages/Security/form/form.component';
 import { MaterialModule } from "../../shared/material.module";
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RolCreatedComponent } from './Components/forms/FormsCreate/rol-created/rol-created.component';
 import { FormRolComponent } from './Components/forms/FormsBase/form-rol/form-rol.component';
 import { RolEditComponent } from './Components/forms/FormsEdit/rol-edit/rol-edit.component';
@@ -29,6 +29,10 @@ import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
 import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
+import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -53,7 +57,10 @@ import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
     ModuleEditComponent,
     CardViewModuleComponent,
     FormUserComponent,
-    UserCreateComponent,UserRoleManagementComponent,PermissionManagementComponent
+    UserCreateComponent,
+    UserRoleManagementComponent,
+    PermissionManagementComponent,
+    ConsultorioComponent,
   ],
   imports: [
     CommonModule,
@@ -61,6 +68,10 @@ import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
     SharedModule,
     MaterialModule,
     ReactiveFormsModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    // FormsModule,
   ],
 })
 export class AdminModule {}
