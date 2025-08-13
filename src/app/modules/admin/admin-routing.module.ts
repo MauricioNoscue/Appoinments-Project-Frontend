@@ -21,7 +21,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardAdminComponent },
 
       {path:'doctor',component: DoctorComponent},
-      {path:'security/form',component: FormComponent},
+      {path:'security/permission',component: PermissionComponent},
       {path:'security/rol',component: RolComponent},
       {path:'security/user',component: UserComponent},
       {path:'security/module',component: ModuleComponent},
