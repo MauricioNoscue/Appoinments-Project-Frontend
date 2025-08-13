@@ -15,6 +15,8 @@ import { BranchComponent } from '../parameter/pages/branch/branch.component';
 import { CityComponent } from '../parameter/pages/city/city.component';
 import { DepartamentComponent } from '../parameter/pages/departament/departament.component';
 import { InstitutionsComponent } from '../parameter/pages/institutions/institutions.component';
+import { FormConsultorioComponent } from './Components/forms/FormsBase/form-consultorio/form-consultorio.component';
+import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
 
 const routes: Routes = [
   {
@@ -24,28 +26,24 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardAdminComponent },
 
-      {path:'doctor',component: DoctorComponent},
-      {path:'security/permission',component: PermissionComponent},
-      {path:'security/rol',component: RolComponent},
-      {path:'security/user',component: UserComponent},
-      {path:'security/module',component: ModuleComponent},
-      {path:'security/gestion/:id',component: UserRoleManagementComponent},
-      {path:'security/gesper',component: PermissionManagementComponent},
-
-
+      { path: 'doctor', component: DoctorComponent },
+      { path: 'security/form', component: FormComponent },
+      { path: 'security/rol', component: RolComponent },
+      { path: 'security/user', component: UserComponent },
+      { path: 'security/permission', component: PermissionComponent },
+      { path: 'security/module', component: ModuleComponent },
+      { path: 'security/gestion/:id', component: UserRoleManagementComponent },
+      { path: 'security/gesper', component: PermissionManagementComponent },
+      { path: 'consultorio', component: ConsultorioComponent },
+      { path: 'consultorio/crear', component: FormConsultorioComponent },
+      { path: 'consultorio/editar/:id', component: FormConsultorioComponent },
 
       { path: 'doctor', component: DoctorComponent },
-      { path: 'doctor1/perfil', component: PerfilComponent },
+      // { path: 'doctor1/perfil', component: PerfilComponent },
       { path: 'security/form', component: FormComponent },
-    
-    { path: 'city', component: CityComponent },
-          { path: 'institutions', component: InstitutionsComponent },
-          { path: 'branch', component: BranchComponent },
-          { path: 'departament', component: DepartamentComponent },
-    
-    
-    
-    ]}]
+    ],
+  },
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
