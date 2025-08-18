@@ -1,53 +1,44 @@
-<div class="modal-overlay">
-  <div class="modal-container">
-    <div class="modal-header">
-      <h2 class="modal-title">{{ modo === 'edit' ? 'Editar' : 'Registrar' }} Ciudad</h2>
+<h2 mat-dialog-title>{{ modo === 'edit' ? 'Editar Ciudad' : 'Registrar Ciudad' }}</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="cityForm" class="role-form">
+    <!-- Nombre de la Ciudad -->
+    <div class="form-group">
+      <label for="name" class="form-label">Nombre de la Ciudad</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        class="form-input"
+        placeholder="Ingresa el nombre de la ciudad"
+      />
+      <div class="error-message" *ngIf="getFieldError('name')">
+        {{ getFieldError('name') }}
+      </div>
     </div>
 
-    <form [formGroup]="cityForm" (ngSubmit)="onSubmit()" class="role-form">
-      <!-- Nombre de la Ciudad -->
-      <div class="form-group">
-        <label for="name" class="form-label">Nombre de la Ciudad</label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          class="form-input"
-          placeholder="Ingresa el nombre de la ciudad"
-          [class.error]="getFieldError('name')"
-        />
-        <div class="error-message" *ngIf="getFieldError('name')">
-          {{ getFieldError('name') }}
-        </div>
-      </div>
+    <!-- Departamento -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Departamento</mat-label>
+      <mat-select formControlName="departamentId">
+        <mat-option disabled *ngIf="departamentsm.length === 0">
+          Cargando departamentos...
+        </mat-option>
+        <mat-option *ngFor="let dept of departamentsm" [value]="dept.id">
+          {{ dept.name }}
+        </mat-option>
+      </mat-select>
 
-      <!-- Selector de Departamento -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>Departamento</mat-label>
-        <mat-select formControlName="departamentId">
-          <!-- Mensaje de carga si no hay departamentos -->
-          <mat-option value=  disabled *ngIf="departamentsm.length === 0">
-            Cargando departamentos...
-          </mat-option>
-
-          <!-- Opciones de departamentos -->
-          <mat-option *ngFor="let dept of departamentsm" [value]="dept.id">
-            {{ dept.name }}
-          </mat-option>
-        </mat-select>
-
-        <!-- Mensaje de error -->
-        <mat-error *ngIf="cityForm.get('departamentId')?.invalid && cityForm.get('departamentId')?.touched">
-          {{ getFieldError('departamentId') }}
-        </mat-error>
-      </mat-form-field>
-
-      <!-- Botón de envío -->
-      <button type="submit" class="register-button" [disabled]="cityForm.invalid">
-        {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
-      </button>
-    </form>
-  </div>
+      <mat-error *ngIf="cityForm.get('departamentId')?.invalid && cityForm.get('departamentId')?.touched">
+        {{ getFieldError('departamentId') }}
+      </mat-error>
+    </mat-form-field>
+  </form>
 </div>
 
-
+<div mat-dialog-actions class="form-actions">
+  <button mat-stroked-button type="button" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+  <button mat-raised-button color="primary" class="btn-guardar" [disabled]="cityForm.invalid" (click)="onSubmit()">
+    {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
+  </button>
+</div>

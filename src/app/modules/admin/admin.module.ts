@@ -33,6 +33,7 @@ import { ConsultorioComponent } from './pages/consultorio/consultorio.component'
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -71,7 +72,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
-    // FormsModule,
+    MatDialogModule,
   ],
 })
 export class AdminModule {}

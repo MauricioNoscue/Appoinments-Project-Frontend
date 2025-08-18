@@ -121,4 +121,7 @@ export class PerfilComponent implements OnInit {
       plugins: [centerTextPlugin],
     });
   }
+
+
+
 }

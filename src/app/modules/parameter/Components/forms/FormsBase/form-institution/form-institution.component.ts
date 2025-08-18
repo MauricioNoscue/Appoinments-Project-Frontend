@@ -1,14 +1,40 @@
-import { Component, OnInit, Input, Output, EventEmitter, Inject } from "@angular/core";
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { Institution, InstitutionCreate, InstitutionUpdate } from "../../../../../../shared/Models/parameter/InstitutionModel";
-import { MaterialModule } from "../../../../../../shared/material.module";
-import { CityCreate, CityList, CityOption } from "../../../../../../shared/Models/parameter/CityModel";
-import { CityService } from "../../../../../../shared/services/city.service";
-import { CommonModule } from "@angular/common";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatSelectModule } from "@angular/material/select";
-import { MatOptionModule } from "@angular/material/core";
-import { MatInputModule } from "@angular/material/input";
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  Optional,
+  Inject,
+} from '@angular/core';
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+
+import {
+  Institution,
+  InstitutionCreate,
+  InstitutionUpdate,
+} from '../../../../../../shared/Models/parameter/InstitutionModel';
+import {
+  CityList,
+  CityOption,
+} from '../../../../../../shared/Models/parameter/CityModel';
+import { CityService } from '../../../../../../shared/services/city.service';
 
 @Component({
   selector: 'app-form-institution',
@@ -23,6 +49,7 @@ import { MatInputModule } from "@angular/material/input";
     MatInputModule,
     ReactiveFormsModule,
     FormsModule,
+    MatDialogModule, // <-- necesario para mat-dialog-*
   ],
 })
 export class FormInstitutionComponent implements OnInit {
@@ -38,31 +65,40 @@ export class FormInstitutionComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private cityService: CityService,
+
+    // Contenedor genérico (opcional):
+    @Optional()
     @Inject('MODAL_DATA')
-    private modalData: { modo: 'create' | 'edit'; data?: Institution }
+    private modalData?: { modo: 'create' | 'edit'; data?: Institution },
+
+    // Apertura directa con MatDialog (recomendado):
+    @Optional()
+    @Inject(MAT_DIALOG_DATA)
+    private dialogData?: { modo?: 'create' | 'edit'; data?: Institution },
+
+    @Optional() private dialogRef?: MatDialogRef<FormInstitutionComponent>
   ) {
     this.institutionForm = this.createForm();
   }
 
   ngOnInit(): void {
-    console.log('Modal Data:', this.modalData);
     this.cargarCiudades();
-    if (this.modalData.modo === 'edit' && this.modalData.data) {
-      this.institutionForm.patchValue(this.modalData.data);
+
+    const modoIn = this.modalData?.modo ?? this.dialogData?.modo ?? this.modo;
+    const dataIn = this.modalData?.data ?? this.dialogData?.data ?? this.data;
+
+    this.modo = modoIn;
+    if (modoIn === 'edit' && dataIn) {
+      this.institutionForm.patchValue(dataIn);
     }
   }
+
   private cargarCiudades(): void {
     this.cityService.traerTodo().subscribe({
       next: (data: CityList[]) => {
-        this.citys = data.map((cy) => ({
-          id: cy.id,
-          name: cy.name,
-        }));
-        console.log('Ciudades cargadas:', this.citys);
+        this.citys = data.map((cy) => ({ id: cy.id, name: cy.name }));
       },
-      error: (err) => {
-        console.error('Error al cargar ciudades:', err);
-      },
+      error: (err) => console.error('Error al cargar ciudades:', err),
     });
   }
 
@@ -76,26 +112,23 @@ export class FormInstitutionComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.institutionForm.valid) {
-      let payload: InstitutionCreate | InstitutionUpdate;
-
-      if (this.modalData.modo === 'edit' && this.modalData.data?.id) {
-        payload = {
-          id: this.modalData.data.id,
-          ...this.institutionForm.value,
-        } as InstitutionUpdate;
-      } else {
-        payload = {
-          ...this.institutionForm.value,
-        } as InstitutionCreate;
-      }
-
-      this.formSubmit.emit(payload);
-    } else {
-      Object.values(this.institutionForm.controls).forEach((control) =>
-        control.markAsTouched()
-      );
+    if (this.institutionForm.invalid) {
+      this.institutionForm.markAllAsTouched();
+      return;
     }
+
+    const id = this.modalData?.data?.id ?? this.dialogData?.data?.id;
+    const payload: InstitutionCreate | InstitutionUpdate =
+      this.modo === 'edit' && id
+        ? ({ id, ...this.institutionForm.value } as InstitutionUpdate)
+        : ({ ...this.institutionForm.value } as InstitutionCreate);
+
+    if (this.dialogRef) this.dialogRef.close(payload); // cerrar si estamos en MatDialog
+    this.formSubmit.emit(payload); // emitir por si se usa fuera del diálogo
+  }
+
+  cancelar(): void {
+    if (this.dialogRef) this.dialogRef.close(null);
   }
 
   getFieldError(fieldName: string): string {

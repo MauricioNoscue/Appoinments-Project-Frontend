@@ -1,91 +1,62 @@
-<div class="modal-overlay">
-  <div class="modal-container">
-    <div class="modal-header">
-      <h2 class="modal-title">{{ modo === 'edit' ? 'Editar' : 'Registrar' }} Sucursal</h2>
+<h2 mat-dialog-title>{{ modo === 'edit' ? 'Editar sucursal' : 'Registrar sucursal' }}</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="branchForm" class="role-form">
+    <!-- Nombre -->
+    <div class="form-group">
+      <label for="name" class="form-label">Nombre</label>
+      <input id="name" type="text" formControlName="name" class="form-input" placeholder="Ingresa el nombre de la sucursal" />
+      <div class="error-message" *ngIf="getFieldError('name')">{{ getFieldError('name') }}</div>
     </div>
 
-    <form [formGroup]="branchForm" (ngSubmit)="onSubmit()" class="role-form">
-      <!-- Nombre -->
-      <div class="form-group">
-        <label for="name" class="form-label">Nombre</label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          class="form-input"
-          placeholder="Ingresa el nombre de la sucursal"
-          [class.error]="getFieldError('name')"
-        />
-        <div class="error-message" *ngIf="getFieldError('name')">{{ getFieldError('name') }}</div>
-      </div>
+    <!-- Correo Electrónico -->
+    <div class="form-group">
+      <label for="email" class="form-label">Correo Electrónico</label>
+      <input id="email" type="email" formControlName="email" class="form-input" placeholder="Ingresa el correo de la sucursal" />
+      <div class="error-message" *ngIf="getFieldError('email')">{{ getFieldError('email') }}</div>
+    </div>
 
-      <!-- Correo Electrónico -->
-      <div class="form-group">
-        <label for="email" class="form-label">Correo Electrónico</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          class="form-input"
-          placeholder="Ingresa el correo de la sucursal"
-          [class.error]="getFieldError('email')"
-        />
-        <div class="error-message" *ngIf="getFieldError('email')">{{ getFieldError('email') }}</div>
-      </div>
+    <!-- Teléfono -->
+    <div class="form-group">
+      <label for="phoneNumber" class="form-label">Teléfono</label>
+      <input id="phoneNumber" type="text" formControlName="phoneNumber" class="form-input" placeholder="Ingresa el número de teléfono" />
+      <div class="error-message" *ngIf="getFieldError('phoneNumber')">{{ getFieldError('phoneNumber') }}</div>
+    </div>
 
-      <!-- Teléfono -->
-      <div class="form-group">
-        <label for="phoneNumber" class="form-label">Teléfono</label>
-        <input
-          id="phoneNumber"
-          type="text"
-          formControlName="phoneNumber"
-          class="form-input"
-          placeholder="Ingresa el número de teléfono"
-          [class.error]="getFieldError('phoneNumber')"
-        />
-        <div class="error-message" *ngIf="getFieldError('phoneNumber')">{{ getFieldError('phoneNumber') }}</div>
-      </div>
+    <!-- Dirección -->
+    <div class="form-group">
+      <label for="address" class="form-label">Dirección</label>
+      <input id="address" type="text" formControlName="address" class="form-input" placeholder="Ingresa la dirección" />
+      <div class="error-message" *ngIf="getFieldError('address')">{{ getFieldError('address') }}</div>
+    </div>
 
-      <!-- Dirección -->
-      <div class="form-group">
-        <label for="address" class="form-label">Dirección</label>
-        <input
-          id="address"
-          type="text"
-          formControlName="address"
-          class="form-input"
-          placeholder="Ingresa la dirección"
-          [class.error]="getFieldError('address')"
-        />
-        <div class="error-message" *ngIf="getFieldError('address')">{{ getFieldError('address') }}</div>
-      </div>
-
-      <!-- Selector de Institucion -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>institucion</mat-label>
-        <mat-select formControlName="institutionId">
-          <!-- Mensaje de carga si no hay departamentos -->
-          <mat-option value=  disabled *ngIf="institucions.length === 0">
-            Cargando departamentos...
-          </mat-option>
-
-          <!-- Opciones de departamentos -->
-          <mat-option *ngFor="let inst of institucions" [value]="inst.id">
-            {{ inst.name }}
-          </mat-option>
-        </mat-select>
-
-        <!-- Mensaje de error -->
-        <mat-error *ngIf="branchForm.get('institutionId')?.invalid && branchForm.get('institutionId')?.touched">
-          {{ getFieldError('institutionId') }}
-        </mat-error>
-      </mat-form-field>
-
-
-      <button type="submit" class="register-button" [disabled]="branchForm.invalid">
-        {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
-      </button>
-    </form>
-  </div>
+    <!-- Institución -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Institución</mat-label>
+      <mat-select formControlName="institutionId">
+        <mat-option disabled *ngIf="institucions.length === 0">Cargando instituciones...</mat-option>
+        <mat-option *ngFor="let inst of institucions" [value]="inst.id">{{ inst.name }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="branchForm.get('institutionId')?.invalid && branchForm.get('institutionId')?.touched">
+        {{ getFieldError('institutionId') }}
+      </mat-error>
+    </mat-form-field>
+  </form>
 </div>
+
+<div mat-dialog-actions class="form-actions">
+  <button mat-stroked-button type="button" class="btn-cancelar" (click)="cancelar()">
+    Cancelar
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    class="btn-guardar"
+    [disabled]="branchForm.invalid"
+    (click)="onSubmit()"
+  >
+    {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
+  </button>
+</div>
+

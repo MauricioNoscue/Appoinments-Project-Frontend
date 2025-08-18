@@ -1,15 +1,31 @@
-
-import {Component,OnInit,Input,Output,EventEmitter,Inject,} from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  Optional,
+  Inject,
+} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MaterialModule } from '../../../../../../shared/material.module';
-import {Departament,DepartamentEdit,DepartamentCreated,} from '../../../../../../shared/Models/parameter/Departament';
+import {
+  Departament,
+  DepartamentEdit,
+  DepartamentCreated,
+} from '../../../../../../shared/Models/parameter/Departament';
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-form-departament',
   standalone: true,
   templateUrl: './form-departament.component.html',
   styleUrls: ['./form-departament.component.css'],
-  imports: [MaterialModule],
+  imports: [MaterialModule, MatDialogModule], // <- agrega MatDialogModule
 })
 export class FormDepartamentComponent implements OnInit {
   @Input() modo: 'create' | 'edit' = 'create';
@@ -22,15 +38,29 @@ export class FormDepartamentComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+
+    // Flujo con contenedor genérico (opcional):
+    @Optional()
     @Inject('MODAL_DATA')
-    private modalData: { modo: 'create' | 'edit'; data?: Departament }
+    private modalData?: { modo: 'create' | 'edit'; data?: Departament },
+
+    // Flujo directo con MatDialog (recomendado):
+    @Optional()
+    @Inject(MAT_DIALOG_DATA)
+    private dialogData?: { modo?: 'create' | 'edit'; data?: Departament },
+
+    @Optional() private dialogRef?: MatDialogRef<FormDepartamentComponent>
   ) {
     this.departamentForm = this.createForm();
   }
 
   ngOnInit(): void {
-    if (this.modalData.modo === 'edit' && this.modalData.data) {
-      this.departamentForm.patchValue(this.modalData.data);
+    const modoIn = this.modalData?.modo ?? this.dialogData?.modo ?? this.modo;
+    const dataIn = this.modalData?.data ?? this.dialogData?.data ?? this.data;
+
+    this.modo = modoIn;
+    if (modoIn === 'edit' && dataIn) {
+      this.departamentForm.patchValue(dataIn);
     }
   }
 
@@ -41,26 +71,26 @@ export class FormDepartamentComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.departamentForm.valid) {
-      let payload: DepartamentCreated | DepartamentEdit;
-
-      if (this.modalData.modo === 'edit' && this.modalData.data?.id) {
-        payload = {
-          id: this.modalData.data.id,
-          ...this.departamentForm.value,
-        } as DepartamentEdit;
-      } else {
-        payload = {
-          ...this.departamentForm.value,
-        } as DepartamentCreated;
-      }
-
-      this.formSubmit.emit(payload);
-    } else {
-      Object.values(this.departamentForm.controls).forEach((control) =>
-        control.markAsTouched()
-      );
+    if (this.departamentForm.invalid) {
+      this.departamentForm.markAllAsTouched();
+      return;
     }
+
+    const id = this.modalData?.data?.id ?? this.dialogData?.data?.id;
+    const payload: DepartamentCreated | DepartamentEdit =
+      this.modo === 'edit' && id
+        ? ({ id, ...this.departamentForm.value } as DepartamentEdit)
+        : ({ ...this.departamentForm.value } as DepartamentCreated);
+
+    // Si está en MatDialog, cerrar devolviendo datos:
+    if (this.dialogRef) this.dialogRef.close(payload);
+
+    // También emitir por si se usa fuera de dialog:
+    this.formSubmit.emit(payload);
+  }
+
+  cancelar(): void {
+    if (this.dialogRef) this.dialogRef.close(null);
   }
 
   getFieldError(fieldName: string): string {
