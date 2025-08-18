@@ -72,21 +72,26 @@ export const menuAdmin: MenuItem[] = [
       children: [
         {
           id: 'rol-2',
-          title: 'Roles',
+          title: 'Instituciones',
           type: 'item',
-          url: 'admin/security/rol'
+          url: 'admin/institutions'
         },
         {
           id: 'user-2',
-          title: 'Usuarios',
+          title: 'Ciudades',
           type: 'item',
-          url: 'admin/security/user'
+          url: 'admin/city'
         },
         {
           id: 'module-2',
-          title: 'Módulos',
+          title: 'Sucursales',
           type: 'item',
-          url: 'admin/security/module'
+          url: 'admin/branch'
+        }, {
+          id: 'module-2',
+          title: 'Departamentos',
+          type: 'item',
+          url: 'admin/departament'
         }
       ]
      }

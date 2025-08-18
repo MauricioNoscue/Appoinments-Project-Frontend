@@ -49,7 +49,7 @@ export class PermissionManagementComponent implements OnInit {
     forkJoin({
       roles: this.rolService.traerTodo(),
       forms: this.formService.traerTodo(),
-      permissions: this.permissionService.getall(),
+      permissions: this.permissionService.traerTodo(),
       // rolesPermissions: this.rolFormPermissionService.()
     }).pipe(
       catchError(error => {

@@ -11,8 +11,12 @@ import { ModuleComponent } from './pages/Security/module/module.component';
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
 import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
-import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
+import { BranchComponent } from '../parameter/pages/branch/branch.component';
+import { CityComponent } from '../parameter/pages/city/city.component';
+import { DepartamentComponent } from '../parameter/pages/departament/departament.component';
+import { InstitutionsComponent } from '../parameter/pages/institutions/institutions.component';
 import { FormConsultorioComponent } from './Components/forms/FormsBase/form-consultorio/form-consultorio.component';
+import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
 
 const routes: Routes = [
   {
