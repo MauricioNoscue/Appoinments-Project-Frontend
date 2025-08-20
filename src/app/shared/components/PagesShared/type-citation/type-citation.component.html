@@ -1,0 +1,12 @@
+
+<h1>tipo citas</h1>
+
+<div class="cards-container">
+  <app-card-type-citation
+    *ngFor="let t of typeCitations; trackBy: trackById"
+    [id]="t.id"
+    [title]="t.name"
+    [imageName]="t.icon"
+    [route]="toRoute(t.name)">
+  </app-card-type-citation>
+</div>

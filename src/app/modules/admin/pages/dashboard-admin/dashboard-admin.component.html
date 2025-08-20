@@ -8,7 +8,6 @@
     <!-- Stats + Estado de citas -->
     <div class="row g-3 mb-4" *ngIf="stats$ | async as stats">
         <div class="col-lg-3 col-md-6" *ngFor="let card of [
-            {label:'Citas del año', num:stats.totalCitasAnio, change:stats.variationYear},
             {label:'Citas del mes', num:stats.totalCitasMes, change:stats.variationMonth},
             {label:'Citas del día', num:stats.totalCitasDia, change:stats.variationDay},
             {label:'Usuarios registrados', num:stats.totalUsuarios, change:null}

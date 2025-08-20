@@ -33,6 +33,8 @@ import { ConsultorioComponent } from './pages/consultorio/consultorio.component'
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TypeCitationManagementComponent } from './pages/type-citation-management/type-citation-management.component';
+import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
 
 
 @NgModule({
@@ -60,7 +62,7 @@ import { MatIconModule } from '@angular/material/icon';
     UserCreateComponent,
     UserRoleManagementComponent,
     PermissionManagementComponent,
-    ConsultorioComponent,
+    ConsultorioComponent,TypeCitationManagementComponent,ViewCitationAvailableComponent
   ],
   imports: [
     CommonModule,

@@ -10,12 +10,12 @@ export const menuAdmin: MenuItem[] = [
       type: 'group',
       children: [
         {
-          id: 'dashboard',
+          id: 'home',
           title: 'Incio',
           type: 'item',
           classes: 'nav-item',
           url: '/admin/dashboard',
-          icon: 'dashboard',
+          icon: 'home',
           target: false,
           breadcrumbs: true
         },{
@@ -24,7 +24,16 @@ export const menuAdmin: MenuItem[] = [
           type: 'item',
           classes: 'nav-item',
           url: '/admin/consultorio',
-          icon: 'dashboard',
+          icon: 'local_hospital',
+          target: false,
+          breadcrumbs: true
+        },{
+          id: 'TipoCitas',
+          title: 'Citas',
+          type: 'item',
+          classes: 'nav-item',
+          url: '/admin/typecitation',
+          icon: 'calendar_month',
           target: false,
           breadcrumbs: true
         }
@@ -41,7 +50,7 @@ export const menuAdmin: MenuItem[] = [
           id: 'menu-secutiry',
           title: 'Seguridad',
           type: 'collapse',
-          icon: 'layers',
+          icon: 'security',
           children: [
             {
               id: 'rol1-1',
@@ -70,6 +79,11 @@ export const menuAdmin: MenuItem[] = [
               title: 'Permisos',
               type: 'item',
               url: 'admin/security/permission'
+            },{
+              id: 'module-1-3',
+              title: 'Gestión permisos',
+              type: 'item',
+              url: 'admin/security/gestionFormularios'
             }
             
           ]
@@ -77,7 +91,7 @@ export const menuAdmin: MenuItem[] = [
       id: 'menu-security-2',
       title: 'Parámetros',
       type: 'collapse',
-      icon: 'layers',
+      icon: 'filter_list',
       children: [
         {
           id: 'rol-2',

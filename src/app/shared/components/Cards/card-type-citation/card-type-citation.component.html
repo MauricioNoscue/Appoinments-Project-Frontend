@@ -1,0 +1,22 @@
+<div 
+  class="card-container" 
+  [class.disabled]="showOptions"
+  (click)="onCardClick()">
+  
+  <!-- Botón de opciones (tres puntos) -->
+  <button 
+    *ngIf="showOptions" 
+    class="options-button"
+    (click)="onOptionsClick($event)">
+    ⋮
+  </button>
+
+  <!-- Imagen -->
+  <img 
+    [src]="imagePath" 
+    [alt]="title"
+    class="card-image">
+
+  <!-- Título -->
+  <p class="card-title">{{ title }}</p>
+</div>
