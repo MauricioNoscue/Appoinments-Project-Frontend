@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { FormConsultorioComponent } from '../../Components/forms/FormsBase/form-consultorio/form-consultorio.component';
 
 interface Consultorio {
   id: number;
@@ -56,7 +58,7 @@ export class ConsultorioComponent {
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private dialog: MatDialog) {}
 
   get consultoriosFiltrados(): Consultorio[] {
     const q = this.searchTerm.trim().toLowerCase();
@@ -75,13 +77,35 @@ export class ConsultorioComponent {
   }
 
   // 👇 ESTA FUNCIÓN ES LA QUE FALTABA
+  // ✳️ Abrir modal en modo EDITAR
   editarConsultorio(c: Consultorio) {
-    this.router.navigate(['admin/consultorio/editar', c.id], {
-      state: { consultorio: c },
+    const ref = this.dialog.open(FormConsultorioComponent, {
+      width: '720px',
+      data: { modo: 'editar', consultorio: c },
+      disableClose: true,
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (!result) return;
+      // Aquí podrías actualizar la lista con result.values si luego conectas servicio
+      console.log('Editar (modal) -> resultado:', result);
     });
   }
 
+  // ✳️ Abrir modal en modo CREAR
   abrirDialog(_tipo: 'create') {
-    this.router.navigate(['admin/consultorio/crear']);
+    const ref = this.dialog.open(FormConsultorioComponent, {
+      width: '720px',
+      data: { modo: 'crear' },
+      disableClose: true,
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (!result) return;
+      console.log('Crear (modal) -> resultado:', result);
+      // Ejemplo mock (sin servicio): añadir a la lista
+      // const id = Math.max(...this.consultorios.map(x => x.id), 0) + 1;
+      // this.consultorios = [...this.consultorios, { id, ...result.values }];
+    });
   }
 }

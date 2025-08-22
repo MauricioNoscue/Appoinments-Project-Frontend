@@ -27,17 +27,29 @@ import { InstitutionService } from "../../../../shared/services/institution.serv
     MatCardModule,
     MatTableModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   templateUrl: './institutions.component.html',
   styleUrls: ['./institutions.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class InstitutionsComponent implements OnInit {
-  constructor(private dialog: MatDialog, private institutionService: InstitutionService) { }
+  constructor(
+    private dialog: MatDialog,
+    private institutionService: InstitutionService
+  ) {}
 
   dataSource: InstitutionList[] = [];
-  displayedColumns: string[] = ['index', 'name', 'nit', 'email', 'cityName', 'registrationDate', 'status', 'actions'];
+  displayedColumns: string[] = [
+    'index',
+    'name',
+    'nit',
+    'email',
+    'cityName',
+    'registrationDate',
+    'status',
+    'actions',
+  ];
   searchTerm: string = '';
 
   ngOnInit(): void {
@@ -51,16 +63,17 @@ export class InstitutionsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar instituciones:', err);
-      }
+      },
     });
   }
 
   get filteredDataSource(): InstitutionList[] {
-    return this.dataSource.filter(item =>
-      item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      item.nit.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      item.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      item.cityName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    return this.dataSource.filter(
+      (item) =>
+        item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        item.nit.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        item.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        item.cityName.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
@@ -73,7 +86,7 @@ export class InstitutionsComponent implements OnInit {
           console.log('Institución eliminada exitosamente');
           this.cargarInstituciones(); // Recargar la lista
         },
-        error: (err) => console.error('Error al eliminar:', err)
+        error: (err) => console.error('Error al eliminar:', err),
       });
     }
   }
@@ -85,27 +98,26 @@ export class InstitutionsComponent implements OnInit {
   abrirFormulario(modo: 'create' | 'edit', data?: Institution): void {
     console.log('Abrir formulario en modo:', modo, 'con datos:', data);
 
-    // Importar dinámicamente el componente de formulario
-    import('../../Components/forms/FormsBase/form-institution/form-institution.component').then(
-      ({ FormInstitutionComponent }) => {
-        const dialogRef = this.dialog.open(DialogContainerComponent, {
-          width: '600px',
-          data: {
-            component: FormInstitutionComponent,
-            payload: { modo, data }
-          }
-        });
+    import(
+      '../../Components/forms/FormsBase/form-institution/form-institution.component'
+    ).then(({ FormInstitutionComponent }) => {
+      const dialogRef = this.dialog.open(FormInstitutionComponent, {
+        width: '600px',
+        data: { modo, data }, // viaja por MAT_DIALOG_DATA
+      });
 
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            if (modo === 'create') {
-              this.institutionService.crear(result).subscribe(() => this.cargarInstituciones());
-            } else {
-              this.institutionService.actualizar(result).subscribe(() => this.cargarInstituciones());
-            }
-          }
-        });
-      }
-    );
+      dialogRef.afterClosed().subscribe((result) => {
+        if (!result) return;
+        if (modo === 'create') {
+          this.institutionService
+            .crear(result)
+            .subscribe(() => this.cargarInstituciones());
+        } else {
+          this.institutionService
+            .actualizar(result)
+            .subscribe(() => this.cargarInstituciones());
+        }
+      });
+    });
   }
 }

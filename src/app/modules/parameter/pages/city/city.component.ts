@@ -27,17 +27,24 @@ import { CityService } from "../../../../shared/services/city.service";
     MatCardModule,
     MatTableModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   templateUrl: './city.component.html',
   styleUrls: ['./city.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class CityComponent implements OnInit {
-  constructor(private dialog: MatDialog, private cityService: CityService) { }
+  constructor(private dialog: MatDialog, private cityService: CityService) {}
 
   dataSource: CityList[] = [];
-  displayedColumns: string[] = ['index', 'name', 'departament', 'registrationDate', 'status', 'actions'];
+  displayedColumns: string[] = [
+    'index',
+    'name',
+    'departament',
+    'registrationDate',
+    'status',
+    'actions',
+  ];
   searchTerm: string = '';
 
   ngOnInit(): void {
@@ -46,19 +53,22 @@ export class CityComponent implements OnInit {
 
   cargarCiudades(): void {
     this.cityService.traerTodo().subscribe({
-      next: (cities: CityList[]) => {
+      next: (cities) => {
         this.dataSource = cities;
       },
       error: (err) => {
         console.error('Error al cargar ciudades:', err);
-      }
+      },
     });
   }
 
   get filteredDataSource(): CityList[] {
-    return this.dataSource.filter(item =>
-      item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      item.departamentName.toLowerCase().includes(this.searchTerm.toLowerCase())
+    return this.dataSource.filter(
+      (item) =>
+        item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        item.departamentName
+          .toLowerCase()
+          .includes(this.searchTerm.toLowerCase())
     );
   }
 
@@ -71,7 +81,7 @@ export class CityComponent implements OnInit {
           console.log('Ciudad eliminada exitosamente');
           this.cargarCiudades(); // Recargar la lista
         },
-        error: (err) => console.error('Error al eliminar:', err)
+        error: (err) => console.error('Error al eliminar:', err),
       });
     }
   }
@@ -81,29 +91,24 @@ export class CityComponent implements OnInit {
   }
 
   abrirFormulario(modo: 'create' | 'edit', data?: City): void {
-    console.log('Abrir formulario en modo:', modo, 'con datos:', data);
+    import(
+      '../../Components/forms/FormsBase/form-city/form-city.component'
+    ).then(({ FormCityComponent }) => {
+      const dialogRef = this.dialog.open(FormCityComponent, {
+        width: '600px',
+        data: { modo, data }, // viaja por MAT_DIALOG_DATA
+      });
 
-    // Importar dinámicamente el componente de formulario
-    import('../../Components/forms/FormsBase/form-city/form-city.component').then(
-      ({ FormCityComponent }) => {
-        const dialogRef = this.dialog.open(DialogContainerComponent, {
-          width: '600px',
-          data: {
-            component: FormCityComponent,
-            payload: { modo, data }
-          }
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          if (result) {
-            if (modo === 'create') {
-              this.cityService.crear(result).subscribe(() => this.cargarCiudades());
-            } else {
-              this.cityService.actualizar(result).subscribe(() => this.cargarCiudades());
-            }
-          }
-        });
-      }
-    );
+      dialogRef.afterClosed().subscribe((result) => {
+        if (!result) return;
+        if (modo === 'create') {
+          this.cityService.crear(result).subscribe(() => this.cargarCiudades());
+        } else {
+          this.cityService
+            .actualizar(result)
+            .subscribe(() => this.cargarCiudades());
+        }
+      });
+    });
   }
 }

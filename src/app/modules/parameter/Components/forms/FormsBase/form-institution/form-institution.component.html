@@ -1,76 +1,79 @@
-<div class="modal-overlay">
-  <div class="modal-container">
-    <div class="modal-header">
-      <h2 class="modal-title">{{ modo === 'edit' ? 'Editar' : 'Registrar' }} Institución</h2>
+<h2 mat-dialog-title>
+  {{ modo === 'edit' ? 'Editar Institución' : 'Registrar Institución' }}
+</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="institutionForm" class="role-form">
+    <!-- Nombre -->
+    <div class="form-group">
+      <label for="name" class="form-label">Nombre de la Institución</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        class="form-input"
+        placeholder="Ingresa el nombre de la institución"
+      />
+      <div class="error-message" *ngIf="getFieldError('name')">
+        {{ getFieldError('name') }}
+      </div>
     </div>
 
-    <form [formGroup]="institutionForm" (ngSubmit)="onSubmit()" class="role-form">
-      <!-- Nombre de la Institución -->
-      <div class="form-group">
-        <label for="name" class="form-label">Nombre de la Institución</label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          class="form-input"
-          placeholder="Ingresa el nombre de la institución"
-          [class.error]="getFieldError('name')"
-        />
-        <div class="error-message" *ngIf="getFieldError('name')">{{ getFieldError('name') }}</div>
+    <!-- NIT -->
+    <div class="form-group">
+      <label for="nit" class="form-label">NIT</label>
+      <input
+        id="nit"
+        type="text"
+        formControlName="nit"
+        class="form-input"
+        placeholder="Ingresa el NIT de la institución"
+      />
+      <div class="error-message" *ngIf="getFieldError('nit')">
+        {{ getFieldError('nit') }}
       </div>
+    </div>
 
-      <!-- NIT -->
-      <div class="form-group">
-        <label for="nit" class="form-label">NIT</label>
-        <input
-          id="nit"
-          type="text"
-          formControlName="nit"
-          class="form-input"
-          placeholder="Ingresa el NIT de la institución"
-          [class.error]="getFieldError('nit')"
-        />
-        <div class="error-message" *ngIf="getFieldError('nit')">{{ getFieldError('nit') }}</div>
+    <!-- Email -->
+    <div class="form-group">
+      <label for="email" class="form-label">Email</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        class="form-input"
+        placeholder="Ingresa el email de la institución"
+      />
+      <div class="error-message" *ngIf="getFieldError('email')">
+        {{ getFieldError('email') }}
       </div>
+    </div>
 
-      <!-- Email -->
-      <div class="form-group">
-        <label for="email" class="form-label">Email</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          class="form-input"
-          placeholder="Ingresa el email de la institución"
-          [class.error]="getFieldError('email')"
-        />
-        <div class="error-message" *ngIf="getFieldError('email')">{{ getFieldError('email') }}</div>
-      </div>
+    <!-- Ciudad -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Ciudad</mat-label>
+      <mat-select formControlName="cityId">
+        <mat-option disabled *ngIf="citys.length === 0">
+          Cargando ciudades...
+        </mat-option>
+        <mat-option *ngFor="let cy of citys" [value]="cy.id">
+          {{ cy.name }}
+        </mat-option>
+      </mat-select>
 
-      <!-- Ciudad ID -->
-      <mat-form-field appearance="fill" class="full-width">
-        <mat-label>ciudad</mat-label>
-        <mat-select formControlName="cityId">
-          <!-- Mensaje de carga si no hay departamentos -->
-          <mat-option value=  disabled *ngIf="citys.length === 0">
-            Cargando departamentos...
-          </mat-option>
+      <mat-error *ngIf="institutionForm.get('cityId')?.invalid && institutionForm.get('cityId')?.touched">
+        {{ getFieldError('cityId') }}
+      </mat-error>
+    </mat-form-field>
+  </form>
+</div>
 
-          <!-- Opciones de departamentos -->
-          <mat-option *ngFor="let cy of citys" [value]="cy.id">
-            {{ cy.name }}
-          </mat-option>
-        </mat-select>
-
-        <!-- Mensaje de error -->
-        <mat-error *ngIf="institutionForm.get('departamentId')?.invalid && institutionForm.get('departamentId')?.touched">
-          {{ getFieldError('departamentId') }}
-        </mat-error>
-      </mat-form-field>
-
-      <button type="submit" class="register-button" [disabled]="institutionForm.invalid">
-        {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
-      </button>
-    </form>
-  </div>
+<div mat-dialog-actions class="form-actions">
+  <button mat-stroked-button type="button" class="btn-cancelar" (click)="cancelar()">
+    Cancelar
+  </button>
+  <button mat-raised-button color="primary" class="btn-guardar"
+          [disabled]="institutionForm.invalid" (click)="onSubmit()">
+    {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
+  </button>
 </div>

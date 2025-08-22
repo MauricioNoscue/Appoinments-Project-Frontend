@@ -35,6 +35,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TypeCitationManagementComponent } from './pages/type-citation-management/type-citation-management.component';
 import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -73,7 +74,7 @@ import { ViewCitationAvailableComponent } from './pages/view-citation-available/
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
-    // FormsModule,
+    MatDialogModule,
   ],
 })
 export class AdminModule {}

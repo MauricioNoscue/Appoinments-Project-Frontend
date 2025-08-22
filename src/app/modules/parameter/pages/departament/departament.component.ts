@@ -91,30 +91,25 @@ export class DepartamentComponent implements OnInit {
   }
 
   abrirFormulario(modo: 'create' | 'edit', data?: DepartamentList): void {
-    console.log('Abrir formulario en modo:', modo, 'con datos:', data);
-
     import(
       '../../Components/forms/FormsBase/form-departament/form-departament.component'
     ).then(({ FormDepartamentComponent }) => {
-      const dialogRef = this.dialog.open(DialogContainerComponent, {
+      const dialogRef = this.dialog.open(FormDepartamentComponent, {
         width: '600px',
-        data: {
-          component: FormDepartamentComponent,
-          payload: { modo, data },
-        },
+        data: { modo, data }, // viaja por MAT_DIALOG_DATA
       });
 
       dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          if (modo === 'create') {
-            this.departamentService
-              .crear(result)
-              .subscribe(() => this.cargarDepartamentos());
-          } else {
-            this.departamentService
-              .actualizar(result)
-              .subscribe(() => this.cargarDepartamentos());
-          }
+        if (!result) return;
+
+        if (modo === 'create') {
+          this.departamentService
+            .crear(result)
+            .subscribe(() => this.cargarDepartamentos());
+        } else {
+          this.departamentService
+            .actualizar(result)
+            .subscribe(() => this.cargarDepartamentos());
         }
       });
     });

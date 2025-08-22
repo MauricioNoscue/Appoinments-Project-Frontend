@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { BranchList } from '../../../../shared/Models/parameter/Branch';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,13 +10,25 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { BranchService } from '../../../../shared/services/branch.service'; // Ajusta esta ruta
-import { DialogContainerComponent } from '../../../../shared/components/Modal/dialog-container/dialog-container.component';
+
+import { BranchList } from '../../../../shared/Models/parameter/Branch';
+import { BranchService } from '../../../../shared/services/branch.service';
+import { FormBranchComponent } from '../../Components/forms/FormsBase/form-branch/form-branch.component';
 
 @Component({
   selector: 'app-branch',
   standalone: true,
-  imports: [CommonModule,FormsModule,MatButtonModule,MatIconModule,MatFormFieldModule,MatInputModule,MatCardModule,MatTableModule,MatChipsModule,MatTooltipModule,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatTableModule,
+    MatChipsModule,
+    MatTooltipModule,
   ],
   templateUrl: './branch.component.html',
   styleUrl: './branch.component.css',
@@ -38,25 +49,18 @@ export class BranchComponent implements OnInit {
     'institutionName',
     'registrationDate',
     'status',
-
     'actions',
   ];
-  searchTerm: string = '';
+  searchTerm = '';
 
   ngOnInit(): void {
     this.cargarSucursales();
-    console.log('¿Data cargada?', this.dataSource); // <- esto NO funcionará por ser async
   }
 
   cargarSucursales(): void {
     this.BranchService.traerTodo().subscribe({
-      next: (branches: BranchList[]) => {
-        this.dataSource = branches;
-        console.log('Sucursales cargadas:', branches);
-      },
-      error: (err) => {
-        console.error('Error al cargar sucursales:', err);
-      },
+      next: (branches) => (this.dataSource = branches),
+      error: (err) => console.error('Error al cargar sucursales:', err),
     });
   }
 
@@ -71,48 +75,32 @@ export class BranchComponent implements OnInit {
   }
 
   eliminar(id: number): void {
-    const confirmado = confirm('¿Estás seguro de eliminar esta sucursal?');
-
-    if (confirmado) {
-      this.BranchService.eliminar(id).subscribe({
-        next: () => {
-          console.log('Sucursal eliminada exitosamente');
-          this.cargarSucursales();
-        },
-        error: (err) => console.error('Error al eliminar:', err),
-      });
-    }
-  }
-
-  recargarListado(): void {
-    this.cargarSucursales();
+    if (!confirm('¿Estás seguro de eliminar esta sucursal?')) return;
+    this.BranchService.eliminar(id).subscribe({
+      next: () => this.cargarSucursales(),
+      error: (err) => console.error('Error al eliminar:', err),
+    });
   }
 
   abrirFormulario(modo: 'create' | 'edit', data?: BranchList): void {
-    console.log('Abrir formulario en modo:', modo, 'con datos:', data);
-
     import(
       '../../Components/forms/FormsBase/form-branch/form-branch.component'
     ).then(({ FormBranchComponent }) => {
-      const dialogRef = this.dialog.open(DialogContainerComponent, {
+      const dialogRef = this.dialog.open(FormBranchComponent, {
         width: '600px',
-        data: {
-          component: FormBranchComponent,
-          payload: { modo, data },
-        },
+        data: { modo, branch: data }, // <- aquí viaja todo
       });
 
       dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          if (modo === 'create') {
-            this.BranchService.crear(result).subscribe(() =>
-              this.cargarSucursales()
-            );
-          } else {
-            this.BranchService.actualizar(result).subscribe(() =>
-              this.cargarSucursales()
-            );
-          }
+        if (!result) return;
+        if (modo === 'create') {
+          this.BranchService.crear(result).subscribe(() =>
+            this.cargarSucursales()
+          );
+        } else {
+          this.BranchService.actualizar(result).subscribe(() =>
+            this.cargarSucursales()
+          );
         }
       });
     });
