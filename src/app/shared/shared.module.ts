@@ -13,6 +13,9 @@ import { StaffCardComponent } from './components/Cards/staff-card/staff-card.com
 import { DialogContainerComponent } from './components/Modal/dialog-container/dialog-container.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SectionCardComponent } from './components/Cards/section-card/section-card.component';
+import { TypeCitationComponent } from './components/PagesShared/type-citation/type-citation.component';
+import { CardTypeCitationComponent } from './components/Cards/card-type-citation/card-type-citation.component';
+import { CalendarComponent } from './components/Sections/calendar/calendar.component';
 
 
 const sharedComponents =[
@@ -25,12 +28,10 @@ const sharedComponents =[
   CardBasicComponent,
   StaffCardComponent,
   DialogContainerComponent,SectionCardComponent
+  ,TypeCitationComponent,CardTypeCitationComponent,CalendarComponent
   
 
 ]
-
-
-
 
 @NgModule({
   declarations: [sharedComponents],

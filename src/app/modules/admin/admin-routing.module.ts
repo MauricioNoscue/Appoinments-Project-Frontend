@@ -17,6 +17,9 @@ import { DepartamentComponent } from '../parameter/pages/departament/departament
 import { InstitutionsComponent } from '../parameter/pages/institutions/institutions.component';
 import { FormConsultorioComponent } from './Components/forms/FormsBase/form-consultorio/form-consultorio.component';
 import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
+import { TypeCitationManagementComponent } from './pages/type-citation-management/type-citation-management.component';
+import { TypeCitationComponent } from '../../shared/components/PagesShared/type-citation/type-citation.component';
+import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
 
 const routes: Routes = [
   {
@@ -33,10 +36,17 @@ const routes: Routes = [
       { path: 'security/permission', component: PermissionComponent },
       { path: 'security/module', component: ModuleComponent },
       { path: 'security/gestion/:id', component: UserRoleManagementComponent },
-      { path: 'security/gesper', component: PermissionManagementComponent },
+      { path: 'security/gestionFormularios', component: PermissionManagementComponent },
       { path: 'consultorio', component: ConsultorioComponent },
       { path: 'consultorio/crear', component: FormConsultorioComponent },
       { path: 'consultorio/editar/:id', component: FormConsultorioComponent },
+      { path: 'branch', component: BranchComponent },
+      { path: 'city', component: CityComponent },
+      { path: 'departament', component: DepartamentComponent },
+      { path: 'institusions', component: InstitutionsComponent },
+      {path:'typecitation', component: TypeCitationManagementComponent},
+      {path:'typecitation2', component: TypeCitationComponent},
+      {path:'CitationAviable/:id', component: ViewCitationAvailableComponent},
 
       { path: 'doctor', component: DoctorComponent },
       // { path: 'doctor1/perfil', component: PerfilComponent },

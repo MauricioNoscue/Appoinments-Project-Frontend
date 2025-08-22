@@ -34,6 +34,12 @@ abrirDialog(tipo: 'create' | 'edit' | 'card', datos?: any) {
     }
   });
 
+
+  dialogRef.backdropClick().subscribe(() => {
+  dialogRef.close();
+});
+
+
   dialogRef.afterClosed().subscribe(result => {
     if (result) { // opcional: verificar si se hizo algún cambio
       this.cargarModules(); // recargar datos
