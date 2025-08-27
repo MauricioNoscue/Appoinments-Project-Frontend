@@ -20,6 +20,7 @@ import { ConsultorioComponent } from './pages/consultorio/consultorio.component'
 import { TypeCitationManagementComponent } from './pages/type-citation-management/type-citation-management.component';
 import { TypeCitationComponent } from '../../shared/components/PagesShared/type-citation/type-citation.component';
 import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
+import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 
 const routes: Routes = [
   {
@@ -47,6 +48,7 @@ const routes: Routes = [
       {path:'typecitation', component: TypeCitationManagementComponent},
       {path:'typecitation2', component: TypeCitationComponent},
       {path:'CitationAviable/:id', component: ViewCitationAvailableComponent},
+      { path: 'medical-staff', component: MedicalStaffComponent },
 
       { path: 'doctor', component: DoctorComponent },
       // { path: 'doctor1/perfil', component: PerfilComponent },

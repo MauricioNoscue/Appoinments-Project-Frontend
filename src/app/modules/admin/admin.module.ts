@@ -35,7 +35,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TypeCitationManagementComponent } from './pages/type-citation-management/type-citation-management.component';
 import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogContent, MatDialogModule } from '@angular/material/dialog';
+import { DoctorFormDialogComponent } from './pages/medical-staff/dialogs/doctor-form-dialog/doctor-form-dialog.component';
+import { DoctorCardComponent } from './Components/cards/doctor-card/doctor-card.component';
+import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 
 
 @NgModule({
@@ -63,7 +66,13 @@ import { MatDialogModule } from '@angular/material/dialog';
     UserCreateComponent,
     UserRoleManagementComponent,
     PermissionManagementComponent,
-    ConsultorioComponent,TypeCitationManagementComponent,ViewCitationAvailableComponent
+    DoctorCardComponent,
+    DoctorFormDialogComponent,
+    DoctorCardComponent,
+    MedicalStaffComponent,
+    ConsultorioComponent,
+    TypeCitationManagementComponent,
+    ViewCitationAvailableComponent
   ],
   imports: [
     CommonModule,
@@ -75,6 +84,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
+    MatDialogContent
   ],
 })
 export class AdminModule {}

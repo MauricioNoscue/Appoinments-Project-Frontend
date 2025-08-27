@@ -1,0 +1,247 @@
+/* contenedor general */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background-color: #ECF9FF;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* breadcrumb/chip superior */
+.crumb {
+    display: grid;
+    gap: 6px;
+}
+
+.crumb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #eef2ff;
+    color: #1e40af;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.crumb-desc {
+    color: rgba(0, 0, 0, .6);
+    font-size: 14px;
+}
+
+/* header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-add {
+    display: flex;
+    justify-content: left;
+    height: 48px;
+    width: 174px;
+    background-color: #708EEE !important;
+    color: #ffffff !important;
+    border-radius: 8px;
+}
+
+.search-container {
+    display: flex;
+    height: 48px !important;
+    align-items: center;
+    width: 30%;
+}
+
+.search-bar {
+    width: 100%;
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex;
+    justify-content: center !important;
+    border-radius: 8px;
+    box-sizing: border-box !important;
+}
+
+.title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 32px;
+}
+
+.actions {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* look “pill” para search/filtrar */
+.pill .mdc-notched-outline__leading,
+.pill .mdc-notched-outline__trailing,
+.pill .mdc-notched-outline__notch {
+    border-radius: 999px !important;
+}
+
+.pill .mat-mdc-form-field-flex {
+    padding-left: 12px;
+}
+
+.pill.mat-mdc-form-field {
+    min-width: 280px;
+}
+
+/* menú de filtros */
+.filter-menu .menu-content {
+    padding: 12px 16px;
+    width: 280px;
+}
+
+.menu-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* estados */
+.state {
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.state-error {
+    color: #b42318;
+    background: #fee4e2;
+}
+
+/* GRID 3x3 con tamaño fijo de 290px por 320px */
+.cards-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 290px);
+    grid-auto-rows: 320px;
+    gap: 24px;
+    padding: 20px 0;
+    transition: transform 0.3s ease;
+}
+
+/* Controles de desplazamiento lateral */
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.carousel-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.carousel-btn:hover {
+    background: #e9ecef;
+    transform: scale(1.05);
+}
+
+.carousel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.carousel-btn mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+/* controles tipo carrusel */
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.carousel-controls .nav {
+    box-shadow: none;
+}
+
+.page-indicator {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    font-weight: 600;
+}
+
+.page-indicator .current {
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: #eef2ff;
+    color: #1e40af;
+}
+
+.page-indicator .sep {
+    color: rgba(0, 0, 0, .45);
+}
+
+.page-indicator .total {
+    color: rgba(0, 0, 0, .65);
+}
+
+/* responsive */
+@media (max-width: 1200px) {
+    .cards-grid {
+        grid-template-columns: repeat(2, minmax(260px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 12px;
+    }
+
+    .cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pill.mat-mdc-form-field {
+        min-width: 220px;
+    }
+}

@@ -1,0 +1,14 @@
+/* admin/pages/medical-staff/dialogs/doctor-form-dialog/doctor-form-dialog.component.css */
+.dialog-content {
+    padding-top: 6px;
+}
+
+.form-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
+}
+
+.form-grid .full {
+    grid-column: 1 / -1;
+}

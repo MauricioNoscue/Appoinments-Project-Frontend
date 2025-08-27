@@ -1,0 +1,87 @@
+<!-- Encabezado tipo breadcrumb + título -->
+<section class="page">
+
+    <header class="page-header">
+        <h1 class="title">Personal de la salud</h1>
+        <div class="header-actions">
+            <button mat-raised-button color="primary" class="btn-add" (click)="openCreateDialog()">
+                <mat-icon>add</mat-icon>
+                Agregar personal
+            </button>
+
+            <div class="search-container">
+                <form class="d-flex search-bar" role="search">
+                    <mat-form-field appearance="outline" class="search-field" style="width: 100%;">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <input matInput placeholder="Buscar" [formControl]="searchControl">
+                        <button mat-icon-button matSuffix *ngIf="searchControl?.value" (click)="clearFilters()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </form>
+            </div>
+
+            <button mat-stroked-button class="filter" (click)="openFilters()">
+                <mat-icon>filter_list</mat-icon>
+                Filtrar
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido: grilla de tarjetas -->
+    <div class="cards-container">
+        <ng-container *ngIf="!loading && doctors.length === 0; else listTpl">
+            <mat-card class="empty">
+                <mat-icon>person_off</mat-icon>
+                <p>No se encontraron médicos.</p>
+            </mat-card>
+        </ng-container>
+
+        <ng-template #listTpl>
+            <div class="cards-grid" #cardsGrid>
+                <app-doctor-card
+                    *ngFor="let d of doctors"
+                    [image]="d.image"
+                    [fullName]="d.fullName || ''"
+                    [specialty]="d.specialty"
+                    [email]="d.emailDoctor"
+                    [active]="d.active">
+                </app-doctor-card>
+            </div>
+        </ng-template>
+    </div>
+
+    <!-- Controles de desplazamiento lateral -->
+    <div class="carousel-controls" *ngIf="doctors.length > 9">
+        <button class="carousel-btn" (click)="scrollCards('left')" [disabled]="carouselPosition <= 0">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="page-indicator">
+            {{ currentPage + 1 }} / {{ totalPages }}
+        </span>
+        <button class="carousel-btn" (click)="scrollCards('right')" [disabled]="carouselPosition >= maxCarouselPosition">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </div>
+
+    <!-- Paginación estilo mockup -->
+    <div class="paginator" *ngIf="total > pageSize">
+        <button mat-icon-button (click)="prevPage()" [disabled]="pageIndex === 0">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <span class="page-indicator">
+            <span class="current">{{ pageIndex + 1 }}</span>
+            <span class="total">/ {{ Math.ceil(total / pageSize) }}</span>
+        </span>
+
+        <button mat-icon-button (click)="nextPage()" [disabled]="(pageIndex + 1) * pageSize >= total">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </div>
+
+    <!-- Loader -->
+    <div class="loader" *ngIf="loading">
+        <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    </div>
+</section>

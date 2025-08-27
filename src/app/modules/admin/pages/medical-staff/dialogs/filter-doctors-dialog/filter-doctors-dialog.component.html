@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Filtrar por especialidad</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill" class="full">
+      <mat-label>Especialidad</mat-label>
+      <mat-select formControlName="specialty">
+        <mat-option [value]="null">Todas</mat-option>
+        <mat-option *ngFor="let s of data.specialties" [value]="s">{{ s }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="clear()">Limpiar</button>
+  <button mat-flat-button color="primary" (click)="apply()">Aplicar</button>
+</mat-dialog-actions>
