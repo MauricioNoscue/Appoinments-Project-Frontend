@@ -1,12 +1,10 @@
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 import { DoctorList } from '../../../../../shared/Models/hospital/DoctorListModel';
 import { DoctorService } from '../../../../../shared/services/doctor.service';
-import { MaterialModule } from "../../../../../shared/material.module";
-import { MatCard } from "@angular/material/card";
 import { DoctorFormDialogComponent } from '../dialogs/doctor-form-dialog/doctor-form-dialog.component';
 import { FilterDoctorsDialogComponent } from '../dialogs/filter-doctors-dialog/filter-doctors-dialog.component';
 interface PagedResult<T> {
@@ -20,7 +18,7 @@ interface PagedResult<T> {
   styleUrls: ['./medical-staff.component.css'],
   standalone: false,
 })
-export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
+export class MedicalStaffComponent implements OnInit, OnDestroy {
   // Hacer Math disponible para el template
   Math = Math;
 
@@ -28,19 +26,16 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
   loading = false;
   errorMsg = '';
   doctors: DoctorList[] = [];
+  paginatedDoctors: DoctorList[] = [];
   total = 0;
 
   // filtros + paginación
   form: FormGroup;
   pageIndex = 0;
-  pageSize = 9; // 3 columnas x 3 filas aprox. como el mockup
-  specialties: string[] = []; // se cargan de API o se derivan de los doctores
+  pageSize = 12;
+  specialties: string[] = [];
   searchControl!: FormControl;
 
-  // carousel properties
-  carouselPosition = 0;
-  currentPage = 0;
-  maxCarouselPosition = 0;
 
   private destroy$ = new Subject<void>();
 
@@ -78,24 +73,50 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loading = true;
     this.errorMsg = '';
 
+    // Obtener valores de filtros
+    const filters = this.form.value;
+
     this.doctorService
-      .traerTodo()
+      .traerDoctorPersona()
       .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res: DoctorList[]) => {
-          this.doctors = res;
-          this.total = res.length;
+      .subscribe(
+        (res: any) => {
+          // Asegurar que trabajamos con un arreglo aunque el observable devuelva un solo elemento
+          const list: DoctorList[] = Array.isArray(res) ? res : (res ? [res] : []);
+
+          // Filtrar localmente los resultados
+          this.doctors = list.filter(doctor => {
+            // Filtrar por búsqueda (nombre)
+            const matchesSearch = !filters.search ||
+              (doctor.fullName && doctor.fullName.toLowerCase().includes(filters.search.toLowerCase())) ||
+              (doctor.emailDoctor && doctor.emailDoctor.toLowerCase().includes(filters.search.toLowerCase()));
+            
+            // Filtrar por especialidad
+            const matchesSpecialty = !filters.specialty ||
+              (doctor.specialty && doctor.specialty === filters.specialty);
+            
+            return matchesSearch && matchesSpecialty;
+          });
+
+          this.total = this.doctors.length;
+
+          // Aplicar paginación
+          const startIndex = this.pageIndex * this.pageSize;
+          const endIndex = startIndex + this.pageSize;
+          this.paginatedDoctors = this.doctors.slice(startIndex, endIndex);
+
           this.loading = false;
         },
-        error: (err: any) => {
+        (err: any) => {
           this.loading = false;
           this.errorMsg = 'No fue posible cargar el personal médico.';
           console.error(err);
-        },
-      });
+        }
+      );
   }
 
   loadSpecialties(): void {
+    // Cargar todas las especialidades sin filtros
     this.doctorService
       .traerTodo()
       .pipe(takeUntil(this.destroy$))
@@ -104,7 +125,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
           const set = new Set(res.map(d => (d.specialty || '').trim()).filter(Boolean));
           this.specialties = Array.from(set).sort((a, b) => a.localeCompare(b));
         },
-        error: () => {}, // silencioso
+        error: () => {},
       });
   }
 
@@ -161,29 +182,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get totalPages(): number {
-    return Math.ceil(this.doctors.length / 9);
+    return Math.ceil(this.total / this.pageSize);
   }
 
-  scrollCards(direction: 'left' | 'right'): void {
-    const gridElement = document.querySelector('.cards-grid');
-    if (!gridElement) return;
-
-    const cardWidth = 290 + 24; // width + gap
-    const cardsPerView = 3;
-    const scrollAmount = cardWidth * cardsPerView;
-
-    if (direction === 'left' && this.carouselPosition > 0) {
-      this.carouselPosition--;
-      gridElement.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-    } else if (direction === 'right' && this.carouselPosition < this.maxCarouselPosition) {
-      this.carouselPosition++;
-      gridElement.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-
-    this.currentPage = this.carouselPosition;
-  }
-
-  ngAfterViewInit(): void {
-    this.maxCarouselPosition = Math.max(0, this.totalPages - 1);
-  }
 }
