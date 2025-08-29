@@ -1,0 +1,74 @@
+<div class="perfil-container">
+  <!-- Tarjeta de información principal -->
+  <mat-card class="perfil-card perfil-info">
+    <div class="avatar">
+      <div class="circle">{{ paciente.iniciales }}</div>
+      <h2>{{ paciente.nombre }}</h2>
+    </div>
+  </mat-card>
+
+  <!-- Estado de tolerancia -->
+  <mat-card class="perfil-card">
+    <h3>My estado de tolerancia</h3>
+
+    <div class="tolerancia">
+      <mat-icon
+  *ngFor="let i of indices"
+  [class.red]="i < paciente.tolerancia"
+  [class.gray]="i >= paciente.tolerancia"
+  >favorite</mat-icon>
+
+    </div>
+  </mat-card>
+
+
+
+  <!-- Información Personal -->
+  <mat-card class="perfil-card">
+    <h3>Información Personal</h3>
+    <p><b>Nombre completo:</b> {{ paciente.nombreCompleto }}</p>
+    <p><b>Fecha de Nacimiento:</b> {{ paciente.nacimiento }}</p>
+    <p><b>Género:</b> {{ paciente.genero }}</p>
+    <p><b>Documento:</b> {{ paciente.documento }}</p>
+  </mat-card>
+
+  <!-- Información de Salud -->
+  <mat-card class="perfil-card">
+    <h3>Información de Salud</h3>
+    <p><b>EPS:</b> {{ paciente.eps }}</p>
+    <p><b>Régimen de Salud:</b> {{ paciente.regimen }}</p>
+  </mat-card>
+
+  <!-- Contacto -->
+  <mat-card class="perfil-card">
+    <h3>Contacto</h3>
+    <p><b>Teléfono:</b> {{ paciente.telefono }}</p>
+    <p><b>Email:</b> {{ paciente.email.replace('@','&#64;') }}</p>
+  </mat-card>
+
+
+  <!-- Tarjeta de la gráfica -->
+<mat-card class="perfil-card chart-card">
+  <div class="chart-header">
+    <h3>Comportamiento del año</h3>
+    <a class="view-link" href="javascript:void(0)">View Details</a>
+  </div>
+
+  <div class="chart-body">
+    <div class="chart-wrap">
+      <!-- OJO: el template-ref debe coincidir con el ViewChild -->
+      <canvas #doughnutCanvas></canvas>
+    </div>
+
+    <ul class="legend-list">
+      <li class="legend-item" *ngFor="let it of items">
+        <span class="dot" [style.background]="it.color"></span>
+        <span class="name">{{ it.label }}</span>
+        <span class="val">{{ it.value }}</span>
+        <span class="pct">{{ it.percent | number:'1.0-1' }}%</span>
+      </li>
+    </ul>
+  </div>
+</mat-card>
+
+</div>

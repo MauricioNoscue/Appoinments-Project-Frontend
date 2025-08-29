@@ -1,47 +1,47 @@
-<div class="modal-overlay">
-  <div class="modal-container">
-    <div class="modal-header">
-      <h2 class="modal-title">Registrar Permission</h2>
+<h2 mat-dialog-title>
+  {{ modo === 'edit' ? 'Editar Permiso' : 'Registrar Permiso' }}
+</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="permissionForm" class="role-form">
+    <!-- Nombre -->
+    <div class="form-group">
+      <label for="name" class="form-label">Nombre del permiso</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        class="form-input"
+        placeholder="Ej: Gestionar usuarios"
+      />
+      <div class="error-message" *ngIf="getFieldError('name')">
+        {{ getFieldError('name') }}
+      </div>
     </div>
 
-    <form [formGroup]="permissionForm" (ngSubmit)="onSubmit()" class="permission-form">
-
-      <!-- Nombre del permission -->
-      <div class="form-group">
-        <label for="name" class="form-label">Nombre del permission</label>
-        <input
-          type="text"
-          id="name"
-          formControlName="name"
-          class="form-input"
-          [class.error]="getFieldError('name')"
-          placeholder="Ingresa el nombre del rol"
-        >
-        <div class="error-message" *ngIf="getFieldError('name')">
-          {{ getFieldError('name') }}
-        </div>
+    <!-- Descripción -->
+    <div class="form-group">
+      <label for="description" class="form-label">Descripción</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="form-input"
+        rows="5"
+        placeholder="Describe el alcance de este permiso…"
+      ></textarea>
+      <div class="error-message" *ngIf="getFieldError('description')">
+        {{ getFieldError('description') }}
       </div>
+    </div>
+  </form>
+</div>
 
-      <!-- Descripción -->
-      <div class="form-group">
-        <label for="description" class="form-label">Descripción</label>
-        <textarea
-          id="description"
-          formControlName="description"
-          class="form-textarea"
-          [class.error]="getFieldError('description')"
-          placeholder="Describe las responsabilidades y alcance de este rol..."
-          rows="6"
-        ></textarea>
-        <div class="error-message" *ngIf="getFieldError('description')">
-          {{ getFieldError('description') }}
-        </div>
-      </div>
-
-      <!-- Botón de registro -->
-      <button type="submit"class="register-button"[disabled]="permissionForm.invalid">
-        {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
-      </button>
-    </form>
-  </div>
+<div mat-dialog-actions class="form-actions">
+  <button mat-stroked-button type="button" class="btn-cancelar" (click)="cancelar()">
+    Cancelar
+  </button>
+  <button mat-raised-button color="primary" class="btn-guardar"
+          [disabled]="permissionForm.invalid" (click)="onSubmit()">
+    {{ modo === 'edit' ? 'Actualizar' : 'Registrar' }}
+  </button>
 </div>

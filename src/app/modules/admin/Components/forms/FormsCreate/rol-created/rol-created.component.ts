@@ -15,15 +15,7 @@ standalone:false,
 export class RolCreatedComponent  {
 constructor(private dialogRef: MatDialogRef<RolCreatedComponent>,private route: Router, private service : RolService) {}
 
-  onFormSubmit(form: any) {
-
-this.service.crear(form).subscribe(data=>{
-
-  console.log(data)
- this.dialogRef.close(true);
-
-})
-    
-   
-  }
+ onFormSubmit(form: any) {
+  this.service.crear(form).subscribe(() => this.dialogRef.close(true));
+}
 }

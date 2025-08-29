@@ -5,38 +5,28 @@ import { RolService } from '../../../../../../shared/services/rol.service';
 
 @Component({
   selector: 'app-rol-edit',
-standalone:false,
+  standalone: false,
 
   templateUrl: './rol-edit.component.html',
-  styleUrl: './rol-edit.component.css'
+  styleUrl: './rol-edit.component.css',
 })
 export class RolEditComponent {
-
- rolData: RolUpdated;
+  rolData: RolUpdated;
 
   constructor(
-  @Inject('MODAL_DATA') private data: any,
-  private dialogRef: MatDialogRef<RolEditComponent>,private service : RolService
-) {
-  this.rolData = {
-    id: data?.id,
-    name: data?.name || '',
-    description: data?.description || '',
-  };
-}
+    @Inject('MODAL_DATA') private data: any,
+    private dialogRef: MatDialogRef<RolEditComponent>,
+    private service: RolService
+  ) {
+    this.rolData = {
+      id: data?.id,
+      name: data?.name || '',
+      description: data?.description || '',
+    };
+  }
 
-onFormSubmit(form: any) {
-  const result = {
-    ...form,
-    id: this.data?.id
-  };
-
-
-
-  this.service.actualizar(result).subscribe(()=>{
-    this.dialogRef.close(true);
-  })
-  
-}
-
+  onFormSubmit(form: any) {
+    const result = { ...form, id: this.rolData.id };
+    this.service.actualizar(result).subscribe(() => this.dialogRef.close(true));
+  }
 }

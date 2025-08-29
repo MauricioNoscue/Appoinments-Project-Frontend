@@ -5,22 +5,18 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-module-created',
-standalone:false,
+  standalone: false,
   templateUrl: './module-created.component.html',
-  styleUrl: './module-created.component.css'
+  styleUrl: './module-created.component.css',
 })
 export class ModuleCreatedComponent {
-constructor(private dialogRef: MatDialogRef<ModuleCreatedComponent>,private route: Router, private service : ModuleService) {}
+  constructor(
+    private dialogRef: MatDialogRef<ModuleCreatedComponent>,
+    private route: Router,
+    private service: ModuleService
+  ) {}
 
   onFormSubmit(form: any) {
-
-this.service.crear(form).subscribe(data=>{
-
-  console.log(data)
- this.dialogRef.close(true);
-
-})
-    
-   
+    this.service.crear(form).subscribe(() => this.dialogRef.close(true));
   }
 }

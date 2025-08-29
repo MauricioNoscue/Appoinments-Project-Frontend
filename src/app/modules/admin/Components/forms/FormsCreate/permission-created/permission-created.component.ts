@@ -4,7 +4,7 @@ import { PermissionService } from '../../../../../../shared/services/permission.
 
 @Component({
   selector: 'app-pemission-created',
-  standalone: false,
+  standalone: true,
   templateUrl: './permission-created.component.html',
   styleUrl: './permission-created.component.css',
 })

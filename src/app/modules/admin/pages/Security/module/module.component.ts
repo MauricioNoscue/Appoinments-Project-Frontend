@@ -1,85 +1,86 @@
 import { Component, OnInit } from '@angular/core';
-import { ModuleList } from '../../../../../shared/Models/security/moduleModel';
-import { ModuleService } from '../../../../../shared/services/module.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ModuleCreatedComponent } from '../../../Components/forms/FormsCreate/module-created/module-created.component';
-import { ModuleEditComponent } from '../../../Components/forms/FormsEdit/module-edit/module-edit.component';
-import { CardViewModuleComponent } from '../../../Components/cards/card-view-module/card-view-module.component';
-import { DialogContainerComponent } from '../../../../../shared/components/Modal/dialog-container/dialog-container.component';
-import Swal from 'sweetalert2';
+
+
+import {
+  ModuleList,
+  ModuleCreated,
+  ModuleEdid,
+  ModuleC,
+} from '../../../../../shared/Models/security/moduleModel';
+import { ModuleService } from '../../../../../shared/services/module.service';
+
+// Abrimos el form standalone directo
+import { FormModuleComponent } from '../../../Components/forms/FormsBase/form-module/form-module.component';
+
 
 @Component({
   selector: 'app-module',
-standalone:false,
+  standalone: false,
   templateUrl: './module.component.html',
-  styleUrl: './module.component.css'
+  styleUrls: ['./module.component.css'],
 })
 export class ModuleComponent implements OnInit {
+  constructor(private service: ModuleService, private dialog: MatDialog) {}
 
+  dataSource: ModuleList[] = [];
+  displayedColumns: string[] = [
+    'index',
+    'name',
+    'description',
+    'status',
+    'detail',
+    'actions',
+  ];
 
-constructor(private service: ModuleService ,private dialog: MatDialog) {}
+  ngOnInit(): void {
+    this.cargarModules();
+  }
 
-abrirDialog(tipo: 'create' | 'edit' | 'card', datos?: any) {
-  const componentMap = {
-    create: ModuleCreatedComponent,
-    edit: ModuleEditComponent,
-    card: CardViewModuleComponent
-  };
+  cargarModules(): void {
+    this.service.traerTodo().subscribe({
+      next: (modules) => (this.dataSource = modules),
+      error: (err) => console.error('Error al cargar módulos:', err),
+    });
+  }
 
-  const dialogRef = this.dialog.open(DialogContainerComponent, {
-    width: '600px',
-    data: {
-      component: componentMap[tipo], 
-      payload: datos 
-    }
-  });
-
-
-  dialogRef.backdropClick().subscribe(() => {
-  dialogRef.close();
-});
-
-
-  dialogRef.afterClosed().subscribe(result => {
-    if (result) { // opcional: verificar si se hizo algún cambio
-      this.cargarModules(); // recargar datos
-    }
-  });
-}
-  
-  dataSource : ModuleList[] = [];
-displayedColumns: string[] = ['index', 'name', 'description', 'status', 'detail', 'actions'];
-
-
-cargarModules() {
-  this.service.traerTodo().subscribe(module => {
-    this.dataSource = module;
-  });
-}
-
-ngOnInit(): void {
-  this.cargarModules();
-}
-
-
- eliminar(id: number) {
-  Swal.fire({
-    title: '¿Estás seguro de eliminar este usuario?',
-    text: '¡No podrás revertir esto!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Sí, eliminar',
-    cancelButtonText: 'Cancelar'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.service.eliminar(id).subscribe(() => {
-        this.cargarModules();
-        Swal.fire('Eliminado', 'El registro ha sido eliminado.', 'success');
+  // ====== Crear ======
+  abrirCrear(): void {
+    this.dialog
+      .open(FormModuleComponent, {
+        width: '600px',
+        data: { modo: 'create' as const }, // el form sabe qué hacer
+      })
+      .afterClosed()
+      .subscribe((result: ModuleCreated | undefined) => {
+        if (!result) return;
+        this.service.crear(result).subscribe(() => this.cargarModules());
       });
-    }
-  });
-}
+  }
 
+  abrirDialog(modo: 'create' | 'edit', data?: ModuleC): void {
+    this.dialog
+      .open(FormModuleComponent, {
+        width: '600px',
+        data: { modo, data }, // MAT_DIALOG_DATA
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (!result) return;
+        if (modo === 'create') {
+          this.service.crear(result).subscribe(() => this.cargarModules());
+        } else {
+          this.service.actualizar(result).subscribe(() => this.cargarModules());
+        }
+      });
+  }
+
+  // ====== Eliminar ======
+  eliminar(id: number): void {
+    if (!confirm('¿Estás seguro de eliminar este permiso?')) return;
+    this.service.eliminar(id).subscribe({
+      next: () => this.cargarModules(),
+      error: (err) => console.error('Error al eliminar:', err),
+    });
+  }
 }

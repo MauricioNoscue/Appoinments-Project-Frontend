@@ -62,11 +62,27 @@ export class FormDepartamentComponent implements OnInit {
     if (modoIn === 'edit' && dataIn) {
       this.departamentForm.patchValue(dataIn);
     }
+      this.departamentForm.get('name')?.valueChanges.subscribe((v: string) => {
+        const raw = v || '';
+        const clean = raw.replace(/[^A-Za-zÁÉÍÓÚÜáéíóúüÑñ\s]/g, ''); // quita todo lo que no sea letra/espacio
+        if (raw !== clean) {
+          this.departamentForm
+            .get('name')
+            ?.setValue(clean, { emitEvent: false });
+        }
+      });
   }
 
   private createForm(): FormGroup {
     return this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ\s]+$/),
+        ],
+      ],
     });
   }
 
@@ -97,6 +113,13 @@ export class FormDepartamentComponent implements OnInit {
     const field = this.departamentForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) return `${fieldName} es requerido`;
+      if (fieldName === 'name') {
+        if (field.errors?.['required']) return 'El nombre es obligatorio';
+        if (field.errors?.['minlength']) return 'El nombre es muy corto';
+        if (field.errors?.['maxlength']) return 'El nombre es muy largo';
+        if (field.errors?.['pattern'])
+          return 'Solo se permiten letras y espacios';
+      }
       if (field.errors['minlength'])
         return `${fieldName} debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
     }

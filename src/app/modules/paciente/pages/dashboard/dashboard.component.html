@@ -1,0 +1,83 @@
+<div class="bg">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+</div>
+
+
+
+<!-- Stats -->
+<section class="stats">
+  <button class="stat" mat-stroked-button *ngFor="let s of stats" [ngStyle]="{'--color': s.color}">
+    <span class="ic" [style.background]="s.color + '20'">
+      <mat-icon [style.color]="s.color">{{ s.icon }}</mat-icon>
+    </span>
+    <span class="text">
+      <span class="label">{{ s.label }}</span>
+      <span class="value">{{ s.value }}</span>
+    </span>
+  </button>
+</section>
+
+<!-- Grid principal -->
+<section class="grid">
+  <!-- Columna izquierda: Calendario + Novedades -->
+  <div class="left-col">
+    <mat-card class="calendar-card">
+      <div class="cal-header">
+        <div class="toggle"><span class="dot on"></span></div>
+        <div class="title">{{ monthName() | titlecase }}</div>
+        <div class="nav">
+          <button mat-icon-button (click)="prevMonth()"><mat-icon>chevron_left</mat-icon></button>
+          <button mat-icon-button (click)="nextMonth()"><mat-icon>chevron_right</mat-icon></button>
+        </div>
+      </div>
+
+      <div class="week">
+        <div class="wd" *ngFor="let d of weekDays">{{ d }}</div>
+      </div>
+
+      <div class="days">
+        <button class="cell"
+                *ngFor="let d of monthMatrix"
+                [class.empty]="!d"
+                [class.today]="isToday(d)"
+                [class.selected]="isSelected(d)"
+                (click)="pick(d)">
+          <span *ngIf="d">{{ d.getDate() | number:'2.0-0' }}</span>
+        </button>
+      </div>
+    </mat-card>
+
+    <mat-card class="news-card">
+      <div class="head">
+        <div class="left">
+          <mat-icon>notifications</mat-icon>
+          <span>Novedades</span>
+        </div>
+        <button mat-stroked-button color="primary" class="ver-todo" (click)="verTodo()">ver todo</button>
+      </div>
+
+      <div class="news-item" *ngFor="let n of novedades">
+        <div class="badge" [class.pending]="n.status==='pendiente'">{{ n.status }}</div>
+        <div class="body">
+          <div class="title">{{ n.title }}</div>
+          <div class="meta">{{ n.date }}</div>
+          <p class="text">{{ n.text }}</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Columna derecha: Tipos de citas -->
+  <div class="right-col">
+    <h3 class="tipos-title">Tipos de citas</h3>
+    <div class="tipos-grid">
+      <button class="tipo" *ngFor="let t of tipos" (click)="openTipo(t)">
+        <div class="icon" [style.background]="t.color">
+          <mat-icon>{{ t.icon }}</mat-icon>
+        </div>
+        <div class="label">{{ t.label }}</div>
+      </button>
+    </div>
+  </div>
+</section>

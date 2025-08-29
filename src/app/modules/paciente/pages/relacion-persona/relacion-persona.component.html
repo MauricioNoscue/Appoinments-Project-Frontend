@@ -1,0 +1,61 @@
+<div class="cards-grid">
+
+  <!-- Tarjetas de personas -->
+  <mat-card
+    class="person-card"
+    *ngFor="let p of people()"
+    (click)="select(p)"
+    [class.selected]="selectedId() === p.id"
+    tabindex="0"
+    [attr.aria-pressed]="selectedId() === p.id"
+    [attr.aria-label]="'Seleccionar a ' + p.name + ' ' + p.lastname">
+
+    <div class="top">
+      <div class="avatar" [style.background]="p.color">
+        {{ initials(p) }}
+      </div>
+
+      <div class="info">
+        <div class="name">{{ p.name }}</div>
+        <div class="lastname">{{ p.lastname }}</div>
+
+        <mat-chip-set class="chip-set">
+          <mat-chip class="relation-chip" selected>{{ p.relation }}</mat-chip>
+        </mat-chip-set>
+      </div>
+
+      <button
+        mat-icon-button
+        class="menu-btn"
+        (click)="$event.stopPropagation()"
+        [matMenuTriggerFor]="menu"
+        aria-label="Más opciones">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+
+    <mat-menu #menu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="view(p)">
+        <mat-icon>visibility</mat-icon>
+        <span>Ver</span>
+      </button>
+      <button mat-menu-item (click)="edit(p)">
+        <mat-icon>edit</mat-icon>
+        <span>Editar</span>
+      </button>
+      <button mat-menu-item (click)="remove(p)">
+        <mat-icon>delete</mat-icon>
+        <span>Eliminar</span>
+      </button>
+    </mat-menu>
+
+  </mat-card>
+
+  <!-- Tarjeta para agregar -->
+  <button class="add-card" (click)="addPerson()" aria-label="Agregar persona">
+    <div class="add-dashed">
+      <div class="plus">+</div>
+      <div class="add-text">Agrega Persona</div>
+    </div>
+  </button>
+</div>

@@ -74,7 +74,14 @@ export class FormCityComponent implements OnInit {
     @Optional() private dialogRef?: MatDialogRef<FormCityComponent>
   ) {
     this.cityForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ\s]+$/),
+        ],
+      ],
       departamentId: ['', [Validators.required]],
     });
   }
@@ -89,6 +96,13 @@ export class FormCityComponent implements OnInit {
     if (modoIn === 'edit' && dataIn) {
       this.cityForm.patchValue(dataIn);
     }
+      this.cityForm.get('name')?.valueChanges.subscribe((v: string) => {
+        const raw = v || '';
+        const clean = raw.replace(/[^A-Za-zÁÉÍÓÚÜáéíóúüÑñ\s]/g, ''); // quita todo lo que no sea letra/espacio
+        if (raw !== clean) {
+          this.cityForm.get('name')?.setValue(clean, { emitEvent: false });
+        }
+      });
   }
 
   private cargarDepartamentos(): void {
@@ -99,6 +113,7 @@ export class FormCityComponent implements OnInit {
       error: (err) => console.error('Error al cargar departamentos:', err),
     });
   }
+
 
   onSubmit(): void {
     if (this.cityForm.invalid) {

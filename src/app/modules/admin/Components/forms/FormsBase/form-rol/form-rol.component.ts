@@ -1,67 +1,130 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { RolC, RolCreated, RolUpdated } from '../../../../../../shared/Models/security/RolModel';
+import { Component, OnInit, Optional, Inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+
+// Material
+import {
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RolCreated, RolUpdated } from '../../../../../../shared/Models/security/RolModel';
 
 @Component({
   selector: 'app-form-rol',
-standalone:false,
-
+  standalone: true,
   templateUrl: './form-rol.component.html',
-  styleUrl: './form-rol.component.css'
+  styleUrls: ['./form-rol.component.css'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
 })
 export class FormRolComponent implements OnInit {
-
- @Input() modo: 'create' | 'edit' = 'create';
-  @Input() data?:RolUpdated;
-  @Output() formSubmit = new EventEmitter<RolCreated |RolUpdated>();
-
+  modo: 'create' | 'edit' = 'create';
   rolForm: FormGroup;
 
-
-  constructor(private fb: FormBuilder) {
-    this.rolForm = this.createForm();
+  constructor(
+    private fb: FormBuilder,
+    @Optional()
+    @Inject(MAT_DIALOG_DATA)
+    private dialogData?: { modo?: 'create' | 'edit'; data?: RolUpdated | any },
+    @Optional() private dialogRef?: MatDialogRef<FormRolComponent>
+  ) {
+    this.rolForm = this.fb.group({
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(80),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ' -]+$/),
+        ],
+      ],
+      description: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(10),
+          Validators.maxLength(200),
+        ],
+      ],
+    });
   }
 
   ngOnInit(): void {
-    if (this.data && this.modo === 'edit') {
+    this.modo = this.dialogData?.modo ?? 'create';
+    const d = this.dialogData?.data;
+
+    if (this.modo === 'edit' && d) {
       this.rolForm.patchValue({
-        id:this.data?.id,
-        name: this.data.name,
-        description: this.data.description
+        name: d.name ?? d.Name ?? '',
+        description: d.description ?? d.Description ?? '',
       });
-
-    
     }
-  }
 
-  private createForm(): FormGroup {
-    return this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      
-      description: ['', [Validators.required, Validators.minLength(10)]]
+    // saneos
+    this.rolForm.get('name')?.valueChanges.subscribe((v) => {
+      const raw = v ?? '';
+      const only = raw.replace(/[^A-Za-zÁÉÍÓÚÜáéíóúüÑñ' -]/g, '');
+      const cleaned = only.replace(/\s+/g, ' ').trim();
+      if (raw !== cleaned)
+        this.rolForm.get('name')?.setValue(cleaned, { emitEvent: false });
+    });
+
+    this.rolForm.get('description')?.valueChanges.subscribe((v) => {
+      const raw = v ?? '';
+      const cleaned = raw.replace(/\s+/g, ' ').trim();
+      if (raw !== cleaned)
+        this.rolForm
+          .get('description')
+          ?.setValue(cleaned, { emitEvent: false });
     });
   }
 
   onSubmit(): void {
-    if (this.rolForm.valid) {
-      this.formSubmit.emit(this.rolForm.value);
-    } else {
-      this.markFormGroupTouched();
+    if (this.rolForm.invalid) {
+      this.rolForm.markAllAsTouched();
+      return;
     }
+
+    const id = this.dialogData?.data?.id;
+    const payload: RolCreated | RolUpdated =
+      this.modo === 'edit' && id
+        ? ({ id, ...this.rolForm.value } as RolUpdated)
+        : ({ ...this.rolForm.value } as RolCreated);
+
+    this.dialogRef?.close(payload);
   }
 
-  private markFormGroupTouched(): void {
-    Object.values(this.rolForm.controls).forEach(control => {
-      control.markAsTouched();
-    });
+  cancelar(): void {
+    this.dialogRef?.close(null);
   }
 
-  getFieldError(fieldName: string): string {
-    const field = this.rolForm.get(fieldName);
-    if (field?.errors && field.touched) {
-      if (field.errors['required']) return `${fieldName} es requerido`;
-      if (field.errors['minlength']) return `${fieldName} debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
-    }
-    return '';
+  getFieldError(field: 'name' | 'description'): string {
+    const c = this.rolForm.get(field);
+    if (!c || !(c.touched || c.dirty) || !c.errors) return '';
+    if (c.errors['required']) return 'Este campo es obligatorio';
+    if (c.errors['minlength'])
+      return `Mínimo ${c.errors['minlength'].requiredLength} caracteres`;
+    if (c.errors['maxlength'])
+      return `Máximo ${c.errors['maxlength'].requiredLength} caracteres`;
+    if (c.errors['pattern'])
+      return 'Solo letras, espacios, guion (-) y apóstrofo (’)';
+    return 'Valor inválido';
   }
 }

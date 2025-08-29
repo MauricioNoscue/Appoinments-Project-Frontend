@@ -1,0 +1,131 @@
+:host {
+  display: block;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ===== Tarjeta Persona ===== */
+.person-card {
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
+  outline: 2px solid transparent;
+  transition: outline-color .15s ease, box-shadow .15s ease, transform .05s ease;
+  cursor: pointer;
+}
+
+.person-card:hover {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .12);
+}
+
+.person-card.selected {
+  outline-color: #2D7DF6;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  font-size: 18px;
+  user-select: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .12) inset;
+}
+
+.info {
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 16px;
+  color: #1b1f24;
+  line-height: 1.2;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lastname {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-set {
+  padding: 0;
+}
+
+.relation-chip {
+  height: 24px;
+  line-height: 24px;
+  font-size: 12px;
+  border-radius: 999px;
+  background: #eef4ff;
+  color: #2D7DF6;
+}
+
+.menu-btn {
+  margin-top: -6px;
+}
+
+/* ===== Tarjeta Agregar ===== */
+.add-card {
+  background: transparent;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.add-dashed {
+  height: 160px;
+  border: 2px dashed #9aa5b1;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  row-gap: 6px;
+  transition: border-color .15s ease, transform .05s ease, box-shadow .15s ease;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+}
+
+.add-card:hover .add-dashed {
+  border-color: #2D7DF6;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .10);
+}
+
+.plus {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.add-text {
+  font-size: 14px;
+  color: #374151;
+}
+
+/* Accesibilidad: focus visible */
+.person-card:focus-visible,
+.add-card:focus-visible .add-dashed {
+  outline: 3px solid #2D7DF6;
+  outline-offset: 2px;
+}

@@ -26,9 +26,12 @@ export const routes: Routes = [
   {
     path: 'doctor',
     loadChildren: () =>
-      import('./modules/doctor/doctor.module').then(
-        (m) => m.DoctorModule
-      ),
+      import('./modules/doctor/doctor.module').then((m) => m.DoctorModule),
+  },
+  {
+    path: 'paciente',
+    loadChildren: () =>
+      import('./modules/paciente/paciente.module').then((m) => m.PacienteModule),
   },
 
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },

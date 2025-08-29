@@ -42,9 +42,22 @@ export class FormBranchComponent implements OnInit {
     @Optional() private dialogRef?: MatDialogRef<FormBranchComponent>
   ) {
     this.branchForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required]],
+      name: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.pattern(/^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ\s]+$/),
+        ],
+      ],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.pattern(/^\S+$/)],
+      ],
+      phoneNumber: [
+        '',
+        [Validators.required, Validators.pattern(/^\+?\d{10}$/)],
+      ],
       address: ['', [Validators.required]],
       institutionId: ['', [Validators.required]],
     });
@@ -60,6 +73,31 @@ export class FormBranchComponent implements OnInit {
     if (modoIn === 'edit' && dataIn) {
       this.branchForm.patchValue(dataIn);
     }
+
+     this.branchForm.get('name')?.valueChanges.subscribe((v: string) => {
+       const raw = v || '';
+       const clean = raw.replace(/[^A-Za-zÁÉÍÓÚÜáéíóúüÑñ\s]/g, ''); // quita todo lo que no sea letra/espacio
+       if (raw !== clean) {
+         this.branchForm.get('name')?.setValue(clean, { emitEvent: false });
+       }
+     });
+    // -------- Sanitizador de email --------
+    this.branchForm.get('email')?.valueChanges.subscribe((v: string) => {
+      const clean = (v || '').trim().replace(/\s+/g, ''); // sin espacios
+      if (v !== clean) {
+        this.branchForm.get('email')?.setValue(clean, { emitEvent: false });
+      }
+    });
+    // -------- Sanitizador de teléfono --------
+    this.branchForm.get('phoneNumber')?.valueChanges.subscribe((v: string) => {
+      const digitsOnly = (v || '').replace(/\D/g, ''); // solo dígitos
+      const maxTen = digitsOnly.slice(0, 10); // máximo 10
+      if (v !== maxTen) {
+        this.branchForm
+          .get('phoneNumber')
+          ?.setValue(maxTen, { emitEvent: false });
+      }
+    });
   }
 
   private cargarInstituciones(): void {
@@ -101,13 +139,26 @@ export class FormBranchComponent implements OnInit {
   }
 
   getFieldError(fieldName: string): string {
-    const field = this.branchForm.get(fieldName);
-    if (field?.errors && field.touched) {
-      if (field.errors['required']) return `${fieldName} es requerido`;
-      if (field.errors['minlength'])
-        return `${fieldName} debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
-      if (field.errors['email']) return `El correo no es válido`;
+  const field = this.branchForm.get(fieldName);
+  if (field?.errors && (field.touched || field.dirty)) {
+    if (field.errors['required']) return 'Este campo es obligatorio';
+
+      if (fieldName === 'name') {
+        if (field.errors?.['required']) return 'El nombre es obligatorio';
+        if (field.errors?.['minlength']) return 'El nombre es muy corto';
+        if (field.errors?.['maxlength']) return 'El nombre es muy largo';
+        if (field.errors?.['pattern'])
+          return 'Solo se permiten letras y espacios';
+      }
+    if (fieldName === 'email') {
+      if (field.errors['email'])   return 'Formato de correo inválido';
+      if (field.errors['pattern']) return 'El correo no debe contener espacios';
     }
-    return '';
+
+    if (fieldName === 'phoneNumber') {
+      if (field.errors['pattern']) return 'El teléfono debe tener exactamente 10 dígitos';
+    }
   }
+  return '';
+}
 }

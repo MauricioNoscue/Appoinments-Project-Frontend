@@ -1,0 +1,151 @@
+.perfil-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.perfil-card {
+  padding: 16px;
+}
+
+.avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a90e2, #5a60f0);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tolerancia {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.tolerancia mat-icon {
+  font-size: 90px;
+  width: 90px;
+  height: 90px;
+  line-height: 90px;
+}
+
+.red {
+  color: red;
+}
+
+.gray {
+  color: gray;
+}
+
+/* --- Tarjeta de gráfica --- */
+.chart-card {
+  padding: 16px;
+  overflow: hidden;
+  /* evita desbordes */
+}
+
+/* encabezado */
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.view-link {
+  font-size: 12px;
+  text-decoration: none;
+  opacity: 0.8;
+}
+
+/* cuerpo: gráfico + leyenda */
+.chart-body {
+  display: flex;
+  flex-wrap: wrap;
+  /* si no cabe, baja la leyenda */
+  gap: 16px;
+  align-items: center;
+}
+
+/* tamaño del gráfico (controla el canvas) */
+.chart-wrap {
+  position: relative;
+  width: 260px;
+  /* ajusta a tu gusto */
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  /* mantiene proporción cuadrada */
+  margin: 0 auto;
+}
+
+.chart-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* leyenda */
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1 1 220px;
+  /* ocupa el espacio restante o baja */
+  min-width: 220px;
+}
+
+.legend-item {
+  display: grid;
+  grid-template-columns: 14px 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+}
+
+.legend-item:last-child {
+  border-bottom: 0;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.name {
+  opacity: 0.9;
+}
+
+.val {
+  font-weight: 600;
+}
+
+.pct {
+  opacity: 0.7;
+}
+
+/* Opcional: en pantallas grandes, haz que esta tarjeta use todo el ancho */
+@media (min-width: 900px) {
+  .chart-card {
+    grid-column: span 2;
+    /* ocupa dos columnas del grid de .perfil-container */
+  }
+}

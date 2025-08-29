@@ -10,6 +10,11 @@ export interface ModuleEdid{
     Description:string
 }
 
+export interface ModuleC {
+  id?: number;
+  Name: string;
+  Description: string;
+}
 
 export interface ModuleList{
     id:number
