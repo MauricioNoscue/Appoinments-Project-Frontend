@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Optional, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 // Interfaces
 export interface PersonaCreacion {
@@ -18,38 +19,42 @@ export interface PersonaCreada extends PersonaCreacion {
   id: number;
 }
 
-export interface UsuarioCreacion {
-  email: string;
-  password: string;
+export interface DoctorCreacion {
+  specialty: string;
+  emailDoctor: string;
+  image: string;
   active: boolean;
   personId: number;
 }
 
-export interface UsuarioCompleto {
+export interface DoctorCompleto {
   persona: PersonaCreacion;
-  usuario: UsuarioCreacion;
+  doctor: DoctorCreacion;
 }
 
 @Component({
-  selector: 'app-form-user',
+  selector: 'app-form-doctor',
   standalone: false,
-  templateUrl: './form-user.component.html',
-  styleUrl: './form-user.component.css'
+  templateUrl: './form-doctor.component.html',
+  styleUrls: ['./form-doctor.component.css']
 })
-export class FormUserComponent implements OnInit {
+export class FormDoctorComponent implements OnInit {
   @Input() modo: 'create' | 'edit' = 'create';
   @Input() data?: any;
-  @Output() formSubmit = new EventEmitter<UsuarioCreacion>();
+
+  @Output() formSubmit = new EventEmitter<DoctorCreacion>();
   @Output() personaCreated = new EventEmitter<PersonaCreacion>();
+  @Output() modalClosed = new EventEmitter<void>();
 
   personaForm: FormGroup;
-  usuarioForm: FormGroup;
+  doctorForm: FormGroup;
   currentStep: number = 1;
   personaCreada: PersonaCreada | null = null;
   isCreatingPersona: boolean = false;
-  isCreatingUsuario: boolean = false;
+  isCreatingDoctor: boolean = false;
+  imagePreview: string | null = null;
 
-  // Datos de prueba para los selects
+  // Catálogos (puedes sustituirlos por inputs/datos de servicio si lo prefieres)
   tiposDocumento = [
     { id: 1, nombre: 'Cédula de Ciudadanía' },
     { id: 2, nombre: 'Tarjeta de Identidad' },
@@ -65,17 +70,40 @@ export class FormUserComponent implements OnInit {
     { id: 5, nombre: 'Famisanar' }
   ];
 
-  constructor(private fb: FormBuilder) {
+  specialties = [
+    'Medicina General',
+    'Cardiología',
+    'Dermatología',
+    'Ginecología',
+    'Oftalmología',
+    'Pediatría',
+    'Psiquiatría',
+    'Radiología',
+    'Traumatología',
+    'Urología'
+  ];
+
+  constructor(
+    private fb: FormBuilder,
+    @Optional() private dialogRef?: MatDialogRef<FormDoctorComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData?: { specialties?: string[] }
+  ) {
     this.personaForm = this.createPersonaForm();
-    this.usuarioForm = this.createUsuarioForm();
+    this.doctorForm = this.createDoctorForm();
   }
 
   ngOnInit(): void {
+    // Si recibimos especialidades por diálogo, sobreescribimos
+    if (this.dialogData?.specialties?.length) {
+      this.specialties = this.dialogData.specialties;
+    }
+
     if (this.data && this.modo === 'edit') {
-      // Lógica para edición si se necesita después
+      // Lógica para edición futura si aplica
     }
   }
 
+  // -------- Builders --------
   private createPersonaForm(): FormGroup {
     return this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(2)]],
@@ -90,81 +118,79 @@ export class FormUserComponent implements OnInit {
     });
   }
 
-  private createUsuarioForm(): FormGroup {
+  private createDoctorForm(): FormGroup {
     return this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      specialty: ['', [Validators.required]],
+      emailDoctor: ['', [Validators.required, Validators.email]],
+      image: [''],
       active: [true]
     });
   }
 
+  // -------- Paso 1: Persona --------
   onSubmitPersona(): void {
     if (this.personaForm.valid) {
       this.isCreatingPersona = true;
-
-      // Simular la creación de persona (aquí irías al servicio)
       const personaData: PersonaCreacion = this.personaForm.value;
-
-      // Emitir evento para que el componente padre maneje la creación
-      this.personaCreated.emit(personaData);
+      this.personaCreated.emit(personaData); // el padre hará la creación y llamará a onPersonaCreatedSuccess/Error
     } else {
       this.markFormGroupTouched(this.personaForm);
     }
   }
 
-  // Método para ser llamado desde el componente padre cuando la persona se crea exitosamente
   onPersonaCreatedSuccess(personaCreada: PersonaCreada): void {
     this.personaCreada = personaCreada;
     this.isCreatingPersona = false;
     this.currentStep = 2;
   }
 
-  // Método para manejar errores en la creación de persona
   onPersonaCreatedError(): void {
     this.isCreatingPersona = false;
   }
 
-  onSubmitUsuario(): void {
-    if (this.usuarioForm.valid && this.personaCreada) {
-      this.isCreatingUsuario = true;
-
-      const usuarioData: UsuarioCreacion = {
-        ...this.usuarioForm.value,
+  // -------- Paso 2: Doctor --------
+  onSubmitDoctor(): void {
+    if (this.doctorForm.valid && this.personaCreada) {
+      this.isCreatingDoctor = true;
+      const doctorData: DoctorCreacion = {
+        ...this.doctorForm.value,
         personId: this.personaCreada.id
-      };
+      } as DoctorCreacion;
 
-
-      this.formSubmit.emit(usuarioData);
+      this.formSubmit.emit(doctorData); // el padre hará la creación y llamará a onDoctorCreatedSuccess/Error
     } else {
-      this.markFormGroupTouched(this.usuarioForm);
+      this.markFormGroupTouched(this.doctorForm);
     }
   }
 
-  // Método para ser llamado desde el componente padre cuando el usuario se crea exitosamente
-  onUsuarioCreatedSuccess(): void {
-    this.isCreatingUsuario = false;
+  onDoctorCreatedSuccess(): void {
+    this.isCreatingDoctor = false;
   }
 
-  // Método para manejar errores en la creación de usuario
-  onUsuarioCreatedError(): void {
-    this.isCreatingUsuario = false;
+  onDoctorCreatedError(): void {
+    this.isCreatingDoctor = false;
   }
 
+  // -------- Navegación / Cierre --------
   goBack(): void {
     this.currentStep = 1;
     this.personaCreada = null;
-    this.usuarioForm.reset();
-    this.usuarioForm.patchValue({ active: true });
+    this.doctorForm.reset();
+    this.doctorForm.patchValue({ active: true });
   }
 
+  closeDialog(result?: any): void {
+    this.modalClosed.emit();
+    this.dialogRef?.close(result ?? false);
+  }
+
+  // -------- Utilidades UI --------
   private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.values(formGroup.controls).forEach(control => {
-      control.markAsTouched();
-    });
+    Object.values(formGroup.controls).forEach(control => control.markAsTouched());
   }
 
   getFieldError(fieldName: string): string {
-    const currentForm = this.currentStep === 1 ? this.personaForm : this.usuarioForm;
+    const currentForm = this.currentStep === 1 ? this.personaForm : this.doctorForm;
     const field = currentForm.get(fieldName);
 
     if (field?.errors && field.touched) {
@@ -187,9 +213,23 @@ export class FormUserComponent implements OnInit {
       'epsId': 'EPS',
       'gender': 'Género',
       'healthRegime': 'Régimen de salud',
-      'email': 'Correo electrónico',
-      'password': 'Contraseña'
+      'specialty': 'Especialidad',
+      'emailDoctor': 'Correo electrónico',
+      'image': 'Imagen'
     };
     return labels[fieldName] || fieldName;
+  }
+
+  onImageSelected(event: any): void {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64String = e.target?.result as string;
+        this.imagePreview = base64String;
+        this.doctorForm.patchValue({ image: base64String });
+      };
+      reader.readAsDataURL(file);
+    }
   }
 }

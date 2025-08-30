@@ -1,0 +1,30 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon class="success-icon">check_circle</mat-icon>
+    ¡Doctor registrado exitosamente!
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <div class="success-message">
+      <p>El doctor ha sido registrado correctamente en el sistema.</p>
+    </div>
+
+    <div class="doctor-preview">
+      <h3>Información del doctor registrado:</h3>
+      <app-doctor-card
+        [image]="data.doctor.image"
+        [fullName]="data.doctor.fullName || ''"
+        [specialty]="data.doctor.specialty"
+        [email]="data.doctor.emailDoctor"
+        [active]="data.doctor.active">
+      </app-doctor-card>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center" class="dialog-actions">
+    <button mat-raised-button color="primary" (click)="onContinue()" class="continue-btn">
+      <mat-icon>arrow_forward</mat-icon>
+      Continuar
+    </button>
+  </mat-dialog-actions>
+</div>

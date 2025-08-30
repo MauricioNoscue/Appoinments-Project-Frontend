@@ -1,20 +1,19 @@
-<!-- Encabezado tipo breadcrumb + título -->
+<!-- Encabezado + acciones -->
 <section class="page">
-
     <header class="page-header">
         <h1 class="title">Personal de la salud</h1>
-        <div class="header-actions">
+
+        <div class="header-actions" [formGroup]="form">
             <button mat-raised-button color="primary" class="btn-add" (click)="openCreateDialog()">
                 <mat-icon>add</mat-icon>
                 Agregar personal
             </button>
 
+            <!-- Búsqueda -->
             <div class="search-container">
                 <form class="d-flex search-bar" role="search">
-                        <input type="search" class="form-control me-2 barra" matInput placeholder="Buscar" [formControl]="searchControl">
-                        <button mat-icon-button matSuffix *ngIf="searchControl?.value" (click)="clearFilters()">
-                            <mat-icon>close</mat-icon>
-                        </button>
+                    <input type="search" class="form-control me-2 barra" matInput placeholder="Buscar"
+                        [formControl]="searchControl" />
                 </form>
             </div>
 
@@ -36,19 +35,14 @@
 
         <ng-template #listTpl>
             <div class="cards-grid">
-                <app-doctor-card
-                    *ngFor="let d of paginatedDoctors"
-                    [image]="d.image"
-                    [fullName]="d.fullName || ''"
-                    [specialty]="d.specialty"
-                    [email]="d.emailDoctor"
-                    [active]="d.active">
+                <app-doctor-card *ngFor="let d of paginatedDoctors" [image]="d.image" [fullName]="d.fullName || ''"
+                    [specialty]="d.specialty" [email]="d.emailDoctor" [active]="d.active">
                 </app-doctor-card>
             </div>
         </ng-template>
     </div>
 
-    <!-- Controles de paginación -->
+    <!-- Controles de paginación tipo carrusel -->
     <div class="carousel-controls" *ngIf="total > 12">
         <button class="carousel-btn" (click)="prevPage()" [disabled]="pageIndex <= 0">
             <mat-icon>chevron_left</mat-icon>
@@ -60,6 +54,7 @@
             <mat-icon>chevron_right</mat-icon>
         </button>
     </div>
+
     <!-- Loader -->
     <div class="loader" *ngIf="loading">
         <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
