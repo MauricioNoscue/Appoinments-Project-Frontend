@@ -46,7 +46,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
   // Form state
   isCreatingDoctor = false;
   private personaIdCreada!: number;
-  private personaDataCreada!: PersonaCreada;
+  private personaDataCreada: PersonaCreada | null = null;
 
   // filtros + paginación
   form: FormGroup;
@@ -178,7 +178,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
     // Conecta los @Output() del formulario a la lógica existente
     cmp.personaCreated.subscribe((persona: PersonaCreacion) => this.onPersonaCreated(persona));
     cmp.formSubmit.subscribe((doctor: DoctorCreacion) => this.onDoctorCreated(doctor));
-    cmp.modalClosed.subscribe(() => this.cancelCreateDoctor());
+    cmp.modalClosed.subscribe((payload) => this.cancelCreateDoctor(payload));
 
     this.currentDoctorDialogRef.afterClosed().subscribe((ok) => {
       this.currentDoctorDialogRef = undefined;
@@ -190,7 +190,22 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /** Cerrar modal manualmente (por botón cancelar o output) */
-  cancelCreateDoctor(): void {
+  cancelCreateDoctor(payload: { discardPersona?: boolean; personaId?: number }): void {
+    if (payload.discardPersona && payload.personaId) {
+      // Eliminar la persona de la base de datos para evitar registros no utilizados
+      this.personaService.eliminar(payload.personaId).subscribe({
+        next: () => {
+          console.log('Persona eliminada exitosamente:');
+        },
+        error: (error) => {
+          console.error('Error al eliminar la persona:', error);
+          this.snackBar.open('Error al eliminar la persona. Contacte al administrador.', 'Cerrar', { duration: 4000 });
+        }
+      });
+      // Reset persona data
+      this.personaIdCreada = 0;
+      this.personaDataCreada = null;
+    }
     this.currentDoctorDialogRef?.close(false);
     this.currentDoctorDialogRef = undefined;
     this.snackBar.open('Registro de doctor cancelado', 'Cerrar', { duration: 2000 });
@@ -205,7 +220,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
         this.personaDataCreada = {
           ...personaData,
           id: response.id
-        };
+        } as PersonaCreada;
 
         this.snackBar.open('Persona registrada exitosamente', 'Cerrar', { duration: 2000 });
 

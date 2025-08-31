@@ -44,7 +44,7 @@ export class FormDoctorComponent implements OnInit {
 
   @Output() formSubmit = new EventEmitter<DoctorCreacion>();
   @Output() personaCreated = new EventEmitter<PersonaCreacion>();
-  @Output() modalClosed = new EventEmitter<void>();
+  @Output() modalClosed = new EventEmitter<{ discardPersona?: boolean; personaId?: number }>();
 
   personaForm: FormGroup;
   doctorForm: FormGroup;
@@ -180,7 +180,8 @@ export class FormDoctorComponent implements OnInit {
   }
 
   closeDialog(result?: any): void {
-    this.modalClosed.emit();
+    const payload = this.personaCreada ? { discardPersona: true, personaId: this.personaCreada.id } : { discardPersona: false };
+    this.modalClosed.emit(payload);
     this.dialogRef?.close(result ?? false);
   }
 
