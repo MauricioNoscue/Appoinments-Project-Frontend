@@ -134,6 +134,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.router.navigate(['/auth/login']);
   }
 
+  goBack(): void {
+    this.step = 1;
+  }
+
   /* ===== Persistencia ===== */
   private crearPersona(): Promise<number> {
     const p = this.personForm.value;
@@ -201,17 +205,76 @@ export class RegisterComponent implements OnInit, OnDestroy {
           },
           error: (err) => {
             this.creandoUsuario = false;
-            Swal.fire('No fue posible crear el usuario', this.parseErr(err), 'error');
+            const friendly = this.getFriendlyErrorMessage(err);
+            if (friendly.field) {
+              this.uf[friendly.field].setErrors({ duplicate: true });
+            }
+            Swal.fire('No fue posible crear el usuario', friendly.message, 'error');
           },
         });
       } catch (e) {
-        Swal.fire('No fue posible registrar la persona', this.parseErr(e), 'error');
+        const friendly = this.getFriendlyErrorMessage(e);
+        if (friendly.field) {
+          this.pf[friendly.field].setErrors({ duplicate: true });
+        }
+        Swal.fire('No fue posible registrar la persona', friendly.message, 'error');
       }
     })();
   }
 
   private parseErr(err: any): string {
+    // Handle HttpErrorResponse
+    if (err?.status) {
+      // For HTTP errors, try to get the message from the response body
+      const serverMessage = err?.error?.message || err?.error?.Message || err?.error;
+      if (serverMessage && typeof serverMessage === 'string') {
+        return serverMessage;
+      }
+      // If no specific message, provide a generic one based on status
+      if (err.status === 400) {
+        return 'Datos inválidos o ya registrados. Verifica la información.';
+      }
+      if (err.status === 409) {
+        return 'Conflicto: algunos datos ya existen.';
+      }
+    }
+    // Fallback for other error types
     return err?.error?.message || err?.message || 'Intenta nuevamente.';
+  }
+
+  private getFriendlyErrorMessage(err: any): { message: string, field?: string } {
+    const errorMsg = this.parseErr(err).toLowerCase();
+
+    // Check for specific duplicate field messages
+    if (errorMsg.includes('email') || errorMsg.includes('correo')) {
+      if (errorMsg.includes('exist') || errorMsg.includes('registrado') || errorMsg.includes('duplicate') || errorMsg.includes('ya existe')) {
+        return { message: 'El correo electrónico ya está registrado. Por favor, utiliza otro correo.', field: 'email' };
+      }
+    }
+
+    if (errorMsg.includes('document') || errorMsg.includes('documento')) {
+      if (errorMsg.includes('exist') || errorMsg.includes('registrado') || errorMsg.includes('duplicate') || errorMsg.includes('ya existe')) {
+        return { message: 'El número de documento ya está registrado. Verifica tus datos.', field: 'document' };
+      }
+    }
+
+    if (errorMsg.includes('phone') || errorMsg.includes('teléfono') || errorMsg.includes('telefono')) {
+      if (errorMsg.includes('exist') || errorMsg.includes('registrado') || errorMsg.includes('duplicate') || errorMsg.includes('ya existe')) {
+        return { message: 'El número de teléfono ya está registrado. Utiliza otro número.', field: 'phoneNumber' };
+      }
+    }
+
+    // Check for general duplicate messages
+    if (errorMsg.includes('duplicate') || errorMsg.includes('duplicado') || errorMsg.includes('ya existe') || errorMsg.includes('ya está registrado')) {
+      return { message: 'Algunos datos ya están registrados. Revisa la información proporcionada.' };
+    }
+
+    // Check for 400 status (bad request) which often indicates validation/duplication errors
+    if (err?.status === 400) {
+      return { message: 'Los datos proporcionados no son válidos o ya están registrados. Verifica la información.' };
+    }
+
+    return { message: this.parseErr(err) };
   }
 
   // accesos rápidos desde el template

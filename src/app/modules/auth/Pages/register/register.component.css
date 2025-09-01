@@ -8,6 +8,7 @@
 
 /* Card blanca centrada */
 .card {
+    position: relative;
     width: min(920px, 94vw);
     background: #fff;
     border-radius: 18px;
@@ -51,6 +52,43 @@
 
 .slide {
     width: 50%;
+    position: relative;
+}
+
+/* Botón de retroceso */
+.back-button-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+.btn-back {
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    color: #47607d;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    transition: all .2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+}
+
+.btn-back:hover {
+    background: #f8fafc;
+    border-color: #2e6fac;
+    color: #2e6fac;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 111, 172, .2);
+}
+
+.btn-back:active {
+    transform: translateY(0);
 }
 
 /* ===== Formularios ===== */

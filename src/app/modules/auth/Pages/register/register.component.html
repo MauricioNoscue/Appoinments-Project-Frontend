@@ -8,6 +8,13 @@
       {{ step === 1 ? 'Regístrate' : 'Completa tu Información' }}
     </h1>
 
+    <!-- Botón de retroceso (solo visible en paso 2) -->
+    <div class="back-button-container" *ngIf="step === 2">
+      <button type="button" class="btn-back" (click)="goBack()" title="Volver al paso anterior">
+        ← Atrás
+      </button>
+    </div>
+
     <!-- ===== Slider (animación lateral) ===== -->
     <div class="slider">
       <div class="slides" [class.step-2]="step === 2">
@@ -45,7 +52,8 @@
               <div class="fg">
                 <label>Documento</label>
                 <input class="inp" type="text" formControlName="document" placeholder="Solo números" />
-                <div class="err" *ngIf="pf['document'].touched && pf['document'].invalid">
+                <div class="err" *ngIf="pf['document'].touched && pf['document'].errors?.['duplicate']">Este documento ya está registrado.</div>
+                <div class="err" *ngIf="pf['document'].touched && pf['document'].invalid && !pf['document'].errors?.['duplicate']">
                   Entre 6 y 12 dígitos.
                 </div>
               </div>
@@ -64,10 +72,11 @@
               <div class="fg">
                 <label>Teléfono (celular)</label>
                 <input class="inp" type="text" formControlName="phoneNumber" placeholder="3XXXXXXXXX" />
-                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['coPhone']">
+                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['duplicate']">Este teléfono ya está registrado.</div>
+                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['coPhone'] && !pf['phoneNumber'].errors?.['duplicate']">
                   Debe ser celular colombiano de 10 dígitos (empieza por 3).
                 </div>
-                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['required']">Requerido.</div>
+                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['required'] && !pf['phoneNumber'].errors?.['duplicate']">Requerido.</div>
               </div>
             </div>
 
@@ -114,7 +123,8 @@
             <div class="fg">
               <label>Correo de acceso</label>
               <input class="inp" type="email" formControlName="email" placeholder="correo@dominio.com" />
-              <div class="err" *ngIf="uf['email'].touched && uf['email'].invalid">Email inválido.</div>
+              <div class="err" *ngIf="uf['email'].touched && uf['email'].errors?.['duplicate']">Este correo ya está registrado.</div>
+              <div class="err" *ngIf="uf['email'].touched && uf['email'].invalid && !uf['email'].errors?.['duplicate']">Email inválido.</div>
             </div>
 
             <div class="row-2">
