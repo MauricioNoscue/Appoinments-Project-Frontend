@@ -1,1 +1,163 @@
-<p>register works!</p>
+<div class="auth-shell">
+  <div class="card">
+    <!-- Logo superior -->
+    <img src="../../../../../assets/images/logo.png" alt="Logo" class="logo" />
+
+    <!-- Título dinámico -->
+    <h1 class="title">
+      {{ step === 1 ? 'Regístrate' : 'Completa tu Información' }}
+    </h1>
+
+    <!-- Botón de retroceso (solo visible en paso 2) -->
+    <div class="back-button-container" *ngIf="step === 2">
+      <button type="button" class="btn-back" (click)="goBack()" title="Volver al paso anterior">
+        ← Atrás
+      </button>
+    </div>
+
+    <!-- ===== Slider (animación lateral) ===== -->
+    <div class="slider">
+      <div class="slides" [class.step-2]="step === 2">
+        <!-- ===== Slide 1: Persona ===== -->
+        <section class="slide">
+          <form class="grid" [formGroup]="personForm" (ngSubmit)="goStep2()">
+            <div class="row-2">
+              <div class="fg">
+                <label>Nombres</label>
+                <input class="inp" type="text" formControlName="fullName" placeholder="Nombres" />
+                <div class="err" *ngIf="pf['fullName'].touched && pf['fullName'].invalid">
+                  Solo letras, mínimo 2 caracteres.
+                </div>
+              </div>
+
+              <div class="fg">
+                <label>Apellidos</label>
+                <input class="inp" type="text" formControlName="fullLastName" placeholder="Apellidos" />
+                <div class="err" *ngIf="pf['fullLastName'].touched && pf['fullLastName'].invalid">
+                  Solo letras, mínimo 2 caracteres.
+                </div>
+              </div>
+            </div>
+
+            <div class="row-2">
+              <div class="fg">
+                <label>Tipo de documento</label>
+                <select class="inp" formControlName="documentTypeId">
+                  <option value="">Selecciona</option>
+                  <option *ngFor="let t of tiposDocumento" [value]="t.id">{{ t.nombre }}</option>
+                </select>
+                <div class="err" *ngIf="pf['documentTypeId'].touched && pf['documentTypeId'].invalid">Requerido.</div>
+              </div>
+
+              <div class="fg">
+                <label>Documento</label>
+                <input class="inp" type="text" formControlName="document" placeholder="Solo números" />
+                <div class="err" *ngIf="pf['document'].touched && pf['document'].errors?.['duplicate']">Este documento ya está registrado.</div>
+                <div class="err" *ngIf="pf['document'].touched && pf['document'].invalid && !pf['document'].errors?.['duplicate']">
+                  Entre 6 y 12 dígitos.
+                </div>
+              </div>
+            </div>
+
+            <div class="row-2">
+              <div class="fg">
+                <label>Fecha de nacimiento</label>
+                <input class="inp" type="date" formControlName="dateBorn" />
+                <div class="err" *ngIf="pf['dateBorn'].touched && pf['dateBorn'].errors?.['futureDate']">
+                  No puede ser futura.
+                </div>
+                <div class="err" *ngIf="pf['dateBorn'].touched && pf['dateBorn'].errors?.['required']">Requerido.</div>
+              </div>
+
+              <div class="fg">
+                <label>Teléfono (celular)</label>
+                <input class="inp" type="text" formControlName="phoneNumber" placeholder="3XXXXXXXXX" />
+                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['duplicate']">Este teléfono ya está registrado.</div>
+                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['coPhone'] && !pf['phoneNumber'].errors?.['duplicate']">
+                  Debe ser celular colombiano de 10 dígitos (empieza por 3).
+                </div>
+                <div class="err" *ngIf="pf['phoneNumber'].touched && pf['phoneNumber'].errors?.['required'] && !pf['phoneNumber'].errors?.['duplicate']">Requerido.</div>
+              </div>
+            </div>
+
+            <div class="row-2">
+              <div class="fg">
+                <label>EPS</label>
+                <select class="inp" formControlName="epsId">
+                  <option value="">Selecciona</option>
+                  <option *ngFor="let e of epsOptions" [value]="e.id">{{ e.nombre }}</option>
+                </select>
+                <div class="err" *ngIf="pf['epsId'].touched && pf['epsId'].invalid">Requerido.</div>
+              </div>
+
+              <div class="fg">
+                <label>Régimen de salud</label>
+                <select class="inp" formControlName="healthRegime">
+                  <option value="">Selecciona</option>
+                  <option value="Contributivo">Contributivo</option>
+                  <option value="Subsidiado">Subsidiado</option>
+                </select>
+                <div class="err" *ngIf="pf['healthRegime'].touched && pf['healthRegime'].invalid">Requerido.</div>
+              </div>
+            </div>
+
+            <div class="fg">
+              <label>Género</label>
+              <div class="radios">
+                <label><input type="radio" formControlName="gender" value="Masculino" /> Masculino</label>
+                <label><input type="radio" formControlName="gender" value="Femenino" /> Femenino</label>
+              </div>
+              <div class="err" *ngIf="pf['gender'].touched && pf['gender'].invalid">Requerido.</div>
+            </div>
+
+            <div class="buttons">
+              <button class="btn-primary" type="submit" [disabled]="creandoPersona">Continuar</button>
+              <button class="btn-link" type="button" (click)="goLogin()">Cancelar</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ===== Slide 2: Usuario ===== -->
+        <section class="slide">
+          <form class="grid" [formGroup]="userForm" (ngSubmit)="submitFinal()">
+            <div class="fg">
+              <label>Correo de acceso</label>
+              <input class="inp" type="email" formControlName="email" placeholder="correo@dominio.com" />
+              <div class="err" *ngIf="uf['email'].touched && uf['email'].errors?.['duplicate']">Este correo ya está registrado.</div>
+              <div class="err" *ngIf="uf['email'].touched && uf['email'].invalid && !uf['email'].errors?.['duplicate']">Email inválido.</div>
+            </div>
+
+            <div class="row-2">
+              <div class="fg">
+                <label>Contraseña</label>
+                <input class="inp" type="password" formControlName="password"
+                  placeholder="Mín. 8 con mayús, minús, número y símbolo" />
+                <div class="err" *ngIf="uf['password'].touched && uf['password'].invalid">
+                  Debe contener mayúscula, minúscula, número y símbolo.
+                </div>
+              </div>
+              <div class="fg">
+                <label>Confirmar</label>
+                <input class="inp" type="password" formControlName="confirmPassword"
+                  placeholder="Repite la contraseña" />
+                <div class="err" *ngIf="uf['confirmPassword'].touched && uf['confirmPassword'].errors?.['mismatch']">
+                  No coincide con la contraseña.
+                </div>
+                <div class="err" *ngIf="uf['confirmPassword'].touched && uf['confirmPassword'].errors?.['required']">
+                  Requerido.
+                </div>
+              </div>
+            </div>
+
+            <div class="buttons">
+              <button class="btn-primary" type="submit" [disabled]="creandoUsuario || creandoPersona">
+                Crear cuenta
+              </button>
+              <button class="btn-link" type="button" (click)="goLogin()">Cancelar</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

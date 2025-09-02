@@ -1,0 +1,95 @@
+/* Forma y fondo tipo mockup (ondas suaves) */
+.doctor-card {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    background: url('../../../../../../assets/images/fondo-doctor.png') center/100% no-repeat;
+    transition: transform .15s ease, box-shadow .15s ease;
+    width: 290px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    border: none;
+}
+
+.doctor-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .08);
+}
+
+/* insignia superior derecha (puedes sustituir por tu logo) */
+.badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: url('../../../../../../assets/images/doctor.jpg') center/70% no-repeat;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+}
+
+/* imagen del doctor */
+.hero {
+    height: 180px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.hero img {
+    max-height: 180px;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .12));
+}
+
+/* contenido */
+.content {
+    padding: 14px 16px 16px;
+    display: grid;
+    gap: 8px;
+    flex: 1;
+}
+
+.name {
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+    align-content: center;
+    text-align: center;
+}
+
+.meta {
+    display: grid;
+    gap: 8px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: center;
+}
+
+.label {
+    color: rgba(0, 0, 0, .55);
+    font-size: 13px;
+}
+
+.value {
+    font-weight: 600;
+}
+
+.value.ok {
+    color: #0f766e;
+}
+
+.value.no {
+    color: #b42318;
+}
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

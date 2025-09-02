@@ -1,0 +1,40 @@
+<!-- admin/pages/medical-staff/dialogs/doctor-form-dialog/doctor-form-dialog.component.html -->
+<h2 mat-dialog-title>Agregar personal</h2>
+
+<mat-dialog-content class="dialog-content">
+    <form [formGroup]="form" class="form-grid">
+        <mat-form-field appearance="fill">
+            <mat-label>Especialidad</mat-label>
+            <mat-select formControlName="specialty" required>
+                <mat-option *ngFor="let s of data.specialties" [value]="s">{{ s }}</mat-option>
+            </mat-select>
+            <mat-error>Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>ID de persona</mat-label>
+            <input matInput type="number" formControlName="idUser" required />
+            <mat-error>Requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="emailDoctor" required />
+            <mat-error>Email inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full">
+            <mat-label>URL de imagen (opcional)</mat-label>
+            <input matInput type="url" formControlName="image" />
+        </mat-form-field>
+
+        <mat-slide-toggle formControlName="active">Activo</mat-slide-toggle>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="cancel()" [disabled]="saving">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="submit()" [disabled]="saving || form.invalid">
+        Guardar
+    </button>
+</mat-dialog-actions>

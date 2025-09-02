@@ -1,0 +1,27 @@
+<mat-card class="doctor-card" appearance="outlined">
+    <div class="badge" aria-hidden="true"></div>
+
+    <div class="hero">
+        <img *ngIf="image" [src]="image" alt="{{ fullName }}">
+    </div>
+
+    <div class="content">
+        <h3 class="name">{{ fullName }}</h3>
+
+        <div class="meta">
+            <div class="row">
+                <span class="label">Profesión</span>
+                <span class="value">{{ specialty || '—' }}</span>
+            </div>
+            <div class="row">
+                <span class="label">Email</span>
+                <span class="value ellipsis">{{ email || '—' }}</span>
+            </div>
+            <div class="row">
+                <span class="label">Estado</span>
+                <span class="value" [class.ok]="active" [class.no]="!active">
+                    {{ active ? 'Activo' : 'Inactivo' }}
+                </span>
+            </div>
+        </div>
+    </div>

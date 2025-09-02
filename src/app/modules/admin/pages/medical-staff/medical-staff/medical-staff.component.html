@@ -1,0 +1,62 @@
+<!-- Encabezado + acciones -->
+<section class="page">
+    <header class="page-header">
+        <h1 class="title">Personal de la salud</h1>
+
+        <div class="header-actions" [formGroup]="form">
+            <button mat-raised-button color="primary" class="btn-add" (click)="openCreateDialog()">
+                <mat-icon>add</mat-icon>
+                Agregar personal
+            </button>
+
+            <!-- Búsqueda -->
+            <div class="search-container">
+                <form class="d-flex search-bar" role="search">
+                    <input type="search" class="form-control me-2 barra" matInput placeholder="Buscar"
+                        [formControl]="searchControl" />
+                </form>
+            </div>
+
+            <button mat-stroked-button class="filter" (click)="openFilters()">
+                <mat-icon>filter_list</mat-icon>
+                Filtrar
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido: grilla de tarjetas -->
+    <div class="cards-container">
+        <ng-container *ngIf="!loading && doctors.length === 0; else listTpl">
+            <mat-card class="empty">
+                <mat-icon>person_off</mat-icon>
+                <p>No se encontraron médicos.</p>
+            </mat-card>
+        </ng-container>
+
+        <ng-template #listTpl>
+            <div class="cards-grid">
+                <app-doctor-card *ngFor="let d of paginatedDoctors" [image]="d.image" [fullName]="d.fullName || ''"
+                    [specialty]="d.specialty" [email]="d.emailDoctor" [active]="d.active">
+                </app-doctor-card>
+            </div>
+        </ng-template>
+    </div>
+
+    <!-- Controles de paginación tipo carrusel -->
+    <div class="carousel-controls" *ngIf="total > 12">
+        <button class="carousel-btn" (click)="prevPage()" [disabled]="pageIndex <= 0">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span class="page-indicator">
+            {{ pageIndex + 1 }} / {{ totalPages || 1 }}
+        </span>
+        <button class="carousel-btn" (click)="nextPage()" [disabled]="(pageIndex + 1) * pageSize >= total">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </div>
+
+    <!-- Loader -->
+    <div class="loader" *ngIf="loading">
+        <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    </div>
+</section>

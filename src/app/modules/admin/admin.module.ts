@@ -15,7 +15,6 @@ import { FormRolComponent } from './Components/forms/FormsBase/form-rol/form-rol
 import { RolEditComponent } from './Components/forms/FormsEdit/rol-edit/rol-edit.component';
 import { FormPermissionComponent } from './Components/forms/FormsBase/form-permission/form-permission.component';
 import { FormEditPermissionComponent } from './Components/forms/FormsEdit/form-edit-permission/form-edit-permission.component';
-import { FormCreatePermissionComponent } from './Components/forms/FormsCreate/form-create-permission/form-create-permission.component';
 import { PermissionCreatedComponent } from './Components/forms/FormsCreate/permission-created/permission-created.component';
 import { PermissionEditComponent } from './Components/forms/FormsEdit/permission-edit/permission-edit.component';
 import { PermissionComponent } from './pages/Security/permission/permission.component';
@@ -25,6 +24,7 @@ import { FormModuleComponent } from './Components/forms/FormsBase/form-module/fo
 import { ModuleCreatedComponent } from './Components/forms/FormsCreate/module-created/module-created.component';
 import { ModuleEditComponent } from './Components/forms/FormsEdit/module-edit/module-edit.component';
 import { FormUserComponent } from './Components/forms/FormsBase/form-user/form-user.component';
+import { FormDoctorComponent } from './Components/forms/FormsBase/form-doctor/form-doctor.component';
 import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/user-create.component';
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
@@ -37,6 +37,11 @@ import { TypeCitationManagementComponent } from './pages/type-citation-managemen
 import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ScheduleComponent } from './pages/schedule/schedule.component';
+import { MatDialogContent } from '@angular/material/dialog';
+import { DoctorFormDialogComponent } from './pages/medical-staff/dialogs/doctor-form-dialog/doctor-form-dialog.component';
+import { DoctorCardComponent } from './Components/cards/doctor-card/doctor-card.component';
+import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
+import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doctor-created-dialog/doctor-created-dialog.component';
 
 
 @NgModule({
@@ -61,10 +66,19 @@ import { ScheduleComponent } from './pages/schedule/schedule.component';
     ModuleEditComponent,
     CardViewModuleComponent,
     FormUserComponent,
+    FormDoctorComponent,
     UserCreateComponent,
     UserRoleManagementComponent,
     PermissionManagementComponent,
-    ConsultorioComponent,TypeCitationManagementComponent,ViewCitationAvailableComponent,ScheduleComponent
+    ConsultorioComponent,TypeCitationManagementComponent,ViewCitationAvailableComponent,ScheduleComponent,
+    DoctorCardComponent,
+    DoctorFormDialogComponent,
+    DoctorCardComponent,
+    MedicalStaffComponent,
+    ConsultorioComponent,
+    TypeCitationManagementComponent,
+    ViewCitationAvailableComponent,
+    DoctorCreatedDialogComponent
   ],
   imports: [
     CommonModule,
@@ -76,6 +90,7 @@ import { ScheduleComponent } from './pages/schedule/schedule.component';
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
+    MatDialogContent
   ],
 })
 export class AdminModule {}

@@ -1,0 +1,168 @@
+<!-- Modal limpio y centrado -->
+<div class="modal-container">
+  <div class="modal-header">
+    <h2 class="modal-title">{{ currentStep === 1 ? 'Registrar Persona' : 'Registrar Doctor' }}</h2>
+    <div class="progress-indicator">
+      <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+        <span class="step-number">1</span>
+        <span class="step-label">Persona</span>
+      </div>
+      <div class="progress-line" [class.completed]="currentStep > 1"></div>
+      <div class="step" [class.active]="currentStep >= 2">
+        <span class="step-number">2</span>
+        <span class="step-label">Doctor</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-content">
+    <!-- Paso 1: Persona -->
+    <form *ngIf="currentStep === 1" [formGroup]="personaForm" (ngSubmit)="onSubmitPersona()" class="form-grid">
+      <div class="form-field">
+        <label for="fullName" class="field-label">Nombres</label>
+        <input id="fullName" type="text" formControlName="fullName" class="field-input"
+          [class.error]="!!getFieldError('fullName')" placeholder="Ingresa los nombres completos">
+        <div class="field-error" *ngIf="getFieldError('fullName')">{{ getFieldError('fullName') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="fullLastName" class="field-label">Apellidos</label>
+        <input id="fullLastName" type="text" formControlName="fullLastName" class="field-input"
+          [class.error]="!!getFieldError('fullLastName')" placeholder="Ingresa los apellidos completos">
+        <div class="field-error" *ngIf="getFieldError('fullLastName')">{{ getFieldError('fullLastName') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="documentTypeId" class="field-label">Tipo de documento</label>
+        <select id="documentTypeId" formControlName="documentTypeId" class="field-input"
+          [class.error]="!!getFieldError('documentTypeId')">
+          <option value="">Seleccionar tipo</option>
+          <option *ngFor="let tipo of tiposDocumento" [value]="tipo.id">{{ tipo.nombre }}</option>
+        </select>
+        <div class="field-error" *ngIf="getFieldError('documentTypeId')">{{ getFieldError('documentTypeId') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="document" class="field-label">Número de documento</label>
+        <input id="document" type="text" formControlName="document" class="field-input"
+          [class.error]="!!getFieldError('document')" placeholder="Número de documento">
+        <div class="field-error" *ngIf="getFieldError('document')">{{ getFieldError('document') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="dateBorn" class="field-label">Fecha de nacimiento</label>
+        <input id="dateBorn" type="date" formControlName="dateBorn" class="field-input"
+          [class.error]="!!getFieldError('dateBorn')">
+        <div class="field-error" *ngIf="getFieldError('dateBorn')">{{ getFieldError('dateBorn') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="phoneNumber" class="field-label">Número de teléfono</label>
+        <input id="phoneNumber" type="tel" formControlName="phoneNumber" class="field-input"
+          [class.error]="!!getFieldError('phoneNumber')" placeholder="Número de teléfono">
+        <div class="field-error" *ngIf="getFieldError('phoneNumber')">{{ getFieldError('phoneNumber') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="epsId" class="field-label">EPS</label>
+        <select id="epsId" formControlName="epsId" class="field-input" [class.error]="!!getFieldError('epsId')">
+          <option value="">Seleccionar EPS</option>
+          <option *ngFor="let eps of epsOptions" [value]="eps.id">{{ eps.nombre }}</option>
+        </select>
+        <div class="field-error" *ngIf="getFieldError('epsId')">{{ getFieldError('epsId') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Género</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="gender" value="Masculino" formControlName="gender">
+            <span class="radio-text">Masculino</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="gender" value="Femenino" formControlName="gender">
+            <span class="radio-text">Femenino</span>
+          </label>
+        </div>
+        <div class="field-error" *ngIf="getFieldError('gender')">{{ getFieldError('gender') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label">Régimen de salud</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="healthRegime" value="Contributivo" formControlName="healthRegime">
+            <span class="radio-text">Contributivo</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="healthRegime" value="Subsidiado" formControlName="healthRegime">
+            <span class="radio-text">Subsidiado</span>
+          </label>
+        </div>
+        <div class="field-error" *ngIf="getFieldError('healthRegime')">{{ getFieldError('healthRegime') }}</div>
+      </div>
+    </form>
+
+    <!-- Paso 2: Doctor -->
+    <form *ngIf="currentStep === 2" [formGroup]="doctorForm" (ngSubmit)="onSubmitDoctor()" class="form-grid">
+      <div class="person-summary" *ngIf="personaCreada">
+        <div class="summary-header">
+          <h3>Persona registrada</h3>
+        </div>
+        <div class="summary-content">
+          <p class="person-name">{{ personaCreada.fullName }} {{ personaCreada.fullLastName }}</p>
+          <p class="person-document">Documento: {{ personaCreada.document }}</p>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="specialty" class="field-label">Especialidad</label>
+        <select id="specialty" formControlName="specialty" class="field-input"
+          [class.error]="!!getFieldError('specialty')">
+          <option value="">Seleccionar especialidad</option>
+          <option *ngFor="let s of specialties" [value]="s">{{ s }}</option>
+        </select>
+        <div class="field-error" *ngIf="getFieldError('specialty')">{{ getFieldError('specialty') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="emailDoctor" class="field-label">Correo electrónico</label>
+        <input id="emailDoctor" type="email" formControlName="emailDoctor" class="field-input"
+          [class.error]="!!getFieldError('emailDoctor')" placeholder="doctor@ejemplo.com">
+        <div class="field-error" *ngIf="getFieldError('emailDoctor')">{{ getFieldError('emailDoctor') }}</div>
+      </div>
+
+      <div class="form-field">
+        <label for="image" class="field-label">Foto de perfil (opcional)</label>
+        <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" class="field-input">
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="Vista previa" class="preview-image">
+        </div>
+        <small class="field-hint">Selecciona una imagen para el perfil del doctor</small>
+      </div>
+
+      <div class="form-field checkbox-field">
+        <label class="checkbox-option">
+          <input type="checkbox" formControlName="active">
+          <span class="checkbox-text">Doctor activo</span>
+        </label>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-actions">
+    <button type="button" class="btn-secondary" (click)="closeDialog()" [disabled]="isCreatingPersona || isCreatingDoctor">
+      Cancelar
+    </button>
+
+    <button type="button" class="btn-primary" *ngIf="currentStep === 1" (click)="onSubmitPersona()"
+      [disabled]="personaForm.invalid || isCreatingPersona">
+      {{ isCreatingPersona ? 'Creando persona...' : 'Siguiente' }}
+    </button>
+
+    <button type="button" class="btn-primary" *ngIf="currentStep === 2" (click)="onSubmitDoctor()"
+      [disabled]="doctorForm.invalid || isCreatingDoctor">
+      {{ isCreatingDoctor ? 'Creando doctor...' : 'Crear Doctor' }}
+    </button>
+  </div>
+</div>
