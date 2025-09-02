@@ -29,7 +29,7 @@ import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
 import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
-import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
+
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -42,6 +42,7 @@ import { DoctorFormDialogComponent } from './pages/medical-staff/dialogs/doctor-
 import { DoctorCardComponent } from './Components/cards/doctor-card/doctor-card.component';
 import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doctor-created-dialog/doctor-created-dialog.component';
+import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
 
 
 @NgModule({
@@ -70,7 +71,7 @@ import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doct
     UserCreateComponent,
     UserRoleManagementComponent,
     PermissionManagementComponent,
-    ConsultorioComponent,TypeCitationManagementComponent,ViewCitationAvailableComponent,ScheduleComponent,
+    TypeCitationManagementComponent,ViewCitationAvailableComponent,ScheduleComponent,
     DoctorCardComponent,
     DoctorFormDialogComponent,
     DoctorCardComponent,
