@@ -36,5 +36,24 @@ private ur = environment.apiURL
     return this.http.put(`${this.ur}/api/roluser/update-roles`, dto);
   }
 
+  forgotPassword(email: string) {
+    const body = { email };
+    return this.http.post(`${this.ur}/api/user/forgot-password`, body);
+  }
+
+  resetPassword(payload: { email: string; token: string; newPassword: string }) {
+    // en backend el dto se llama ResetPasswordRequestDto (email, code/token, newPassword)
+    const body: any = {
+      email: payload.email,
+      // mando ambos por seguridad de casing/nombre
+      token: payload.token,
+      code: payload.token,
+      permission: payload.token,
+      newPassword: payload.newPassword,
+      password: payload.newPassword,
+    };
+    return this.http.post(`${this.ur}/api/user/reset-password`, body);
+  }
+
 
 }
