@@ -23,6 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SectionCardComponent } from './components/Cards/section-card/section-card.component';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 // Agrega más según necesites
 
 const materialModules = [
@@ -46,7 +47,7 @@ const materialModules = [
   MatCardModule,
   MatTableModule,
   MatDialogModule,
-  ReactiveFormsModule,MatSelectModule ,MatProgressSpinnerModule,MatTabsModule,MatFormFieldModule,MatStepperModule
+  ReactiveFormsModule,MatSelectModule ,MatProgressSpinnerModule,MatTabsModule,MatFormFieldModule,MatStepperModule,MatDatepickerModule
 ];
 
 @NgModule({
