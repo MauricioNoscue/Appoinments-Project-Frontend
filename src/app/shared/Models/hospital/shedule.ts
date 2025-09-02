@@ -8,3 +8,14 @@ export interface shedule{
   numberCitation: number;      // Número de la cita
   roomNumber: number;          
 }
+
+
+// interfaces/consulting-room.interface.ts
+export interface ConsultingRoom {
+  id: number;
+  name: string;
+  roomNumber: number;
+  floor: number;
+  isDeleted: boolean;
+  registrationDate: Date;
+}

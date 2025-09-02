@@ -1,25 +1,27 @@
 <div class="form-header">
+  <button
+    mat-raised-button
+    color="primary"
+    class="btn-add"
+    (click)="openFormShedule()">
+    <mat-icon>assignment_add</mat-icon>
+    Agregar horario
+  </button>
 
-
-    <!-- <button mat-button (click)="abrirDialog('create')">Crear</button> -->
-
-
-    <button mat-raised-button color="primary" class="btn-add" >
-        <mat-icon>assignment_add</mat-icon> Agregar horario
-    </button>
-
-    <div class="search-container">
-       <form class="d-flex barra" role="search">
-        <input class="form-control me-2 barra" type="search" placeholder="Search" aria-label="Search"/>
-      </form>
-    </div>
-
-
+  <div class="search-container">
+    <form class="d-flex barra" role="search">
+      <input
+        class="form-control me-2 barra"
+        type="search"
+        placeholder="Search"
+        aria-label="Search"/>
+    </form>
+  </div>
 </div>
 
-
-
-<!-- En tu componente padre -->
 <div class="schedules-container">
-<app-shedule-card    *ngFor="let shedule of shedules" [schedule]="shedule"></app-shedule-card>
+  <app-shedule-card
+    *ngFor="let shedule of shedules"
+    [schedule]="shedule">
+  </app-shedule-card>
 </div>
