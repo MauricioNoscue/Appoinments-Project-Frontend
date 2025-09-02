@@ -4,6 +4,7 @@ import { DashboardLayoutComponentComponent } from '../../shared/components/dashb
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RelacionPersonaComponent } from './pages/relacion-persona/relacion-persona.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
+import { NotificacionesComponent } from './pages/notificaciones/notificaciones.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'relacion', component: RelacionPersonaComponent },
       { path: 'perfil', component: PerfilComponent },
+      { path: 'notificaciones', component: NotificacionesComponent },
     ],
   },
 ];

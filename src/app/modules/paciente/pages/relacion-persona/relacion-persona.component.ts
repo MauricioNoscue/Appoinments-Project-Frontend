@@ -1,4 +1,10 @@
-import { Component, computed, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ViewChild,
+  TemplateRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // Angular Material (standalone)
@@ -8,6 +14,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { FormRelacionPersonaComponent } from '../../Components/Form/form-relacion-persona/form-relacion-persona.component';
+
+
 
 type Relation =
   | 'Papá'
@@ -26,11 +36,12 @@ type Relation =
 
 export interface PersonCard {
   id: number;
-  name: string; // Nombre
-  lastname: string; // Apellido(s)
+  name: string;
+  lastname: string;
   relation: Relation;
-  color: string; // color del círculo (hex)
-  avatarText?: string; // si no la envías, se calcula con iniciales
+  color: string;
+  avatarText?: string;
+  idNumero?: string;
 }
 
 @Component({
@@ -44,12 +55,18 @@ export interface PersonCard {
     MatMenuModule,
     MatChipsModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './relacion-persona.component.html',
   styleUrl: './relacion-persona.component.css',
 })
 export class RelacionPersonaComponent {
-  // Datos de ejemplo: cámbialos por tu servicio
+  private dialog = inject(MatDialog);
+
+  // Referencia al template "Detalles"
+  @ViewChild('detailDialog') detailDialog!: TemplateRef<any>;
+
+  // Datos “quemados” por ahora
   readonly people = signal<PersonCard[]>([
     {
       id: 1,
@@ -57,13 +74,15 @@ export class RelacionPersonaComponent {
       lastname: 'Noscue Cerquera',
       relation: 'Hijo',
       color: '#17BF63',
+      idNumero: '10223344',
     },
     {
       id: 2,
       name: 'Juan David',
-      lastname: 'Artunduaga vepez',
+      lastname: 'Artunduaga Vepez',
       relation: 'Sobrino',
       color: '#FF2D2D',
+      idNumero: '99887766',
     },
     {
       id: 3,
@@ -71,25 +90,29 @@ export class RelacionPersonaComponent {
       lastname: 'Palomar Murcia',
       relation: 'Papá',
       color: '#8256FF',
+      idNumero: '55443322',
     },
     {
       id: 4,
-      name: 'Andrés Mauricio',
-      lastname: 'Noscue Cerquera',
-      relation: 'Hijo',
-      color: '#17BF63',
+      name: 'María Isabel',
+      lastname: 'Gómez Pardo',
+      relation: 'Hija',
+      color: '#0EA5E9',
+      idNumero: '99887766',
     },
     {
       id: 5,
-      name: 'Juan David',
-      lastname: 'Artunduaga vepez',
-      relation: 'Sobrino',
-      color: '#FF2D2D',
+      name: 'Sergio Andrés',
+      lastname: 'Leguízamo Ruiz',
+      relation: 'Tío',
+      color: '#F59E0B',
+      idNumero: '99887766',
     },
   ]);
 
-  // seleccionado
   selectedId = signal<number | null>(2);
+
+
 
   initials(p: PersonCard): string {
     if (p.avatarText?.trim())
@@ -103,20 +126,44 @@ export class RelacionPersonaComponent {
     this.selectedId.set(p.id === this.selectedId() ? null : p.id);
   }
 
-  addPerson() {
-    // Aquí abres tu modal / navegación para crear persona
-    console.log('Agregar persona');
-  }
-
-  edit(p: PersonCard) {
-    console.log('Editar', p);
-  }
-
-  remove(p: PersonCard) {
-    console.log('Eliminar', p);
-  }
-
+  // ====== Detalles (ng-template) ======
   view(p: PersonCard) {
-    console.log('Ver', p);
+    this.dialog.open(this.detailDialog, { data: p, autoFocus: true });
+  }
+
+  // ====== Crear ======
+  addPerson() {
+    const ref = this.dialog.open(FormRelacionPersonaComponent, {
+      data: { mode: 'create' as const },
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (!result) return; // cancelado
+      const nextId = Math.max(0, ...this.people().map((x) => x.id)) + 1;
+      this.people.update((list) => [
+        ...list,
+        { ...result, id: nextId } as PersonCard,
+      ]);
+    });
+  }
+
+  // ====== Editar / Actualizar ======
+  edit(p: PersonCard) {
+    const ref = this.dialog.open(FormRelacionPersonaComponent, {
+      data: { mode: 'edit' as const, person: p },
+    });
+
+    ref.afterClosed().subscribe((result) => {
+      if (!result) return; // cancelado
+      this.people.update((list) =>
+        list.map((x) => (x.id === p.id ? { ...x, ...result } : x))
+      );
+    });
+  }
+
+  // ====== Eliminar ======
+  remove(p: PersonCard) {
+    this.people.update((list) => list.filter((x) => x.id !== p.id));
+    if (this.selectedId() === p.id) this.selectedId.set(null);
   }
 }

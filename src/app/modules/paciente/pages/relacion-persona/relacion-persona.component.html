@@ -1,5 +1,6 @@
-<div class="cards-grid">
+<h1>persona relacionada </h1>
 
+<div class="cards-grid">
   <!-- Tarjetas de personas -->
   <mat-card
     class="person-card"
@@ -15,13 +16,10 @@
         {{ initials(p) }}
       </div>
 
-      <div class="info">
+      <div class="text-block">
         <div class="name">{{ p.name }}</div>
         <div class="lastname">{{ p.lastname }}</div>
-
-        <mat-chip-set class="chip-set">
-          <mat-chip class="relation-chip" selected>{{ p.relation }}</mat-chip>
-        </mat-chip-set>
+        <mat-chip class="relation-chip" selected>{{ p.relation }}</mat-chip>
       </div>
 
       <button
@@ -48,7 +46,6 @@
         <span>Eliminar</span>
       </button>
     </mat-menu>
-
   </mat-card>
 
   <!-- Tarjeta para agregar -->
@@ -59,3 +56,74 @@
     </div>
   </button>
 </div>
+
+<!-- =========================
+     MODAL: DETALLES (sin otro componente)
+========================= -->
+<!-- HTML del Modal Mejorado -->
+<ng-template #detailDialog let-data>
+  <div class="modal-container">
+    <!-- Header del Modal -->
+    <div class="modal-header">
+      <h2 class="modal-title">Detalles de Persona</h2>
+      <button
+        mat-icon-button
+        class="close-btn"
+        mat-dialog-close
+        aria-label="Cerrar modal">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="modal-content">
+      <!-- Avatar y Información Principal -->
+      <div class="person-info">
+        <div class="avatar-container">
+          <div class="person-avatar" [style.background]="data.color || '#4f46e5'">
+            {{ (data.name + ' ' + data.lastname).split(' ')[0][0] + (data.lastname?.split(' ')[0]?.[0] || '') | uppercase }}
+          </div>
+        </div>
+
+        <div class="person-details">
+          <h3 class="person-name">{{ data.name }} {{ data.lastname }}</h3>
+          <p class="person-subtitle">{{ data.lastname }}</p>
+        </div>
+      </div>
+
+      <!-- Información Detallada -->
+      <div class="details-section">
+        <div class="detail-item">
+          <div class="detail-icon">
+            <mat-icon>badge</mat-icon>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">Identificación</span>
+            <span class="detail-value">{{ data.idNumero || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-icon">
+            <mat-icon>diversity_3</mat-icon>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">Relación</span>
+            <span class="detail-value">{{ data.relation }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer con Botón -->
+    <div class="modal-footer">
+      <button
+        mat-flat-button
+        color="primary"
+        class="close-button"
+        mat-dialog-close>
+        Cerrar
+      </button>
+    </div>
+  </div>
+</ng-template>
