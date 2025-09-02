@@ -17,6 +17,7 @@ import { TypeCitationComponent } from './components/PagesShared/type-citation/ty
 import { CardTypeCitationComponent } from './components/Cards/card-type-citation/card-type-citation.component';
 import { CalendarComponent } from './components/Sections/calendar/calendar.component';
 import { SheduleCardComponent } from './components/Cards/shedule-card/shedule-card.component';
+import { FormSheduleComponent } from '../modules/admin/Components/forms/form-shedule/form-shedule.component';
 
 
 const sharedComponents =[
@@ -29,7 +30,7 @@ const sharedComponents =[
   CardBasicComponent,
   StaffCardComponent,
   DialogContainerComponent,SectionCardComponent
-  ,TypeCitationComponent,CardTypeCitationComponent,CalendarComponent,SheduleCardComponent
+  ,TypeCitationComponent,CardTypeCitationComponent,CalendarComponent,SheduleCardComponent,FormSheduleComponent
   
 
 ]

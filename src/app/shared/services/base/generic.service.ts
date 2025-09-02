@@ -18,7 +18,14 @@ export class GenericService {
     getgeneric(entity: string): Observable<any[]> {
        return this.http.get<any[]>(`${this.urlBase}/${entity}`);
      }
+    
    
+
+     public crearGeneric(entity: string, data: any): Observable<any> {
+     return this.http.post<any>(`${this.urlBase}/${entity}`,data);
+      }
+
+
 
 
 
