@@ -1,0 +1,51 @@
+.form-header {
+  display: flex;
+  height: 48px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  .btn-add {
+    display: flex;
+    justify-content: left;
+    height: 48px;
+    width: 174px;
+    background-color: #708EEE !important;
+    color: #ffffff !important;
+    border-radius: 8px;
+  }
+}
+
+
+.schedules-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background: #f8fafc;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .schedules-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .schedules-container {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 1201px) {
+  .schedules-container {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}

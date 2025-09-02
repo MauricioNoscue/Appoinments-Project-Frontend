@@ -1,0 +1,38 @@
+
+<div class="citation-card">
+  <!-- Header -->
+  <div class="card-header">
+    <div class="icon-container">
+      <i [class]="schedule.IcontypeCitation"></i>
+    </div>
+    <div class="header-content">
+      <h3 class="citation-type">{{ schedule.typeCitationName }}</h3>
+      <div class="status-indicator"></div>
+    </div>
+    <div class="menu-button">
+      <i class="fas fa-ellipsis-h"></i>
+    </div>
+  </div>
+
+  <!-- Daily appointments section -->
+  <div class="appointments-section">
+    <div class="appointments-header">
+      <i class="fas fa-calendar-day appointments-icon"></i>
+      <span class="appointments-text">Citas diarias</span>
+    </div>
+    <div class="appointments-count">{{ schedule.numberCitation }}</div>
+    <div class="appointment-indicator"></div>
+  </div>
+
+  <!-- Doctor and room info -->
+  <div class="info-section">
+    <div class="info-row">
+      <span class="info-label">Doctor asignado</span>
+      <span class="info-label">Consultorio</span>
+    </div>
+    <div class="info-row info-values">
+      <span class="doctor-name">{{ schedule.nameDoctor || 'Sin asignar' }}</span>
+      <span class="room-info">{{ schedule.roomNumber }}</span>
+    </div>
+  </div>
+</div>

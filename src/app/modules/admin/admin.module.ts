@@ -36,6 +36,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TypeCitationManagementComponent } from './pages/type-citation-management/type-citation-management.component';
 import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ScheduleComponent } from './pages/schedule/schedule.component';
 
 
 @NgModule({
@@ -63,7 +64,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     UserCreateComponent,
     UserRoleManagementComponent,
     PermissionManagementComponent,
-    ConsultorioComponent,TypeCitationManagementComponent,ViewCitationAvailableComponent
+    ConsultorioComponent,TypeCitationManagementComponent,ViewCitationAvailableComponent,ScheduleComponent
   ],
   imports: [
     CommonModule,

@@ -2,6 +2,7 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MenuItem } from '../../Models/ManuItemModel';
 
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -18,12 +19,20 @@ export class SidebarComponent implements OnInit {
   expandedItems: Set<string> = new Set();
   isMobile: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private service:UserService) {
     this.checkScreenSize();
   }
 
   ngOnInit(): void {
     // Inicializar elementos expandidos si es necesario
+
+    this.service.getMenu(4).subscribe({
+      next: (menu) => this.menuItems = menu,
+      error: (err) => {
+        console.error('Error cargando menú', err);
+        this.menuItems = [];
+      }
+    });
     this.initializeExpandedItems();
   }
 
