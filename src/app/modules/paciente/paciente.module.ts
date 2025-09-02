@@ -7,6 +7,7 @@ import { PacienteRoutingModule } from './paciente-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { MatCard } from '@angular/material/card';
 import { MaterialModule } from '../../shared/material.module';
+import { FormRelacionPersonaComponent } from './Components/Form/form-relacion-persona/form-relacion-persona.component';
 
 @NgModule({
   declarations: [], // NO declares DashboardComponent (es standalone)
@@ -16,6 +17,7 @@ import { MaterialModule } from '../../shared/material.module';
     SharedModule, // <-- vuelve a ponerlo si el layout se declara allí
     MatCard,
     MaterialModule,
+    FormRelacionPersonaComponent,
   ],
 })
 export class PacienteModule {}

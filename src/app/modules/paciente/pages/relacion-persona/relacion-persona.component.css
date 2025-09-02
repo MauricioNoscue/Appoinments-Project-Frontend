@@ -11,6 +11,9 @@
 
 /* ===== Tarjeta Persona ===== */
 .person-card {
+ min-width: 280px;   /* ancho mínimo */
+  max-width: 320px;   /* ancho máximo, opcional */
+  min-height: 160px;  /* alto mínimo */
   border-radius: 14px;
   padding: 14px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, .08);
@@ -45,10 +48,13 @@
   font-size: 18px;
   user-select: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, .12) inset;
+  margin-top: 30px;
+  margin-left: 30px;
 }
 
 .info {
   min-width: 0;
+  margin-left: 20px;
 }
 
 .name {
@@ -75,6 +81,14 @@
   padding: 0;
 }
 
+/* Centra el chip horizontalmente */
+.relation-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 4px;
+}
+
+
 .relation-chip {
   height: 24px;
   line-height: 24px;
@@ -82,6 +96,14 @@
   border-radius: 999px;
   background: #eef4ff;
   color: #2D7DF6;
+}
+
+.text-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+  /* ahora nombre, apellido y chip van centrados entre sí */
 }
 
 .menu-btn {
@@ -128,4 +150,293 @@
 .add-card:focus-visible .add-dashed {
   outline: 3px solid #2D7DF6;
   outline-offset: 2px;
+}
+
+
+
+
+
+
+
+
+
+/* ===== Dialog: Detalles de Persona ===== */
+
+/* Configuración del Dialog Panel */
+.person-detail-dialog .mdc-dialog__surface {
+  width: 420px;
+  max-width: 95vw;
+  border-radius: 24px;
+  padding: 0;
+  background: #ffffff;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  border: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+/* Remover padding y scroll por defecto */
+.person-detail-dialog .mat-mdc-dialog-content {
+  padding: 0;
+  margin: 0;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Container Principal */
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+/* ===== Header del Modal ===== */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 0 24px;
+  background: #ffffff;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: -0.025em;
+}
+
+.close-btn {
+  width: 40px;
+  height: 40px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  border-radius: 12px;
+}
+
+.close-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.close-btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== Contenido Principal ===== */
+.modal-content {
+  padding: 24px;
+  flex: 1;
+}
+
+/* Información de la Persona */
+.person-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.avatar-container {
+  flex-shrink: 0;
+}
+
+.person-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+}
+
+.person-avatar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.person-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.person-name {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ===== Sección de Detalles ===== */
+.details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.detail-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: #f8fafc;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+}
+
+.detail-icon mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #64748b;
+}
+
+.detail-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 2px;
+}
+
+.detail-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.3;
+}
+
+/* ===== Footer del Modal ===== */
+.modal-footer {
+  padding: 20px 24px 24px 24px;
+  background: #ffffff;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.close-button {
+  min-width: 120px;
+  height: 44px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0.025em;
+  box-shadow:
+    0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .person-detail-dialog .mdc-dialog__surface {
+    width: 90vw;
+    margin: 20px;
+    border-radius: 20px;
+  }
+
+  .modal-header {
+    padding: 20px 20px 0 20px;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+
+  .modal-footer {
+    padding: 16px 20px 20px 20px;
+  }
+
+  .person-info {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .person-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 18px;
+  }
+
+  .person-name {
+    font-size: 20px;
+  }
+
+  .details-section {
+    gap: 16px;
+  }
+
+  .detail-item {
+    padding: 8px 0;
+  }
+}
+
+/* ===== Animaciones ===== */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.person-detail-dialog .mdc-dialog__surface {
+  animation: modalSlideIn 0.2s ease-out;
 }

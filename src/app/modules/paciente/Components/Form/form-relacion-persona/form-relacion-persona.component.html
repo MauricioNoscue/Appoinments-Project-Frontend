@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>{{ mode === 'create' ? 'Agregar persona relacionada' : 'Editar persona relacionada' }}</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="form" class="form-grid">
+    <label>Nombre
+      <input formControlName="name" placeholder="Nombre" />
+    </label>
+
+    <label>Apellidos
+      <input formControlName="lastname" placeholder="Apellidos" />
+    </label>
+
+    <label>Relación</label>
+    <mat-form-field appearance="outline">
+      <mat-select formControlName="relation" placeholder="Selecciona relación">
+        <mat-option value="Papá">Papá</mat-option>
+        <mat-option value="Mamá">Mamá</mat-option>
+        <mat-option value="Hijo">Hijo</mat-option>
+        <mat-option value="Hija">Hija</mat-option>
+        <mat-option value="Hermano">Hermano</mat-option>
+        <mat-option value="Hermana">Hermana</mat-option>
+        <mat-option value="Tío">Tío</mat-option>
+        <mat-option value="Tía">Tía</mat-option>
+        <mat-option value="Sobrino">Sobrino</mat-option>
+        <mat-option value="Sobrina">Sobrina</mat-option>
+        <mat-option value="Abuelo">Abuelo</mat-option>
+        <mat-option value="Abuela">Abuela</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <label>Identificación
+      <input formControlName="idNumero" placeholder="Cédula / ID" />
+    </label>
+
+    <label>Color (hex)
+      <input formControlName="color" placeholder="#17BF63" />
+    </label>
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">
+    {{ mode === 'create' ? 'Crear' : 'Guardar cambios' }}
+  </button>
+</div>
