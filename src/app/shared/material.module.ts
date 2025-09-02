@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatRippleModule } from '@angular/material/core';
+import { MatNativeDateModule, MatRippleModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -47,7 +47,7 @@ const materialModules = [
   MatCardModule,
   MatTableModule,
   MatDialogModule,
-  ReactiveFormsModule,MatSelectModule ,MatProgressSpinnerModule,MatTabsModule,MatFormFieldModule,MatStepperModule,MatDatepickerModule
+  ReactiveFormsModule,MatSelectModule ,MatProgressSpinnerModule,MatTabsModule,MatFormFieldModule,MatStepperModule,MatDatepickerModule,MatNativeDateModule 
 ];
 
 @NgModule({
