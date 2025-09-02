@@ -99,30 +99,7 @@ export class FormFormComponent implements OnInit {
   }
 
   // ✅ Validador de URL (http/https + sintaxis correcta)
-  private urlValidator =
-    (allowedProtocols: string[] = ['http:', 'https:']) =>
-    (control: AbstractControl): ValidationErrors | null => {
-      const raw = (control.value ?? '').toString().trim();
-      if (!raw) return null; // 'required' lo maneja otro validador
 
-      // exigir http(s):// explícito
-      if (!/^https?:\/\//i.test(raw)) {
-        return { urlProtocol: true };
-      }
-
-      // no permitir espacios
-      if (/\s/.test(raw)) return { urlNoSpaces: true };
-
-      try {
-        const u = new URL(raw);
-        if (!allowedProtocols.includes(u.protocol))
-          return { urlProtocol: true };
-        if (!u.hostname) return { urlInvalid: true };
-        return null;
-      } catch {
-        return { urlInvalid: true };
-      }
-    };
 
   private createForm(): FormGroup {
     return this.fb.group({
@@ -134,7 +111,7 @@ export class FormFormComponent implements OnInit {
           Validators.pattern(/^[A-Za-zÁÉÍÓÚÜáéíóúüÑñ\s]+$/),
         ],
       ],
-      url: ['', [Validators.required, this.urlValidator(['http:', 'https:'])]],
+      url: ['', [Validators.required]],
       description: ['', [Validators.required, Validators.minLength(10)]],
     });
   }
