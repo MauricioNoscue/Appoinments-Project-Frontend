@@ -1,0 +1,15 @@
+.dialog-content {
+    padding-top: 8px;
+}
+
+.dialog-form {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 720px) {
+    .dialog-form {
+        grid-template-columns: 1fr;
+    }
+}

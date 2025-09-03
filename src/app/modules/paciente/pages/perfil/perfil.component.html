@@ -1,74 +1,153 @@
-<div class="perfil-container">
-  <!-- Tarjeta de información principal -->
-  <mat-card class="perfil-card perfil-info">
-    <div class="avatar">
-      <div class="circle">{{ paciente.iniciales }}</div>
-      <h2>{{ paciente.nombre }}</h2>
-    </div>
-  </mat-card>
+<section class="profile-page" *ngIf="!loading; else loadingTpl">
 
-  <!-- Estado de tolerancia -->
-  <mat-card class="perfil-card">
-    <h3>My estado de tolerancia</h3>
+  <div class="grid">
+    <!-- Tarjeta IZQ: Avatar + Nombre -->
+    <mat-card class="card avatar-card">
+      <div class="avatar">
+        <img *ngIf="user.avatarBase64" [src]="'data:image/png;base64,' + user.avatarBase64" alt="avatar" />
+        <div *ngIf="!user.avatarBase64" class="initials">{{ initials }}</div>
+      </div>
+      <h2 class="name">{{ user.fullName }}</h2>
+    </mat-card>
 
-    <div class="tolerancia">
-      <mat-icon
-  *ngFor="let i of indices"
-  [class.red]="i < paciente.tolerancia"
-  [class.gray]="i >= paciente.tolerancia"
-  >favorite</mat-icon>
+    <!-- Centro: Estado de tolerancia -->
+    <mat-card class="card tolerance-card">
+      <div class="card-title">My estado de tolerancia</div>
+      <div class="hearts">
+        <mat-icon [class.active]="user.toleranceLevel >= 1">favorite</mat-icon>
+        <mat-icon [class.active]="user.toleranceLevel >= 2">favorite</mat-icon>
+        <mat-icon [class.active]="user.toleranceLevel >= 3">favorite</mat-icon>
+      </div>
+    </mat-card>
 
-    </div>
-  </mat-card>
+    <!-- Derecha: Información Personal -->
+    <mat-card class="card info-card">
+      <div class="card-head">
+        <div class="card-title">Información Personal</div>
+        <button mat-icon-button (click)="openEdit('personal')"><mat-icon>edit</mat-icon></button>
+      </div>
 
+      <div class="info-row">
+        <mat-icon>person</mat-icon>
+        <div>
+          <div class="label">Nombre completo</div>
+          <div class="value">{{ user.fullName }}</div>
+        </div>
+      </div>
 
+      <div class="info-row">
+        <mat-icon>event</mat-icon>
+        <div>
+          <div class="label">Fecha de Nacimiento</div>
+          <div class="value">{{ user.dateBorn | date:'dd \'de\' MMMM y' }}</div>
+        </div>
+      </div>
 
-  <!-- Información Personal -->
-  <mat-card class="perfil-card">
-    <h3>Información Personal</h3>
-    <p><b>Nombre completo:</b> {{ paciente.nombreCompleto }}</p>
-    <p><b>Fecha de Nacimiento:</b> {{ paciente.nacimiento }}</p>
-    <p><b>Género:</b> {{ paciente.genero }}</p>
-    <p><b>Documento:</b> {{ paciente.documento }}</p>
-  </mat-card>
+      <div class="info-row">
+        <mat-icon>man</mat-icon>
+        <div>
+          <div class="label">Género</div>
+          <div class="value">{{ user.gender }}</div>
+        </div>
+      </div>
 
-  <!-- Información de Salud -->
-  <mat-card class="perfil-card">
-    <h3>Información de Salud</h3>
-    <p><b>EPS:</b> {{ paciente.eps }}</p>
-    <p><b>Régimen de Salud:</b> {{ paciente.regimen }}</p>
-  </mat-card>
+      <div class="info-row">
+        <mat-icon>badge</mat-icon>
+        <div>
+          <div class="label">Documento</div>
+          <div class="value">{{ formatDocument() }}</div>
+        </div>
+      </div>
+    </mat-card>
 
-  <!-- Contacto -->
-  <mat-card class="perfil-card">
-    <h3>Contacto</h3>
-    <p><b>Teléfono:</b> {{ paciente.telefono }}</p>
-    <p><b>Email:</b> {{ paciente.email.replace('@','&#64;') }}</p>
-  </mat-card>
+    <!-- Abajo IZQ: Donut + tabla -->
+    <mat-card class="card chart-card">
+      <div class="card-head">
+        <div class="card-title">Comportamiento del año</div>
+        <a class="view-link" href="javascript:void(0)">Ver detalles <mat-icon>open_in_new</mat-icon></a>
+      </div>
 
+      <div class="chart-grid">
+        <div class="donut-wrap">
+          <div class="donut" [ngStyle]="donutStyle">
+            <div class="donut-center">
+              <div class="center-title">Total Value</div>
+              <div class="center-number">
+                {{ totalYearStats }}
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <!-- Tarjeta de la gráfica -->
-<mat-card class="perfil-card chart-card">
-  <div class="chart-header">
-    <h3>Comportamiento del año</h3>
-    <a class="view-link" href="javascript:void(0)">View Details</a>
+        <div class="legend">
+          <div class="legend-header">
+            <span>Label</span><span>Value</span><span>%</span>
+          </div>
+          <div class="legend-row" *ngFor="let it of user.yearStats">
+            <span class="dot" [style.background]="it.color"></span>
+            <span class="lbl">{{ it.label }}</span>
+            <span class="val">{{ it.value }}</span>
+            <span class="pct">
+              {{
+              (it.value / (totalYearStats || 1)) * 100
+              | number:'1.0-1'
+              }}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Centro abajo: Información de Salud -->
+    <mat-card class="card info-card">
+      <div class="card-head">
+        <div class="card-title">Información de Salud</div>
+        <button mat-icon-button (click)="openEdit('health')"><mat-icon>edit</mat-icon></button>
+      </div>
+
+      <div class="info-row">
+        <mat-icon>local_hospital</mat-icon>
+        <div>
+          <div class="label">EPS</div>
+          <div class="value">{{ user.epsName }}</div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <mat-icon>favorite</mat-icon>
+        <div>
+          <div class="label">Régimen de Salud</div>
+          <div class="value">{{ user.healthRegime }}</div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Derecha abajo: Contacto -->
+    <mat-card class="card info-card">
+      <div class="card-head">
+        <div class="card-title">Contacto</div>
+        <button mat-icon-button (click)="openEdit('contact')"><mat-icon>edit</mat-icon></button>
+      </div>
+
+      <div class="info-row">
+        <mat-icon>call</mat-icon>
+        <div>
+          <div class="label">Teléfono</div>
+          <div class="value">{{ user.phoneNumber }}</div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <mat-icon>mail</mat-icon>
+        <div>
+          <div class="label">Correo</div>
+          <div class="value">{{ user.email }}</div>
+        </div>
+      </div>
+    </mat-card>
   </div>
+</section>
 
-  <div class="chart-body">
-    <div class="chart-wrap">
-      <!-- OJO: el template-ref debe coincidir con el ViewChild -->
-      <canvas #doughnutCanvas></canvas>
-    </div>
-
-    <ul class="legend-list">
-      <li class="legend-item" *ngFor="let it of items">
-        <span class="dot" [style.background]="it.color"></span>
-        <span class="name">{{ it.label }}</span>
-        <span class="val">{{ it.value }}</span>
-        <span class="pct">{{ it.percent | number:'1.0-1' }}%</span>
-      </li>
-    </ul>
-  </div>
-</mat-card>
-
-</div>
+<ng-template #loadingTpl>
+  <div class="loading"><mat-progress-spinner mode="indeterminate"></mat-progress-spinner></div>
+</ng-template>

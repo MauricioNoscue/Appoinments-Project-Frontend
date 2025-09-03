@@ -1,0 +1,68 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content class="dialog-content">
+    <form [formGroup]="form" class="dialog-form">
+        <ng-container [ngSwitch]="section">
+            <!-- PERSONAL -->
+            <ng-container *ngSwitchCase="'personal'">
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombre completo</mat-label>
+                    <input matInput formControlName="fullName" />
+                    <mat-error *ngIf="form.controls['fullName'].invalid">Mínimo 2 caracteres</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Género</mat-label>
+                    <mat-select formControlName="gender">
+                        <mat-option value="Masculino">Masculino</mat-option>
+                        <mat-option value="Femenino">Femenino</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.controls['gender'].invalid">Requerido</mat-error>
+                </mat-form-field>
+            </ng-container>
+
+            <!-- HEALTH -->
+            <ng-container *ngSwitchCase="'health'">
+                <mat-form-field appearance="outline">
+                    <mat-label>EPS</mat-label>
+                    <input matInput formControlName="epsName" />
+                    <mat-error *ngIf="form.controls['epsName'].invalid">Requerido</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Régimen de salud</mat-label>
+                    <mat-select formControlName="healthRegime">
+                        <mat-option value="Contributivo">Contributivo</mat-option>
+                        <mat-option value="Subsidiado">Subsidiado</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.controls['healthRegime'].invalid">Requerido</mat-error>
+                </mat-form-field>
+            </ng-container>
+
+            <!-- CONTACT -->
+            <ng-container *ngSwitchCase="'contact'">
+                <mat-form-field appearance="outline">
+                    <mat-label>Teléfono (celular)</mat-label>
+                    <input matInput formControlName="phoneNumber" />
+                    <mat-error *ngIf="form.controls['phoneNumber'].errors?.['coPhone']">
+                        Debe iniciar en 3 y tener 10 dígitos
+                    </mat-error>
+                    <mat-error *ngIf="form.controls['phoneNumber'].errors?.['required']">
+                        Requerido
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Correo</mat-label>
+                    <input matInput formControlName="email" />
+                    <mat-error *ngIf="form.controls['email'].invalid">Correo inválido</mat-error>
+                </mat-form-field>
+            </ng-container>
+        </ng-container>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="save()">Guardar</button>
+</mat-dialog-actions>
