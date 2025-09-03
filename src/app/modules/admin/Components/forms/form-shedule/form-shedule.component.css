@@ -449,7 +449,7 @@ mat-error {
 /* Grid de consultorios */
 .consulting-rooms-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr); /* 👈 fuerza 2 columnas */
   gap: 16px;
   margin-bottom: 20px;
   max-height: 600px;
@@ -1097,3 +1097,4 @@ mat-error {
     text-align: center;
   }
 }
+

@@ -24,6 +24,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { SectionCardComponent } from './components/Cards/section-card/section-card.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 // Agrega más según necesites
 
 const materialModules = [
@@ -47,7 +48,10 @@ const materialModules = [
   MatCardModule,
   MatTableModule,
   MatDialogModule,
-  ReactiveFormsModule,MatSelectModule ,MatProgressSpinnerModule,MatTabsModule,MatFormFieldModule,MatStepperModule,MatDatepickerModule,MatNativeDateModule 
+  ReactiveFormsModule,MatSelectModule 
+  ,MatProgressSpinnerModule,MatTabsModule,
+  MatFormFieldModule,MatStepperModule,MatDatepickerModule,
+  MatNativeDateModule,MatButtonToggleModule
 ];
 
 @NgModule({

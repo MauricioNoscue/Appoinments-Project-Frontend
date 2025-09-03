@@ -6,6 +6,7 @@ import { FormSheduleComponent } from '../../Components/forms/form-shedule/form-s
 import { DialogContainerComponent } from '../../../../shared/components/Modal/dialog-container/dialog-container.component';
 import { ComponentType } from '@angular/cdk/overlay';
 
+import Swal from 'sweetalert2';
 
 export interface DynamicDialogData<TPayload = unknown> {
   component: ComponentType<any>; // componente que quieres mostrar
@@ -35,6 +36,52 @@ export class ScheduleComponent implements OnInit {
       this.shedules = data;
     });
   }
+
+Delete(id: number) {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    backdrop: true,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // 👇 Solo eliminamos si confirma
+      this.service.Delete("Shedule", id).subscribe({
+        next: () => {
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Horario eliminado con éxito',
+            icon: 'success',
+            confirmButtonText: 'Continuar',
+            confirmButtonColor: '#4CAF50',
+            backdrop: true,
+            allowOutsideClick: false,
+            showClass: { popup: 'animate__animated animate__zoomIn' },
+            hideClass: { popup: 'animate__animated animate__zoomOut' }
+          }).then(() => {
+            this.loadShedules(); // 👈 recargar después del éxito
+          });
+        },
+        error: (error) => {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo eliminar el horario. Intenta de nuevo.',
+            icon: 'error',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#f44336'
+          });
+          console.error('Error al eliminar:', error);
+        }
+      });
+    }
+  });
+}
+
 
   // 👉 abrir modal para agregar horario
   openFormShedule(): void {

@@ -167,35 +167,6 @@ isFormComplete(): boolean {
          this.fourthFormGroup.valid;
 }
 
-// Método para enviar el formulario
-// submitForm(): void {
-//   if (this.isFormComplete()) {
-//     const formData = {
-//       typeCitationId: Number(this.firstFormGroup.get('typeCitationId')?.value) || 0,
-//       doctorId: Number(this.secondFormGroup.get('doctorId')?.value) || 0,
-//       consultingRoomId: Number(this.thirdFormGroup.get('consultingRoomId')?.value) || 0,
-//       numberCitation: Number(this.fourthFormGroup.get('numberCitation')?.value) || 0
-//     };
-
-//     console.log('Datos del formulario:', formData);
-//     this.genericservice.crearGeneric("Shedule" ,   formData).subscribe({
-//    next: (response) => {
-//     console.log('Citas creadas exitosamente:', response);
-
-//   },
-//   error: (error) => {
-//     console.error('Error al crear las citas:', error);
-    
-//   }
-// });
-
-//   }
-// }
-
-
-
-// Agregar estas propiedades y métodos al componente
-
 // Propiedades adicionales
 minDate = new Date(); // Fecha mínima (hoy)
 scheduleId: number = 0; // ID del schedule creado
@@ -204,13 +175,17 @@ scheduleId: number = 0; // ID del schedule creado
 fifthFormGroup = this._formBuilder.group({
   startTime: ['', Validators.required],
   endTime: ['', Validators.required],
-  breakStartTime: [''],
-  breakEndTime: [''],
-  hasBreak: [false],
-programateDate: [new Date()]
+  breakStartTime: ['', Validators.required], // obligatorio
+  breakEndTime: ['', Validators.required],   // obligatorio
+  programateDate: [new Date(), Validators.required]
 }, {
   validators: [this.timeRangeValidator.bind(this)]
 });
+
+
+
+
+
 
 // Validador personalizado para rangos de tiempo
 timeRangeValidator(form: any) {
@@ -218,36 +193,22 @@ timeRangeValidator(form: any) {
   const endTime = form.get('endTime')?.value;
   const breakStartTime = form.get('breakStartTime')?.value;
   const breakEndTime = form.get('breakEndTime')?.value;
-  const hasBreak = form.get('hasBreak')?.value;
 
   const errors: any = {};
 
-  // Validar rango de horario de trabajo
-  if (startTime && endTime) {
-    if (startTime >= endTime) {
-      errors.timeRange = true;
-    }
+  // Validar jornada laboral
+  if (startTime && endTime && startTime >= endTime) {
+    errors.timeRange = true;
   }
 
-  // Validar rango de descanso si está habilitado
-  if (hasBreak) {
-    if (!breakStartTime) {
-      form.get('breakStartTime')?.setErrors({ required: true });
-    }
-    if (!breakEndTime) {
-      form.get('breakEndTime')?.setErrors({ required: true });
-    }
-    
-    if (breakStartTime && breakEndTime) {
-      if (breakStartTime >= breakEndTime) {
-        errors.breakTimeRange = true;
-        form.get('breakEndTime')?.setErrors({ breakTimeRange: true });
-      }
-    }
+  // Validar descanso
+  if (breakStartTime && breakEndTime && breakStartTime >= breakEndTime) {
+    errors.breakTimeRange = true;
   }
 
   return Object.keys(errors).length > 0 ? errors : null;
 }
+
 
 // Método para verificar si la configuración de horarios es válida
 isScheduleConfigValid(): boolean {
@@ -396,7 +357,7 @@ showSuccessAlert(): void {
   }).then((result) => {
     if (result.isConfirmed) {
       // Redirigir o realizar otra acción
-       this.dialogRef.close();
+           this.dialogRef.close(true);
       console.log('Usuario confirmó el éxito');
     }
   });
