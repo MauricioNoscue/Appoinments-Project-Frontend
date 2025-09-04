@@ -40,3 +40,8 @@ export interface BranchList {
   institutionId: number;
   institutionName: string;
 }
+export interface BranchC {
+  id: number;
+  name: string;
+
+}

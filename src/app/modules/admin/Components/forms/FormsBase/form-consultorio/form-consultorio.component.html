@@ -1,35 +1,84 @@
-<h2 mat-dialog-title>{{ modo === 'crear' ? 'Crear consultorio' : 'Editar consultorio' }}</h2>
+<h2 mat-dialog-title>
+  {{ modo === 'crear' ? 'Crear consultorio' : 'Editar consultorio' }}
+</h2>
 
 <div mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="guardar()" class="form-grid">
-    <mat-form-field appearance="outline">
-      <mat-label>Nombre</mat-label>
-      <input matInput formControlName="nombre" placeholder="Ingrese el nombre del consultorio" />
-      <mat-error *ngIf="form.get('nombre')?.hasError('required')">El nombre es obligatorio.</mat-error>
-      <mat-error *ngIf="form.get('nombre')?.hasError('maxlength')">Máximo 60 caracteres.</mat-error>
-    </mat-form-field>
 
+    <!-- Sucursal: muestra nombre (b.name), guarda id (b.id) en branchId -->
     <mat-form-field appearance="outline">
-      <mat-label>Ubicación</mat-label>
-      <input matInput formControlName="ubicacion" placeholder="Ingrese la ubicación" />
-      <mat-error *ngIf="form.get('ubicacion')?.hasError('required')">La ubicación es obligatoria.</mat-error>
-      <mat-error *ngIf="form.get('ubicacion')?.hasError('maxlength')">Máximo 80 caracteres.</mat-error>
-    </mat-form-field>
+      <mat-label>Sucursal</mat-label>
+      <mat-select formControlName="branchId" [disabled]="loadingBranches">
+        <mat-option *ngIf="loadingBranches" [value]="null" disabled>
+          Cargando sucursales...
+        </mat-option>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Estado</mat-label>
-      <mat-select formControlName="estado">
-        <mat-option value="En uso">En uso</mat-option>
-        <mat-option value="Disponible">Disponible</mat-option>
+        <mat-option *ngFor="let b of branches" [value]="b.id">
+          {{ b.name }}
+          <span *ngIf="b.institutionName">— {{ b.institutionName }}</span>
+        </mat-option>
       </mat-select>
-      <mat-error *ngIf="form.get('estado')?.hasError('required')">Debes seleccionar un estado.</mat-error>
+      <mat-error *ngIf="form.get('branchId')?.hasError('required')">
+        La sucursal es obligatoria.
+      </mat-error>
     </mat-form-field>
 
+    <!-- Nombre: SOLO letras y espacios -->
     <mat-form-field appearance="outline">
-      <mat-label>URL Imagen</mat-label>
-      <input matInput formControlName="imagen" placeholder="Ingrese la URL de la imagen" />
-      <mat-error *ngIf="form.get('imagen')?.hasError('required')">La URL de la imagen es obligatoria.</mat-error>
+      <mat-label>Nombre de consultoreo</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        placeholder="Nombre del consultorio"
+        (keypress)="soloLetras($event)"
+        (paste)="soloLetrasPaste($event)"
+        autocomplete="off"
+      />
+      <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es obligatorio.</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('maxlength')">Máximo 60 caracteres.</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('pattern')">Solo se permiten letras y espacios.</mat-error>
     </mat-form-field>
+
+    <!-- Número de consultorio: SOLO números -->
+    <mat-form-field appearance="outline">
+      <mat-label>Número de consultorio</mat-label>
+      <input
+        matInput
+
+        class="no-spin"
+        formControlName="roomNumber"
+        placeholder="Número de consultorio"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        (keypress)="soloNumeros($event)"
+        (paste)="soloNumerosPaste($event)"
+        autocomplete="off"
+      />
+      <mat-error *ngIf="form.get('roomNumber')?.hasError('required')">Campo obligatorio.</mat-error>
+      <mat-error *ngIf="form.get('roomNumber')?.hasError('min')">Debe ser ≥ 1.</mat-error>
+      <mat-error *ngIf="form.get('roomNumber')?.hasError('pattern')">Solo se permiten números.</mat-error>
+    </mat-form-field>
+
+    <!-- Piso: SOLO números -->
+    <mat-form-field appearance="outline">
+      <mat-label>Piso </mat-label>
+      <input
+        matInput
+
+        class="no-spin"
+        formControlName="floor"
+        placeholder="Piso"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        (keypress)="soloNumeros($event)"
+        (paste)="soloNumerosPaste($event)"
+        autocomplete="off"
+      />
+      <mat-error *ngIf="form.get('floor')?.hasError('required')">Campo obligatorio.</mat-error>
+      <mat-error *ngIf="form.get('floor')?.hasError('min')">No puede ser negativo.</mat-error>
+      <mat-error *ngIf="form.get('floor')?.hasError('pattern')">Solo se permiten números.</mat-error>
+    </mat-form-field>
+
   </form>
 </div>
 

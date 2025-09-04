@@ -23,14 +23,12 @@
 
 <div class="consultorios-container">
   <div class="consultorios-grid">
-    <!-- usa la lista filtrada -->
     <div class="card" *ngFor="let c of consultoriosFiltrados">
       <img [src]="c.imagen" alt="{{ c.nombre }}" />
       <div class="card-info">
         <div class="card-header">
           <h3>{{ c.nombre }}</h3>
 
-          <!-- Botón de 3 puntos con menú -->
           <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -40,13 +38,11 @@
               <span>Ver detalles</span>
             </button>
 
-            <!-- 👉 conectar Editar -->
             <button mat-menu-item (click)="editarConsultorio(c)">
               <mat-icon>edit</mat-icon>
               <span>Editar</span>
             </button>
 
-            <!-- Eliminar con confirmación -->
             <button mat-menu-item (click)="eliminarConsultorio(c)">
               <mat-icon>delete</mat-icon>
               <span>Eliminar</span>
@@ -54,10 +50,17 @@
           </mat-menu>
         </div>
 
+        <!-- NUEVO: nombre de la sucursal -->
+        <p class="branch-name">
+          <mat-icon fontIcon="store" style="color:#388e3c;"></mat-icon>
+          Sucursal: {{ c.branchName }}
+        </p>
+
         <p class="ubicacion">
           <mat-icon fontIcon="location_on" style="color:#1976d2;"></mat-icon>
           {{ c.ubicacion }}
         </p>
+
         <span class="estado">{{ c.estado }}</span>
       </div>
     </div>
