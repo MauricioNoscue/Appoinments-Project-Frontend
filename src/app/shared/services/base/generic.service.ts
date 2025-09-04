@@ -26,6 +26,13 @@ export class GenericService {
       }
 
 
+       public Delete(entity: string, id: number): Observable<void> {
+      return this.http.delete<void>(`${this.urlBase}/${entity}/${id}`);
+
+        }
+
+
+
 
 
 
