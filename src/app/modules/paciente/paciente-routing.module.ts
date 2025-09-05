@@ -5,6 +5,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { RelacionPersonaComponent } from './pages/relacion-persona/relacion-persona.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { NotificacionesComponent } from './pages/notificaciones/notificaciones.component';
+import { MiCitasComponent } from './pages/mi-citas/mi-citas.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       { path: 'relacion', component: RelacionPersonaComponent },
       { path: 'perfil', component: PerfilComponent },
       { path: 'notificaciones', component: NotificacionesComponent },
+      { path: 'micitas', component: MiCitasComponent },
     ],
   },
 ];

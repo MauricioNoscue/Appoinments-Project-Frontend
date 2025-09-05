@@ -6,7 +6,7 @@ export interface ConsultingRoomList {
   name: string;
   roomNumber: number;
   floor: number;
-  // branchName: string; // nombre de la sucursal relacionada
+
 }
 
 export interface ConsultingRoomCreate {

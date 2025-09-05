@@ -1,13 +1,40 @@
 import { Injectable } from '@angular/core';
-import { Citation } from '../Models/hospital/CitationModel';
+import { Citation, CitationList } from '../Models/hospital/CitationModel';
 import { ServiceBaseService } from './base/service-base.service';
+import { HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CitationService extends ServiceBaseService<Citation, any, any> {
-
   constructor() {
     super('citation');
   }
+  /**
+   * Si en tu API agregaste el endpoint con join:
+   * GET /api/citation/list   -> devuelve CitationList[] con NameDoctor/ConsultingRoom/RoomNumber
+   */
+  traerListado(): Observable<CitationList[]> {
+    return this.http.get<CitationList[]>(`${this.urlBase}/list`);
+  }
+
+  /**
+   * Endpoint para los bloques usados (tu método GetUsedTimeBlocksByScheduleHourIdAndDateAsync).
+   * Supongamos: GET /api/citation/used-timeblocks?scheduleHourId=1&appointmentDate=2025-09-10
+   * Devuelve string[] (TimeSpan en texto).
+   */
+  traerBloquesUsados(
+    scheduleHourId: number,
+    appointmentDate: string
+  ): Observable<string[]> {
+    const params = new HttpParams()
+      .set('scheduleHourId', scheduleHourId)
+      .set('appointmentDate', appointmentDate); // 'YYYY-MM-DD'
+    return this.http.get<string[]>(`${this.urlBase}/used-timeblocks`, {
+      params,
+    });
+  }
+
+
 }

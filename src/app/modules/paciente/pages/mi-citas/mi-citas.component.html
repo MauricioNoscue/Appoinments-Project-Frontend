@@ -1,0 +1,69 @@
+<div class="page">
+  <!-- Tabs + buscador -->
+  <div class="topbar">
+    <div class="tabs">
+      <button class="tab" [class.active]="tab()==='programadas'" (click)="setTab('programadas')">Programadas</button>
+      <button class="tab" [class.active]="tab()==='canceladas'"   (click)="setTab('canceladas')">Canceladas</button>
+      <button class="tab" [class.active]="tab()==='asistidas'"    (click)="setTab('asistidas')">Asistidas</button>
+    </div>
+
+    <div class="search">
+      <span class="icon">🔎</span>
+      <!-- signals: binding dividido -->
+      <input
+        type="search"
+        placeholder="Buscar notificación"
+        [ngModel]="q()"
+        (ngModelChange)="q.set($event)">
+    </div>
+  </div>
+
+  <!-- Lista -->
+  <div *ngIf="!cargando(); else skel" class="list">
+    <div *ngFor="let c of filtered()" class="card" [class.card-done]="tab()==='asistidas'">
+      <div class="card-header">
+        <div class="type"><div class="pill">Consulta externa</div></div>
+        <div class="when">
+          <div class="when-item">
+            <span class="emoji">📅</span>
+            <span class="text">{{ c.appointmentDate | date:'MM/dd/yyyy' }}</span>
+          </div>
+          <div class="when-item">
+            <span class="emoji">🕘</span>
+            <span class="text">{{ c.timeBlock ? (c.timeBlock | slice:0:5) : '—' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="avatar">👨‍⚕️</div>
+        <div class="info-grid">
+          <div class="info-col">
+            <div class="label">Doctor</div>
+            <div class="value">{{ c.nameDoctor || '—' }}</div>
+          </div>
+          <div class="info-col">
+            <div class="label">Consultorio</div>
+            <div class="value">{{ c.roomNumber || '—' }}</div>
+          </div>
+          <div class="info-col">
+            <div class="label">Estado</div>
+            <div class="value">{{ c.state }}</div>
+          </div>
+          <div class="info-col">
+            <div class="label">Nota</div>
+            <div class="value note">{{ c.note || '—' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filtered().length === 0" class="empty">No hay citas para mostrar.</div>
+  </div>
+
+  <ng-template #skel>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </ng-template>
+</div>
