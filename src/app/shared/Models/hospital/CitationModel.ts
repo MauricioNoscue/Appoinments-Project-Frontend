@@ -5,5 +5,6 @@ export interface Citation{
     note: string,
     creationDate: string,
     isDeleted: boolean,
-    registrationDate: string
+    registrationDate: string,
+    doctorId?: number // Campo opcional para filtrar por doctor
 }

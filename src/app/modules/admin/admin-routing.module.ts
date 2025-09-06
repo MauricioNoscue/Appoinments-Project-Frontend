@@ -22,6 +22,7 @@ import { TypeCitationComponent } from '../../shared/components/PagesShared/type-
 import { ViewCitationAvailableComponent } from './pages/view-citation-available/view-citation-available.component';
 import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 import { ScheduleComponent } from './pages/schedule/schedule.component';
+import { DashboardComponent } from './pages/doctor1/dashboard/dashboard.component';
 
 const routes: Routes = [
   {
@@ -50,8 +51,8 @@ const routes: Routes = [
       {path:'typecitation2', component: TypeCitationComponent},
       {path:'CitationAviable/:id', component: ViewCitationAvailableComponent},
       { path: 'medical-staff', component: MedicalStaffComponent },
-
-      { path: 'doctor', component: DoctorComponent },
+      
+      { path: 'dashboard-doctor', component: DashboardComponent },
       // { path: 'doctor1/perfil', component: PerfilComponent },
       { path: 'security/form', component: FormComponent },
       { path: 'horarios', component: ScheduleComponent },

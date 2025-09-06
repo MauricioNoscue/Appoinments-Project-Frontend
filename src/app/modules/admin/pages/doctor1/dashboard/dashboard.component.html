@@ -1,1 +1,114 @@
-<p>dashboard works!</p>
+<section class="doctor-dashboard" *ngIf="!loading; else loadingTpl">
+
+    <!-- Hero con KPIs -->
+    <div class="hero">
+        <h2>Resumen del día</h2>
+        <div class="kpis">
+            <mat-card class="kpi">
+                <div class="kpi-title">Citas atendidas</div>
+                <div class="kpi-value">{{ vm.kpis.attendedToday }}</div>
+                <mat-icon>verified</mat-icon>
+            </mat-card>
+
+            <mat-card class="kpi">
+                <div class="kpi-title">Pacientes presentes</div>
+                <div class="kpi-value">{{ vm.kpis.presentToday }}</div>
+                <mat-icon>assignment_turned_in</mat-icon>
+            </mat-card>
+
+            <mat-card class="kpi">
+                <div class="kpi-title">Pacientes ausentes</div>
+                <div class="kpi-value">{{ vm.kpis.absentToday }}</div>
+                <mat-icon>report_gmailerrorred</mat-icon>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Barras semanales -->
+        <mat-card class="card">
+            <div class="card-title">Citas del día de la semana</div>
+            <div class="bars">
+                <div class="bar" *ngFor="let lbl of vm.weeklyBars.labels; let i = index">
+                    <div class="bar-col">
+                        <div class="bar-fill" [style.height]="toPct(vm.weeklyBars.values[i], maxWeekly())"></div>
+                    </div>
+                    <div class="bar-label">{{ lbl }}</div>
+                </div>
+            </div>
+        </mat-card>
+
+        <!-- Donut asistencia -->
+        <mat-card class="card">
+            <div class="card-title">Asistencia de citas</div>
+            <div class="donut-wrap">
+                <div class="donut" [ngStyle]="donutStyle()">
+                    <div class="donut-center">
+                        <div class="center-number">{{ vm.donut.attended }}</div>
+                        <div class="center-sub">asistieron</div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-row">
+                        <span class="dot dot-attended"></span>
+                        <span>Asistieron</span>
+                        <span class="value">{{ (vm.donut.attended / (vm.donut.attended + vm.donut.notAttended || 1) *
+                            100) | number:'1.0-1' }}%</span>
+                    </div>
+                    <div class="legend-row">
+                        <span class="dot dot-absent"></span>
+                        <span>No asistieron</span>
+                        <span class="value">{{ (vm.donut.notAttended / (vm.donut.attended + vm.donut.notAttended || 1) *
+                            100) | number:'1.0-1' }}%</span>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+
+        <!-- Turnos de la semana -->
+        <mat-card class="card narrow">
+            <div class="card-title">Turnos de la semana</div>
+            <div class="shifts">
+                <div class="shift-row" *ngFor="let s of vm.shifts">
+                    <div class="day">{{ s.day }}</div>
+                    <div class="track">
+                        <div class="progress" [style.width]="toPct(s.hours, 8)"></div>
+                    </div>
+                    <div class="hours">{{ s.hours }}h</div>
+                </div>
+                <small class="hint">Estimado: {{ vm.slotMin / 60 | number:'1.1' }}h por cita.</small>
+            </div>
+        </mat-card>
+
+        <!-- Próxima cita -->
+        <mat-card class="mini">
+            <div class="mini-title">Próxima cita</div>
+            <ng-container *ngIf="vm.next; else noNext">
+                <div class="next">
+                    <mat-icon>event</mat-icon>
+                    <div>
+                        <div class="next-title">{{ vm.next?.date | date:'EEEE, d MMM' }}</div>
+                        <div class="next-sub">{{ vm.next?.timeLabel }} · {{ vm.next?.note || '—' }}</div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #noNext>
+                <div class="empty">Sin próximas citas</div>
+            </ng-template>
+        </mat-card>
+
+        <!-- Citas pendientes -->
+        <mat-card class="mini">
+            <div class="mini-title">Citas pendientes</div>
+            <div class="pending">
+                <div class="number">{{ vm.pendingCount }}</div>
+                <div class="tag">¡importante!</div>
+            </div>
+        </mat-card>
+    </div>
+
+</section>
+
+<ng-template #loadingTpl>
+    <div class="loading"><mat-progress-spinner mode="indeterminate"></mat-progress-spinner></div>
+</ng-template>

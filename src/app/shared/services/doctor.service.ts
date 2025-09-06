@@ -29,20 +29,20 @@ export class DoctorService extends ServiceBaseService<DoctorList, any, any> {
   }
 
   // Servicio
-traerDoctorPersona2(): Observable<DoctorList[]> {
-  return this.http.get<DoctorList[]>(`${this.urlBase}/GetAllDoctors`);
-}
+  traerDoctorPersona2(): Observable<DoctorList[]> {
+    return this.http.get<DoctorList[]>(`${this.urlBase}/GetAllDoctors`);
+  }
 
 
   public traerDoctorPorId(id: number): Observable<DoctorList> {
     return this.http.get<DoctorList>(`${this.urlBase}/GetDoctorById/${id}`);
   }
 
-   private readonly baseUrl = 'https://localhost:7186/api/ConsultingRoom';
+  private readonly baseUrl = 'https://localhost:7186/api/ConsultingRoom';
 
-getConsultingRooms(): Observable<ConsultingRoom[]> {
-  return this.http.get<ConsultingRoom[]>(`${this.baseUrl}`);
-}
+  getConsultingRooms(): Observable<ConsultingRoom[]> {
+    return this.http.get<ConsultingRoom[]>(`${this.baseUrl}`);
+  }
 
 
 }

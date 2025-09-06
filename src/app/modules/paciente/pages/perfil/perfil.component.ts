@@ -20,9 +20,15 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Por ahora "usuario quemado" (id 42). Luego: usar id desde auth.
-    this.profile.loadById(42).pipe(takeUntil(this.destroy$)).subscribe(u => {
-      this.user = u;
-      this.loading = false;
+    this.profile.loadById(1).pipe(takeUntil(this.destroy$)).subscribe({
+      next: u => {
+        this.user = u;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error cargando perfil:', err);
+        this.loading = false;
+      }
     });
   }
 

@@ -42,6 +42,8 @@ import { DoctorFormDialogComponent } from './pages/medical-staff/dialogs/doctor-
 import { DoctorCardComponent } from './Components/cards/doctor-card/doctor-card.component';
 import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doctor-created-dialog/doctor-created-dialog.component';
+import { DashboardComponent } from './pages/doctor1/dashboard/dashboard.component';
+import { DatePipe, DecimalPipe } from '@angular/common';
 
 
 @NgModule({
@@ -49,6 +51,7 @@ import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doct
     DashboardAdminComponent,
     DoctorComponent,
     PerfilComponent,
+    DashboardComponent,
     RolComponent,
     FormComponent,
     RolCreatedComponent,
@@ -90,7 +93,9 @@ import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doct
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
-    MatDialogContent
+    MatDialogContent,
+    DatePipe,
+    DecimalPipe
   ],
 })
 export class AdminModule {}

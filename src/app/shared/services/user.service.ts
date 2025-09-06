@@ -24,7 +24,7 @@ private ur = environment.apiURL
   }
 
     getUserDetail(id: number) {
-    return this.http.get<UserDetailDto>(`${this.ur}/api/user/${id}/userDetail`);
+    return this.http.get<UserDetailDto>(`${this.ur}/api/user/${id}`);
   }
 
   getRolesAndPermissions(userId: number) {
