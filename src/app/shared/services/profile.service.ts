@@ -43,12 +43,18 @@ export class ProfileService {
     avatarBase64: null,
     toleranceLevel: 1,
     yearStats: [
-      { label: 'Label 1', value: 12, color: '#22c55e' },
-      { label: 'Label 2', value: 22, color: '#3b82f6' },
-      { label: 'Label 3', value: 12, color: '#a855f7' },
-      { label: 'Label 4', value: 12, color: '#f59e0b' },
-      { label: 'Label 5', value: 7,  color: '#06b6d4' },
-      { label: 'Label 6', value: 7,  color: '#ef4444' },
+      { label: 'Enero', value: 12, color: '#22c55e' },
+      { label: 'Febrero', value: 22, color: '#3b82f6' },
+      { label: 'Marzo', value: 12, color: '#a855f7' },
+      { label: 'Abril', value: 12, color: '#f59e0b' },
+      { label: 'Mayo', value: 7,  color: '#06b6d4' },
+      { label: 'Junio', value: 7,  color: '#ef4444' },
+      { label: 'Julio', value: 0,  color: '#c20bf5ff' },
+      { label: 'Agosto', value: 2,  color: '#c52248ff' },
+      { label: 'Septiembre', value: 1,  color: '#bbf63bff' },
+      { label: 'Octubre', value: 5,  color: '#55f7c9b3' },
+      { label: 'Noviembre', value: 1,  color: '#e78787ff' },
+      { label: 'Diciembre', value: 0,  color: '#b3007dff' },
     ]
   });
 

@@ -10,9 +10,9 @@
       <h2 class="name">{{ user.fullName }}</h2>
     </mat-card>
 
-    <!-- Centro: Estado de tolerancia -->
+    <!-- Centro: Estado de citas -->
     <mat-card class="card tolerance-card">
-      <div class="card-title">My estado de tolerancia</div>
+      <div class="card-title">My estado de citas</div>
       <div class="hearts">
         <mat-icon [class.active]="user.toleranceLevel >= 1">favorite</mat-icon>
         <mat-icon [class.active]="user.toleranceLevel >= 2">favorite</mat-icon>
@@ -64,7 +64,6 @@
     <mat-card class="card chart-card">
       <div class="card-head">
         <div class="card-title">Comportamiento del año</div>
-        <a class="view-link" href="javascript:void(0)">Ver detalles <mat-icon>open_in_new</mat-icon></a>
       </div>
 
       <div class="chart-grid">
@@ -81,7 +80,7 @@
 
         <div class="legend">
           <div class="legend-header">
-            <span>Label</span><span>Value</span><span>%</span>
+            <span>Meses</span><span>citas</span><span>%</span>
           </div>
           <div class="legend-row" *ngFor="let it of user.yearStats">
             <span class="dot" [style.background]="it.color"></span>
