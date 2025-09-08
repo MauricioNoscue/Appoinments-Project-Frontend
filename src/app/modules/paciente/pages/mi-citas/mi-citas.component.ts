@@ -19,6 +19,7 @@ export class MiCitasComponent implements OnInit {
   // estado UI
   tab = signal<TabKey>('programadas');
   q = signal<string>('');
+  cancelandoIds = signal<Set<number>>(new Set<number>());
 
   // datos
   citas = signal<CitationList[]>([]);
@@ -26,9 +27,9 @@ export class MiCitasComponent implements OnInit {
 
   // mapeo de tabs -> estados (ajústalo a tus valores reales)
   private stateMap: Record<TabKey, string[]> = {
-    programadas: ['Pendiente', 'Programada'],
+    programadas: ['Programada'],
     canceladas: ['Cancelada'],
-    asistidas: ['Completada', 'Asistida'],
+    asistidas: ['Asistida'],
   };
 
   filtered = computed(() => {
@@ -66,5 +67,42 @@ export class MiCitasComponent implements OnInit {
 
   setTab(t: TabKey) {
     this.tab.set(t);
+  }
+  // ⬇️ NUEVO: método para cancelar
+  cancelar(c: CitationList) {
+    if (c.state !== 'Programada') return;
+
+    const ok = confirm(
+      `¿Cancelar la cita del ${new Date(
+        c.appointmentDate
+      ).toLocaleDateString()} ${c.timeBlock ?? ''} con ${c.nameDoctor}?`
+    );
+    if (!ok) return;
+
+    const set = new Set(this.cancelandoIds());
+    set.add(c.id);
+    this.cancelandoIds.set(set);
+
+    this.citaSrv
+      .actualizar({ id: c.id, state: 'Cancelada', note: c.note } as any)
+      .subscribe({
+        next: () => {
+          // cambia el estado localmente
+          const arr = this.citas().map((x) =>
+            x.id === c.id ? { ...x, state: 'Cancelada' } : x
+          );
+          this.citas.set(arr);
+
+          const s2 = new Set(this.cancelandoIds());
+          s2.delete(c.id);
+          this.cancelandoIds.set(s2);
+        },
+        error: () => {
+          const s2 = new Set(this.cancelandoIds());
+          s2.delete(c.id);
+          this.cancelandoIds.set(s2);
+          alert('No se pudo cancelar la cita. Intenta de nuevo.');
+        },
+      });
   }
 }

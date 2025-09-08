@@ -77,7 +77,6 @@
 }
 
 .card::after {
-  /* línea verde inferior como en el mockup */
   content: "";
   position: absolute;
   left: 12px;
@@ -88,8 +87,20 @@
   background: #30d18f;
 }
 
-.card.card-done::after {
-  background: #45cf74;
+/* Colores por estado */
+.card.card-programada::after {
+  background: #f4d35e;
+  /* amarillo */
+}
+
+.card.card-cancelada::after {
+  background: #e63946;
+  /* rojo */
+}
+
+.card.card-asistida::after {
+  background: #30d18f;
+  /* verde */
 }
 
 .card-header {
@@ -148,16 +159,23 @@
   color: #3b6bff;
 }
 
+/* Grilla principal: 5 columnas */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  grid-template-columns: 180px 140px 160px 1fr auto;
+  /* Doctor, Consultorio, Estado, Nota, Botón */
+  column-gap: 12px;
   gap: 8px 12px;
+  align-items: start;
+  /* todo alineado arriba */
 }
 
+/* Cada celda */
 .label {
   font-size: 12px;
   color: #6b7a99;
   font-weight: 700;
+  margin-bottom: 6px;
 }
 
 .value {
@@ -165,9 +183,54 @@
   font-weight: 600;
 }
 
-.value.note {
+/* Nota con texto largo -> ellipsis */
+.value.note{
   font-weight: 500;
   color: #41506b;
+  white-space: normal;      /* permite varias líneas */
+  overflow-wrap: anywhere;  /* quiebra palabras largas si es necesario */
+  word-break: break-word;   /* fallback útil */
+  min-width: 0;             /* por si el contenedor flex/grid lo necesita */
+}
+
+/* Columna del botón */
+.action-col{
+  display: flex;
+  justify-content: flex-end;  /* a la derecha */
+  align-items: center;        /* ⬅️ centrado vertical */
+  /* si prefieres que quede arriba, usa: align-items: flex-start; */
+}
+
+.action-col .actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.btn-cancel {
+  border: 0;
+  background: #ffe9e9;
+  color: #b11c1c;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform .05s ease, box-shadow .15s ease;
+  box-shadow: 0 2px 6px rgba(177, 28, 28, .15);
+}
+
+.btn-cancel:hover {
+  box-shadow: 0 3px 10px rgba(177, 28, 28, .2);
+}
+
+.btn-cancel:active {
+  transform: translateY(1px);
+}
+
+.btn-cancel[disabled] {
+  opacity: .6;
+  cursor: default;
+  box-shadow: none;
 }
 
 .empty {
@@ -191,29 +254,5 @@
 
   to {
     background-position: -200% 0;
-  }
-}
-
-/* responsive */
-@media (max-width: 920px) {
-  .info-grid {
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .search {
-    width: 100%;
-    min-width: unset;
   }
 }

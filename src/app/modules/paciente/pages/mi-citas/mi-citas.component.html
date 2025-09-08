@@ -20,7 +20,11 @@
 
   <!-- Lista -->
   <div *ngIf="!cargando(); else skel" class="list">
-    <div *ngFor="let c of filtered()" class="card" [class.card-done]="tab()==='asistidas'">
+    <div *ngFor="let c of filtered()" class="card" [ngClass]="{
+       'card-programada': c.state==='Programada',
+       'card-cancelada': c.state==='Cancelada',
+       'card-asistida': c.state==='Asistida'
+     }">
       <div class="card-header">
         <div class="type"><div class="pill">Consulta externa</div></div>
         <div class="when">
@@ -33,6 +37,7 @@
             <span class="text">{{ c.timeBlock ? (c.timeBlock | slice:0:5) : '—' }}</span>
           </div>
         </div>
+
       </div>
 
       <div class="card-body">
@@ -42,20 +47,36 @@
             <div class="label">Doctor</div>
             <div class="value">{{ c.nameDoctor || '—' }}</div>
           </div>
+
           <div class="info-col">
             <div class="label">Consultorio</div>
             <div class="value">{{ c.roomNumber || '—' }}</div>
           </div>
+
           <div class="info-col">
             <div class="label">Estado</div>
             <div class="value">{{ c.state }}</div>
           </div>
-          <div class="info-col">
+
+          <div class="info-col ">
             <div class="label">Nota</div>
-            <div class="value note">{{ c.note || '—' }}</div>
+            <div class="note-row">
+              <div class="value ">{{ c.note  }}</div>
+            </div>
+          </div>
+
+          <div class="info-col action-col">
+              <button *ngIf="tab()==='programadas' && c.state==='Programada'"
+                      class="btn-cancel"
+                      (click)="cancelar(c)"
+                      [disabled]="cancelandoIds().has(c.id)">
+                {{ cancelandoIds().has(c.id) ? 'Cancelando...' : 'Cancelar cita' }}
+              </button>
           </div>
         </div>
       </div>
+
+
     </div>
 
     <div *ngIf="filtered().length === 0" class="empty">No hay citas para mostrar.</div>
