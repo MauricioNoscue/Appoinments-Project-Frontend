@@ -1,4 +1,3 @@
-// src/app/.../Components/Form/form-relacion-persona.component.ts
 import { Component, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -14,7 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MaterialModule } from "../../../../../shared/material.module";
+import { MaterialModule } from '../../../../../shared/material.module';
 
 type Relation =
   | 'Papá'
@@ -33,11 +32,12 @@ type Relation =
 
 export interface PersonFormValue {
   id?: number | null;
-  name: string;
-  lastname: string;
+  name: string; // FirstName
+  lastname: string; // LastName
   relation: Relation | string;
-  idNumero?: string;
-  color: string;
+  documentTypeId: number; // requerido
+  idNumero: string; // Document
+  color: string; // solo UI
 }
 
 type DialogData =
@@ -46,14 +46,14 @@ type DialogData =
 
 @Component({
   selector: 'app-form-relacion-persona',
-  standalone: true, // 👈 MUY IMPORTANTE
+  standalone: true,
   imports: [
     CommonModule,
     MatDialogModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MaterialModule
-],
+    MaterialModule,
+  ],
   templateUrl: './form-relacion-persona.component.html',
   styleUrl: './form-relacion-persona.component.css',
 })
@@ -64,20 +64,47 @@ export class FormRelacionPersonaComponent {
 
   form: FormGroup = this.fb.group({
     id: new FormControl<number | null>(null),
+
+    // Nombre: solo letras y espacios
     name: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)],
+      validators: [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/), // 👈 solo texto
+      ],
     }),
+
+    // Apellido: solo letras y espacios
     lastname: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)],
+      validators: [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/), // 👈 solo texto
+      ],
     }),
+
     relation: new FormControl<Relation | string>('Otro', {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    idNumero: new FormControl('', { validators: [Validators.minLength(5)] }),
-    color: new FormControl('#17BF63', { nonNullable: true }),
+
+    documentTypeId: new FormControl<number | null>(null, {
+      validators: [Validators.required],
+    }),
+
+    // Documento: solo números
+    idNumero: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.pattern(/^[0-9]+$/), // 👈 solo dígitos
+      ],
+    }),
+
+
   });
 
   constructor(

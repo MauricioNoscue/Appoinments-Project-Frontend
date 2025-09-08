@@ -1,13 +1,15 @@
 import {
   Component,
+  Input,
   inject,
   signal,
   ViewChild,
   TemplateRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-// Angular Material (standalone)
+import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../../../environments/environment.development'; // ✅ SIEMPRE este
+// Material
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,9 +17,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { FormRelacionPersonaComponent } from '../../Components/Form/form-relacion-persona/form-relacion-persona.component';
 
-
+import {
+  RelatedPersonList,
+  RelatedPersonCreate,
+  RelatedPersonEdit,
+} from '../../../../shared/Models/hospital/RelatedPerson';
+import { RelatedPersonService } from '../../../../shared/services/related-person.service';
+import {
+  FormRelacionPersonaComponent,
+  PersonFormValue,
+} from '../../Components/Form/form-relacion-persona/form-relacion-persona.component';
 
 type Relation =
   | 'Papá'
@@ -33,16 +43,6 @@ type Relation =
   | 'Abuelo'
   | 'Abuela'
   | 'Otro';
-
-export interface PersonCard {
-  id: number;
-  name: string;
-  lastname: string;
-  relation: Relation;
-  color: string;
-  avatarText?: string;
-  idNumero?: string;
-}
 
 @Component({
   selector: 'app-relacion-persona',
@@ -61,109 +61,216 @@ export interface PersonCard {
   styleUrl: './relacion-persona.component.css',
 })
 export class RelacionPersonaComponent {
-  private dialog = inject(MatDialog);
+  // ✅ Input opcional (puede no venir mientras no hay login)
+  @Input() personId?: number;
 
-  // Referencia al template "Detalles"
+  private dialog = inject(MatDialog);
+  private svc = inject(RelatedPersonService);
+  private route = inject(ActivatedRoute);
+
   @ViewChild('detailDialog') detailDialog!: TemplateRef<any>;
 
-  // Datos “quemados” por ahora
-  readonly people = signal<PersonCard[]>([
-    {
-      id: 1,
-      name: 'Andrés Mauricio',
-      lastname: 'Noscue Cerquera',
-      relation: 'Hijo',
-      color: '#17BF63',
-      idNumero: '10223344',
-    },
-    {
-      id: 2,
-      name: 'Juan David',
-      lastname: 'Artunduaga Vepez',
-      relation: 'Sobrino',
-      color: '#FF2D2D',
-      idNumero: '99887766',
-    },
-    {
-      id: 3,
-      name: 'Esteban',
-      lastname: 'Palomar Murcia',
-      relation: 'Papá',
-      color: '#8256FF',
-      idNumero: '55443322',
-    },
-    {
-      id: 4,
-      name: 'María Isabel',
-      lastname: 'Gómez Pardo',
-      relation: 'Hija',
-      color: '#0EA5E9',
-      idNumero: '99887766',
-    },
-    {
-      id: 5,
-      name: 'Sergio Andrés',
-      lastname: 'Leguízamo Ruiz',
-      relation: 'Tío',
-      color: '#F59E0B',
-      idNumero: '99887766',
-    },
-  ]);
+  readonly people = signal<RelatedPersonList[]>([]);
+  selectedId = signal<number | null>(null);
 
-  selectedId = signal<number | null>(2);
+  // ===== Setter para reaccionar a cambios del @Input y aplicar fallback
+  private _resolvedId: number | null = null;
 
-
-
-  initials(p: PersonCard): string {
-    if (p.avatarText?.trim())
-      return p.avatarText.trim().slice(0, 2).toUpperCase();
-    const parts = `${p.name} ${p.lastname}`.trim().split(/\s+/);
-    const [a = '', b = ''] = [parts[0] ?? '', parts[1] ?? ''];
-    return `${a.charAt(0)}${b.charAt(0)}`.toUpperCase();
+  @Input()
+  set personIdSetter(v: number | string | undefined) {
+    const parsed = typeof v === 'string' ? Number(v) : v ?? null;
+    this.tryResolveAndLoad(parsed);
   }
 
-  select(p: PersonCard) {
-    this.selectedId.set(p.id === this.selectedId() ? null : p.id);
+  // compat con el template actual; si usas [personId] esto no rompe
+  get personIdSetter() {
+    return this.personId;
   }
 
-  // ====== Detalles (ng-template) ======
-  view(p: PersonCard) {
+  constructor() {
+    // Intentar resolver al construir, por si viene por ruta
+    const fromRoute = Number(this.route.snapshot.paramMap.get('personId'));
+    this.tryResolveAndLoad(
+      Number.isFinite(fromRoute) && fromRoute > 0 ? fromRoute : null
+    );
+
+    // Si no vino ni por input ni por ruta, usa fallback DEV (no afecta prod)
+    if (!this._resolvedId || this._resolvedId <= 0) {
+      const devId = (environment as any).defaultPersonId as number | undefined;
+      if (devId && devId > 0) {
+        console.warn('[DEV] Usando defaultPersonId:', devId);
+        this.tryResolveAndLoad(devId);
+      }
+    }
+  }
+
+  private tryResolveAndLoad(id: number | null): void {
+    if (id && id > 0) {
+      this._resolvedId = id;
+      this.personId = id; // solo para logs si lo usas
+      console.log('RelacionPersonaComponent -> personId:', id);
+      this.load();
+    }
+  }
+
+  // ====== Colores (solo front, persistidos por id en localStorage) ======
+  private readonly COLOR_STORAGE_KEY = 'rp_colors_v1';
+
+  private loadColorMap(): Record<number, string> {
+    try {
+      return JSON.parse(localStorage.getItem(this.COLOR_STORAGE_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  }
+
+  private saveColorMap(map: Record<number, string>) {
+    localStorage.setItem(this.COLOR_STORAGE_KEY, JSON.stringify(map));
+  }
+
+  private getRandomColor(): string {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++)
+      color += letters[Math.floor(Math.random() * 16)];
+    return color;
+  }
+
+  /** Asegura que cada persona tenga un color estable; lo guarda y lo inyecta al item */
+  private ensureColors(list: RelatedPersonList[]): RelatedPersonList[] {
+    const map = this.loadColorMap();
+    let changed = false;
+
+    for (const p of list) {
+      if (!map[p.id]) {
+        map[p.id] = this.getRandomColor();
+        changed = true;
+      }
+      p.color = map[p.id];
+    }
+
+    if (changed) this.saveColorMap(map);
+    return list;
+  }
+  // ===============================================================
+
+  private load(): void {
+    if (!this._resolvedId || this._resolvedId <= 0) return;
+    this.svc.getByPerson(this._resolvedId).subscribe({
+      next: (list) => this.people.set(this.ensureColors(list)), // 👈 aplica colores
+      error: (err) =>
+        console.error('Error cargando personas relacionadas', err),
+    });
+  }
+
+  initials(fullName: string): string {
+    const parts = (fullName || '').trim().split(/\s+/);
+    const a = parts[0]?.charAt(0) ?? '';
+    const b = parts[1]?.charAt(0) ?? '';
+    return (a + b).toUpperCase();
+  }
+
+  select(p: RelatedPersonList) {
+    this.selectedId.set(this.selectedId() === p.id ? null : p.id);
+  }
+
+  view(p: RelatedPersonList) {
     this.dialog.open(this.detailDialog, { data: p, autoFocus: true });
   }
 
-  // ====== Crear ======
   addPerson() {
     const ref = this.dialog.open(FormRelacionPersonaComponent, {
       data: { mode: 'create' as const },
+      disableClose: true,
     });
 
-    ref.afterClosed().subscribe((result) => {
-      if (!result) return; // cancelado
-      const nextId = Math.max(0, ...this.people().map((x) => x.id)) + 1;
-      this.people.update((list) => [
-        ...list,
-        { ...result, id: nextId } as PersonCard,
-      ]);
+    ref.afterClosed().subscribe((val: PersonFormValue | null) => {
+      if (!val || !this._resolvedId) return;
+
+      const dto: RelatedPersonCreate = {
+        personId: this._resolvedId, // ✅ ya resuelto
+        firstName: val.name.trim(),
+        lastName: val.lastname.trim(),
+        relation: String(val.relation).trim(),
+        documentTypeId: val.documentTypeId!,
+        document: val.idNumero?.trim() || '',
+      };
+
+      this.svc.crear(dto).subscribe({
+        next: () => this.load(), // al recargar, se asigna color y se persiste
+        error: (err) => {
+          console.error('Error creando persona relacionada:', err);
+          alert(err?.error?.message ?? err?.error ?? 'Error creando persona');
+        },
+      });
     });
   }
 
-  // ====== Editar / Actualizar ======
-  edit(p: PersonCard) {
+  edit(p: RelatedPersonList) {
+    const names = (p.fullName || '').trim().split(/\s+/);
+    const first = names[0] ?? '';
+    const rest = names.slice(1).join(' ');
+
     const ref = this.dialog.open(FormRelacionPersonaComponent, {
-      data: { mode: 'edit' as const, person: p },
+      data: {
+        mode: 'edit' as const,
+        person: {
+          id: p.id,
+          name: first,
+          lastname: rest,
+          relation: p.relation as Relation,
+          idNumero: p.document,
+          documentTypeId: undefined,
+          color: p.color ?? '#4f46e5',
+        },
+      },
+      disableClose: true,
     });
 
-    ref.afterClosed().subscribe((result) => {
-      if (!result) return; // cancelado
-      this.people.update((list) =>
-        list.map((x) => (x.id === p.id ? { ...x, ...result } : x))
-      );
+    ref.afterClosed().subscribe((val: PersonFormValue | null) => {
+      if (!val) return;
+
+      const dto: RelatedPersonEdit = {
+        id: p.id,
+        firstName: val.name.trim(),
+        lastName: val.lastname.trim(),
+        relation: String(val.relation).trim(),
+        documentTypeId: val.documentTypeId!,
+        document: val.idNumero?.trim() || '',
+      };
+
+      this.svc.actualizar(dto).subscribe({
+        next: () => this.load(),
+        error: (err) => {
+          console.error('Error actualizando persona relacionada', err);
+          alert(
+            err?.error?.message ?? err?.error ?? 'Error actualizando persona'
+          );
+        },
+      });
     });
   }
 
-  // ====== Eliminar ======
-  remove(p: PersonCard) {
-    this.people.update((list) => list.filter((x) => x.id !== p.id));
-    if (this.selectedId() === p.id) this.selectedId.set(null);
+  remove(p: RelatedPersonList) {
+    this.svc.eliminar(p.id).subscribe({
+      next: () => {
+        if (this.selectedId() === p.id) this.selectedId.set(null);
+
+        // Quitar del UI sin recargar y limpiar su color del localStorage
+        this.people.update((arr) => arr.filter((x) => x.id !== p.id));
+        const map = this.loadColorMap();
+        if (map[p.id]) {
+          delete map[p.id];
+          this.saveColorMap(map);
+        }
+
+        // Si prefieres recargar del backend, usa:
+        // this.load();
+      },
+      error: (err) => {
+        console.error('Error eliminando persona relacionada', err);
+        alert(err?.error?.message ?? err?.error ?? 'Error eliminando persona');
+      },
+    });
   }
 }
