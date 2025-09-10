@@ -8,3 +8,19 @@ export interface Citation{
     registrationDate: string,
     doctorId?: number // Campo opcional para filtrar por doctor
 }
+
+export interface CitationList {
+  id: number;
+  isDeleted: boolean;
+  registrationDate: Date;
+
+  state: string;
+  note: string;
+  appointmentDate: Date;
+  timeBlock: string | null; // en C# es TimeSpan?, en TS lo manejas como string o null
+  scheduleHourId: number;
+
+  nameDoctor: string;
+  consultingRoomName: string;
+  roomNumber: number;
+}

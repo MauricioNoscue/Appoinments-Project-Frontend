@@ -1,0 +1,73 @@
+<h2 mat-dialog-title>
+  {{ mode === 'create' ? 'Agregar persona relacionada' : 'Editar persona relacionada' }}
+</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="form" class="form-grid">
+    <label>Nombre
+  <input formControlName="name" placeholder="Nombre" type="text" />
+  <div *ngIf="form.controls['name'].touched && form.controls['name'].invalid" class="error">
+    <span *ngIf="form.controls['name'].errors?.['required']">El nombre es obligatorio.</span>
+    <span *ngIf="form.controls['name'].errors?.['minlength']">Debe tener al menos 2 caracteres.</span>
+    <span *ngIf="form.controls['name'].errors?.['pattern']">Solo se permiten letras y espacios.</span>
+  </div>
+</label>
+
+ <label>Apellidos
+  <input formControlName="lastname" placeholder="Apellidos" type="text" />
+  <div *ngIf="form.controls['lastname'].touched && form.controls['lastname'].invalid" class="error">
+    <span *ngIf="form.controls['lastname'].errors?.['required']">El apellido es obligatorio.</span>
+    <span *ngIf="form.controls['lastname'].errors?.['minlength']">Debe tener al menos 2 caracteres.</span>
+    <span *ngIf="form.controls['lastname'].errors?.['pattern']">Solo se permiten letras y espacios.</span>
+  </div>
+</label>
+
+    <label>Relación</label>
+    <mat-form-field appearance="outline">
+      <mat-select formControlName="relation" placeholder="Selecciona relación">
+        <mat-option value="Papá">Papá</mat-option>
+        <mat-option value="Mamá">Mamá</mat-option>
+        <mat-option value="Hijo">Hijo</mat-option>
+        <mat-option value="Hija">Hija</mat-option>
+        <mat-option value="Hermano">Hermano</mat-option>
+        <mat-option value="Hermana">Hermana</mat-option>
+        <mat-option value="Tío">Tío</mat-option>
+        <mat-option value="Tía">Tía</mat-option>
+        <mat-option value="Sobrino">Sobrino</mat-option>
+        <mat-option value="Sobrina">Sobrina</mat-option>
+        <mat-option value="Abuelo">Abuelo</mat-option>
+        <mat-option value="Abuela">Abuela</mat-option>
+        <mat-option value="Otro">Otro</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <label>Tipo de documento</label>
+    <mat-form-field appearance="outline">
+      <mat-select formControlName="documentTypeId" placeholder="Selecciona tipo">
+        <!-- TODO (opcional): poblar dinámicamente desde /api/DocumentType -->
+        <mat-option [value]="1">CC</mat-option>
+        <mat-option [value]="2">TI</mat-option>
+        <mat-option [value]="3">Pasaporte</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+   <label>Número de documento
+  <input formControlName="idNumero" placeholder="Cédula / ID" type="text" />
+  <div *ngIf="form.controls['idNumero'].touched && form.controls['idNumero'].invalid" class="error">
+    <span *ngIf="form.controls['idNumero'].errors?.['required']">El documento es obligatorio.</span>
+    <span *ngIf="form.controls['idNumero'].errors?.['minlength']">Debe tener al menos 5 números.</span>
+    <span *ngIf="form.controls['idNumero'].errors?.['pattern']">Solo se permiten números.</span>
+  </div>
+</label>
+
+    <!-- Solo UI -->
+
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="form.invalid">
+    {{ mode === 'create' ? 'Crear' : 'Guardar cambios' }}
+  </button>
+</div>

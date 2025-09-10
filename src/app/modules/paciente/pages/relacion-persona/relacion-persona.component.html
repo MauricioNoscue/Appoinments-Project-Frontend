@@ -1,6 +1,6 @@
-<div class="cards-grid">
+<h1>Personas relacionadas</h1>
 
-  <!-- Tarjetas de personas -->
+<div class="cards-grid">
   <mat-card
     class="person-card"
     *ngFor="let p of people()"
@@ -8,20 +8,17 @@
     [class.selected]="selectedId() === p.id"
     tabindex="0"
     [attr.aria-pressed]="selectedId() === p.id"
-    [attr.aria-label]="'Seleccionar a ' + p.name + ' ' + p.lastname">
+    [attr.aria-label]="'Seleccionar a ' + p.fullName">
 
     <div class="top">
-      <div class="avatar" [style.background]="p.color">
-        {{ initials(p) }}
+      <!-- 👇 color dinámico -->
+      <div class="avatar" [style.background]="p.color || '#4f46e5'">
+        {{ initials(p.fullName) }}
       </div>
 
-      <div class="info">
-        <div class="name">{{ p.name }}</div>
-        <div class="lastname">{{ p.lastname }}</div>
-
-        <mat-chip-set class="chip-set">
-          <mat-chip class="relation-chip" selected>{{ p.relation }}</mat-chip>
-        </mat-chip-set>
+      <div class="text-block">
+        <div class="name">{{ p.fullName }}</div>
+        <mat-chip class="relation-chip" selected>{{ p.relation }}</mat-chip>
       </div>
 
       <button
@@ -48,10 +45,8 @@
         <span>Eliminar</span>
       </button>
     </mat-menu>
-
   </mat-card>
 
-  <!-- Tarjeta para agregar -->
   <button class="add-card" (click)="addPerson()" aria-label="Agregar persona">
     <div class="add-dashed">
       <div class="plus">+</div>
@@ -59,3 +54,54 @@
     </div>
   </button>
 </div>
+
+<!-- Detalle -->
+<ng-template #detailDialog let-data>
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">Detalles de Persona</h2>
+      <button mat-icon-button class="close-btn" mat-dialog-close aria-label="Cerrar modal">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="modal-content">
+      <div class="person-info">
+        <div class="avatar-container">
+          <!-- 👇 color dinámico -->
+          <div class="person-avatar" [style.background]="data.color || '#4f46e5'">
+            {{ initials(data.fullName) }}
+          </div>
+        </div>
+        <div class="person-details">
+          <h3 class="person-name">{{ data.fullName }}</h3>
+          <p class="person-subtitle">{{ data.relation }}</p>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <div class="detail-item">
+          <div class="detail-icon"><mat-icon>badge</mat-icon></div>
+          <div class="detail-content">
+            <span class="detail-label">Identificación</span>
+            <span class="detail-value">{{ data.document || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-icon"><mat-icon>assignment_ind</mat-icon></div>
+          <div class="detail-content">
+            <span class="detail-label">Tipo de documento</span>
+            <span class="detail-value">{{ data.documentTypeName || '—' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button mat-flat-button color="primary" class="close-button" mat-dialog-close>
+        Cerrar
+      </button>
+    </div>
+  </div>
+</ng-template>

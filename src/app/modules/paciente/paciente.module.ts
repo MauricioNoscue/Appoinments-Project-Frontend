@@ -9,6 +9,7 @@ import { MatCard } from '@angular/material/card';
 import { MaterialModule } from '../../shared/material.module';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { EditProfileSectionDialogComponent } from './pages/perfil/edit-profile-section-dialog/edit-profile-section-dialog.component';
+import { FormRelacionPersonaComponent } from './Components/Form/form-relacion-persona/form-relacion-persona.component';
 
 @NgModule({
   declarations: [PerfilComponent, EditProfileSectionDialogComponent], // NO declares DashboardComponent (es standalone)
@@ -18,6 +19,7 @@ import { EditProfileSectionDialogComponent } from './pages/perfil/edit-profile-s
     SharedModule, // <-- vuelve a ponerlo si el layout se declara allí
     MatCard,
     MaterialModule,
+    FormRelacionPersonaComponent,
   ],
 })
 export class PacienteModule {}

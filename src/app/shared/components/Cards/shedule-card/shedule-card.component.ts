@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { shedule } from '../../../Models/hospital/shedule';
 
 @Component({
@@ -9,4 +9,13 @@ standalone:false,
 })
 export class SheduleCardComponent {
  @Input() schedule!: shedule;
+
+
+ @Output() action = new EventEmitter<void>();
+
+  onClick(): void {
+    // Emitimos el evento
+    this.action.emit();
+  }
+
 }

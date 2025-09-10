@@ -297,5 +297,140 @@
     </div>
   </form>
 </mat-step>
+
+
+
+
+<!-- Quinta sección: Configuración de Horarios -->
+<mat-step [stepControl]="fifthFormGroup" label="Configurar Horarios">
+  <form [formGroup]="fifthFormGroup">
+    <ng-template matStepLabel>Configurar Horarios</ng-template>
+    
+    <div class="step-content">
+      <h3>Configura los horarios de las citas</h3>
+      <p class="section-description">Define el horario de trabajo y los descansos para las {{ fourthFormGroup.get('numberCitation')?.value }} citas programadas</p>
+      
+      <!-- Configuración de horarios -->
+      <div class="schedule-config">
+        
+        <!-- Horario de trabajo -->
+        <mat-card class="schedule-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon class="section-icon">access_time</mat-icon>
+              Horario de Trabajo
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="time-inputs-row">
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Hora de Inicio</mat-label>
+                <input 
+                  matInput 
+                  type="time" 
+                  formControlName="startTime"
+                  placeholder="08:00">
+                <mat-icon matSuffix>schedule</mat-icon>
+                <mat-error *ngIf="fifthFormGroup.get('startTime')?.hasError('required')">
+                  La hora de inicio es obligatoria
+                </mat-error>
+              </mat-form-field>
+
+              <mat-icon class="time-separator">arrow_forward</mat-icon>
+
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Hora de Fin</mat-label>
+                <input 
+                  matInput 
+                  type="time" 
+                  formControlName="endTime"
+                  placeholder="17:00">
+                <mat-icon matSuffix>schedule</mat-icon>
+                <mat-error *ngIf="fifthFormGroup.get('endTime')?.hasError('required')">
+                  La hora de fin es obligatoria
+                </mat-error>
+                <mat-error *ngIf="fifthFormGroup.get('endTime')?.hasError('timeRange')">
+                  La hora de fin debe ser posterior a la de inicio
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Horario de descanso -->
+        <mat-card class="schedule-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon class="section-icon">coffee</mat-icon>
+              Horario de Descanso
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="break-toggle">
+              
+            </div>
+
+            <div class="time-inputs-row break-times">
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Inicio del Descanso</mat-label>
+                <input 
+                  matInput 
+                  type="time" 
+                  formControlName="breakStartTime"
+                  placeholder="12:00">
+                <mat-icon matSuffix>free_breakfast</mat-icon>
+                <mat-error *ngIf="fifthFormGroup.get('breakStartTime')?.hasError('required') && fifthFormGroup.get('hasBreak')?.value">
+                  La hora de inicio del descanso es obligatoria
+                </mat-error>
+              </mat-form-field>
+
+              <mat-icon class="time-separator">arrow_forward</mat-icon>
+
+              <mat-form-field appearance="outline" class="time-field">
+                <mat-label>Fin del Descanso</mat-label>
+                <input 
+                  matInput 
+                  type="time" 
+                  formControlName="breakEndTime"
+                  placeholder="13:00">
+                <mat-icon matSuffix>free_breakfast</mat-icon>
+                <mat-error *ngIf="fifthFormGroup.get('breakEndTime')?.hasError('required') && fifthFormGroup.get('hasBreak')?.value">
+                  La hora de fin del descanso es obligatoria
+                </mat-error>
+                <mat-error *ngIf="fifthFormGroup.get('breakEndTime')?.hasError('breakTimeRange')">
+                  La hora de fin del descanso debe ser posterior a la de inicio
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+     
+      </div>
+
+    
+  
+    </div>
+    
+    <div class="step-actions">
+      <button mat-button matStepperPrevious>Atrás</button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="button"
+        [disabled]="!isAllFormsComplete()"
+        (click)="submitScheduleConfiguration()"
+        class="submit-button">
+        <mat-icon>schedule_send</mat-icon>
+        Crear Horarios de Citas
+      </button>
+    </div>
+  </form>
+</mat-step>
+
+
+
+
+
   
 </mat-stepper>

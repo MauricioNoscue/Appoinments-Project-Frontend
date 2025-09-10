@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { TypeCitation } from '../../../../../shared/components/PagesShared/type-citation/type-citation.component';
 import { TypeCitationService } from '../../../../../shared/services/Hospital/type-citation.service';
@@ -6,7 +6,9 @@ import { DoctorList } from '../../../../../shared/Models/hospital/DoctorListMode
 import { DoctorService } from '../../../../../shared/services/doctor.service';
 import { ConsultingRoom } from '../../../../../shared/Models/hospital/shedule';
 import { GenericService } from '../../../../../shared/services/base/generic.service';
-
+import { MatStepper } from '@angular/material/stepper';
+import Swal from 'sweetalert2';
+import { MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-form-shedule',
   standalone:false,
@@ -18,6 +20,9 @@ export class FormSheduleComponent {
 
  
 // Agregar estas propiedades y métodos al componente
+
+@ViewChild('stepper') stepper!: MatStepper;
+
 
 // Propiedades adicionales
 doctorList: DoctorList[] = [];
@@ -48,7 +53,8 @@ thirdFormGroup = this._formBuilder.group({
 constructor(
   private service: TypeCitationService,
   private doctorService: DoctorService,
-  private genericservice :GenericService
+  private genericservice :GenericService,
+    private dialogRef: MatDialogRef<FormSheduleComponent> 
  // private consultingRoomService: ConsultingRoomService // Agregar este servicio
 ) { }
 
@@ -161,30 +167,260 @@ isFormComplete(): boolean {
          this.fourthFormGroup.valid;
 }
 
-// Método para enviar el formulario
-submitForm(): void {
-  if (this.isFormComplete()) {
-    const formData = {
-      typeCitationId: Number(this.firstFormGroup.get('typeCitationId')?.value) || 0,
-      doctorId: Number(this.secondFormGroup.get('doctorId')?.value) || 0,
-      consultingRoomId: Number(this.thirdFormGroup.get('consultingRoomId')?.value) || 0,
-      numberCitation: Number(this.fourthFormGroup.get('numberCitation')?.value) || 0
-    };
+// Propiedades adicionales
+minDate = new Date(); // Fecha mínima (hoy)
+scheduleId: number = 0; // ID del schedule creado
 
-    console.log('Datos del formulario:', formData);
-    this.genericservice.crearGeneric("Shedule" ,   formData).subscribe({
-   next: (response) => {
-    console.log('Citas creadas exitosamente:', response);
-    // Mostrar mensaje de éxito
-    // Resetear formulario si es necesario
-  },
-  error: (error) => {
-    console.error('Error al crear las citas:', error);
-    // Mostrar mensaje de error
-  }
+// Crear fifthFormGroup
+fifthFormGroup = this._formBuilder.group({
+  startTime: ['', Validators.required],
+  endTime: ['', Validators.required],
+  breakStartTime: ['', Validators.required], // obligatorio
+  breakEndTime: ['', Validators.required],   // obligatorio
+  programateDate: [new Date(), Validators.required]
+}, {
+  validators: [this.timeRangeValidator.bind(this)]
 });
 
+
+
+
+
+
+// Validador personalizado para rangos de tiempo
+timeRangeValidator(form: any) {
+  const startTime = form.get('startTime')?.value;
+  const endTime = form.get('endTime')?.value;
+  const breakStartTime = form.get('breakStartTime')?.value;
+  const breakEndTime = form.get('breakEndTime')?.value;
+
+  const errors: any = {};
+
+  // Validar jornada laboral
+  if (startTime && endTime && startTime >= endTime) {
+    errors.timeRange = true;
+  }
+
+  // Validar descanso
+  if (breakStartTime && breakEndTime && breakStartTime >= breakEndTime) {
+    errors.breakTimeRange = true;
+  }
+
+  return Object.keys(errors).length > 0 ? errors : null;
+}
+
+
+// Método para verificar si la configuración de horarios es válida
+isScheduleConfigValid(): boolean {
+  return this.fifthFormGroup.valid;
+}
+
+// Método para verificar si todos los formularios están completos
+isAllFormsComplete(): boolean {
+  return this.firstFormGroup.valid && 
+         this.secondFormGroup.valid && 
+         this.thirdFormGroup.valid && 
+         this.fourthFormGroup.valid &&
+         this.fifthFormGroup.valid;
+}
+
+// Método para formatear tiempo
+formatTime(time: string): string {
+  if (!time) return '';
+  const [hours, minutes] = time.split(':');
+  return `${hours}:${minutes}`;
+}
+
+// Método para formatear fecha
+formatDate(date: any): string {
+  if (!date) return '';
+  const dateObj = new Date(date);
+  return dateObj.toLocaleDateString('es-ES', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
+// Actualizar el método submitForm para capturar el scheduleId
+submitForm(): void {
+    if (this.isFormComplete()) {
+      const formData = {
+        typeCitationId: Number(this.firstFormGroup.get('typeCitationId')?.value) || 0,
+        doctorId: Number(this.secondFormGroup.get('doctorId')?.value) || 0,
+        consultingRoomId: Number(this.thirdFormGroup.get('consultingRoomId')?.value) || 0,
+        numberCitation: Number(this.fourthFormGroup.get('numberCitation')?.value) || 0
+      };
+
+      this.genericservice.crearGeneric("Shedule", formData).subscribe({
+        next: (response: any) => {
+          // Guardar id
+          this.scheduleId = response.id || response.sheduleId || 0;
+
+          // Mostrar alerta
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Las citas fueron creadas, ahora configura los horarios.',
+            icon: 'success',
+            confirmButtonText: 'Continuar',
+            confirmButtonColor: '#4CAF50'
+          }).then(() => {
+            // Avanzar directamente al paso 5
+            this.stepper.selectedIndex = 4; 
+          });
+        },
+        error: (error) => {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudieron crear las citas. Intenta nuevamente.',
+            icon: 'error',
+            confirmButtonText: 'Entendido',
+            confirmButtonColor: '#f44336'
+          });
+        }
+      });
+    }
+  
+}
+
+// Método para enviar la configuración de horarios
+submitScheduleConfiguration(): void {
+  if (this.isAllFormsComplete() && this.scheduleId > 0) {
+    const scheduleConfigData = {
+      startTime: this.fifthFormGroup.get('startTime')?.value + ':00', // Agregar segundos
+      endTime: this.fifthFormGroup.get('endTime')?.value + ':00',
+      breakStartTime: this.fifthFormGroup.get('hasBreak')?.value ? 
+        (this.fifthFormGroup.get('breakStartTime')?.value + ':00') : null,
+      breakEndTime: this.fifthFormGroup.get('hasBreak')?.value ? 
+        (this.fifthFormGroup.get('breakEndTime')?.value + ':00') : null,
+      programateDate: this.formatDateForApi(this.fifthFormGroup.get('programateDate')?.value),
+      sheduleId: this.scheduleId
+    };
+
+    console.log('Configuración de horarios:', scheduleConfigData);
+    
+    // Hacer la petición para crear los horarios
+    this.genericservice.crearGeneric("ScheduleHour", scheduleConfigData).subscribe({
+      next: (response: any) => {
+        console.log('Configuración de horarios creada exitosamente:', response);
+        
+        // Mostrar SweetAlert de éxito
+        this.showSuccessAlert();
+
+
+
+
+        
+        
+        // Opcional: resetear formularios o redirigir
+        this.resetAllForms();
+      },
+      error: (error) => {
+        console.error('Error al crear la configuración de horarios:', error);
+        this.showErrorAlert(error);
+      }
+    });
+  } else {
+    console.error('Formularios incompletos o scheduleId faltante');
+    this.showErrorAlert('Datos incompletos');
   }
 }
+
+// Método para formatear fecha para la API
+formatDateForApi(date: any): string {
+  if (!date) return '';
+  const dateObj = new Date(date);
+  return dateObj.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+}
+
+// Método para mostrar alerta de éxito
+showSuccessAlert(): void {
+  // Instalar SweetAlert2: npm install sweetalert2
+  // import Swal from 'sweetalert2';
+  
+   
+  Swal.fire({
+    title: '¡Éxito!',
+    text: 'Las citas y horarios han sido programados correctamente',
+    icon: 'success',
+    confirmButtonText: 'Continuar',
+    confirmButtonColor: '#4CAF50',
+    backdrop: true,
+    allowOutsideClick: false,
+    showClass: {
+      popup: 'animate__animated animate__zoomIn'
+    },
+    hideClass: {
+      popup: 'animate__animated animate__zoomOut'
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Redirigir o realizar otra acción
+           this.dialogRef.close(true);
+      console.log('Usuario confirmó el éxito');
+    }
+  });
+  
+}
+
+// Método para mostrar alerta de error
+showErrorAlert(error: any): void {
+  
+  Swal.fire({
+    title: 'Error',
+    text: 'Ocurrió un error al procesar la solicitud. Por favor intenta nuevamente.',
+    icon: 'error',
+    confirmButtonText: 'Entendido',
+    confirmButtonColor: '#f44336',
+    backdrop: true,
+    showClass: {
+      popup: 'animate__animated animate__shakeX'
+    }
+  });
+  
+}
+
+// Método para resetear todos los formularios
+resetAllForms(): void {
+  this.firstFormGroup.reset();
+  this.secondFormGroup.reset();
+  this.thirdFormGroup.reset();
+  this.fourthFormGroup.reset();
+  this.fifthFormGroup.reset();
+  
+  // Resetear variables
+  this.selectedTypeCitation = null;
+  this.selectedDoctor = null;
+  this.selectedRoom = null;
+  this.scheduleId = 0;
+}
+
+// Método para manejar cambios en el toggle de descanso
+onBreakToggleChange(): void {
+  const hasBreak = this.fifthFormGroup.get('hasBreak')?.value;
+  
+  if (!hasBreak) {
+    // Limpiar campos de descanso si se deshabilita
+    this.fifthFormGroup.patchValue({
+      breakStartTime: '',
+      breakEndTime: ''
+    });
+    
+    // Remover validaciones de campos de descanso
+    this.fifthFormGroup.get('breakStartTime')?.clearValidators();
+    this.fifthFormGroup.get('breakEndTime')?.clearValidators();
+  } else {
+    // Agregar validaciones si se habilita
+    this.fifthFormGroup.get('breakStartTime')?.setValidators([Validators.required]);
+    this.fifthFormGroup.get('breakEndTime')?.setValidators([Validators.required]);
+  }
+  
+  // Actualizar validaciones
+  this.fifthFormGroup.get('breakStartTime')?.updateValueAndValidity();
+  this.fifthFormGroup.get('breakEndTime')?.updateValueAndValidity();
+}
+
+
 
 }
