@@ -6,5 +6,6 @@ export interface DoctorList {
     fullName: string | null,
     emailDoctor: string,
     isDeleted: boolean,
-    registrationDate: Date
+    registrationDate: Date,
+    personId?: number
 }

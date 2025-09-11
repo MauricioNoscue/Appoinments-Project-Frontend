@@ -1,159 +1,127 @@
-
-<!-- Controles de selección y acciones -->
-
-
-<!-- Estilos de iconos (solo una vez) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Tarjetas de roles -->
-<div class="role-grid">
+<div class="role-grid" *ngIf="!loading && !errorMsg; else loadingOrError">
 
-<!-- Doctor -->
-<div class="role-amor">
-  <div class="role-content">
-    <img src="../../../../../assets/images/doctorBayter 1.png" alt="Doctor" class="doctor-img">
-    <div class="doctor-info">
-      <h3>Jorge Enrique Bayter</h3>
-      <div class="info-row">
-        <div>
-          <span class="label">Edad</span>
-          <span class="value">45</span>
-        </div>
-        <div>
-          <span class="label">Profesión</span>
-          <span class="value">Cirujano</span>
-        </div>
-        <div>
-          <span class="label">Experiencia</span>
-          <span class="value">8</span>
+  <!-- Avatar / resumen corto -->
+  <div class="role-amor">
+    <div class="role-content">
+      <img [src]="doctorImg" alt="Foto doctor" class="doctor-img" />
+      <div class="doctor-info">
+        <h3>{{ fullName }}</h3>
+        <div class="info-row">
+          <div>
+            <span class="label">Edad</span>
+            <span class="value">{{ age }}</span>
+          </div>
+          <div>
+            <span class="label">Profesión</span>
+            <span class="value">{{ specialty }}</span>
+          </div>
+          <div>
+            <span class="label">Estado</span>
+            <span class="value">{{ doctor?.active ? 'Activo' : 'Inactivo' }}</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
+  <!-- Información personal -->
+  <div class="personal-card">
+    <h3>Información Personal</h3>
 
-<!-- Tarjeta de información personal -->
-<div class="personal-card">
-  <h3>Información Personal
-    <i class="fas fa-pen edit-icon"></i>
-  </h3>
-
-  <div class="personal-item">
-    <i class="fas fa-user"></i>
-    <div>
-      <span class="label">Nombre completo</span>
-      <span class="value">Daniel Gomez Martinez</span>
-    </div>
-  </div>
-
-  <div class="personal-item">
-    <i class="fas fa-calendar"></i>
-    <div>
-      <span class="label">Fecha de Nacimiento</span>
-      <span class="value">15 de marzo 1985</span>
-    </div>
-  </div>
-
-  <div class="personal-item">
-    <i class="fas fa-mars"></i>
-    <div>
-      <span class="label">Género</span>
-      <span class="value">Masculino</span>
-    </div>
-  </div>
-
-  <div class="personal-item">
-    <i class="fas fa-id-card"></i>
-    <div>
-      <span class="label">Documento</span>
-      <span class="value">CC 1.023.456.789</span>
-    </div>
-  </div>
-</div>
-
-
-<!-- Tarjeta de información de salud -->
-<div class="health-card">
-  <h3>Información de Salud
-    <i class="fas fa-pen edit-icon"></i>
-  </h3>
-
-  <div class="health-item">
-    <i class="fas fa-hospital"></i>
-    <div>
-      <span class="label">EPS</span>
-      <span class="value">Daniel Gomez Martinez</span>
-    </div>
-  </div>
-
-  <hr>
-
-  <div class="health-item">
-    <i class="fas fa-heart"></i>
-    <div>
-      <span class="label">Régimen de Salud</span>
-      <span class="value">15 de marzo 1985</span>
-    </div>
-  </div>
-</div>
-
-
-<!-- ...tu HTML actual... -->
-
-<div class="chart-card">
-  <div class="chart-header">Comportamiento del año</div>
-  <div class="chart-body">
-    <div class="chart-container">
-      <canvas id="MyChart"></canvas>
-    </div>
-
-    <div class="legend-side">
-      <div class="legend-head">
-        <span></span>
-        <span>Label</span>
-        <span>Value</span>
-        <span>%</span>
+    <div class="personal-item">
+      <i class="fas fa-user"></i>
+      <div>
+        <span class="label">Nombre completo</span>
+        <span class="value">{{ fullName }}</span>
       </div>
-      <div class="legend-row" *ngFor="let item of legendData; let i = index">
-        <span class="dot" [style.backgroundColor]="colors[i]"></span>
-        <span class="label">{{ item.label }}</span>
-        <span class="value">{{ item.value }}</span>
-        <span class="pct">{{ item.percent }}%</span>
+    </div>
+
+    <div class="personal-item">
+      <i class="fas fa-calendar"></i>
+      <div>
+        <span class="label">Fecha de Nacimiento</span>
+        <span class="value">{{ doctor?.dateBorn | date:'longDate' }}</span>
+      </div>
+    </div>
+
+    <div class="personal-item">
+      <i class="fas fa-mars"></i>
+      <div>
+        <span class="label">Género</span>
+        <span class="value">{{ gender }}</span>
+      </div>
+    </div>
+
+    <div class="personal-item">
+      <i class="fas fa-id-card"></i>
+      <div>
+        <span class="label">Documento</span>
+        <span class="value">{{ document }}</span>
       </div>
     </div>
   </div>
-</div>
 
+  <!-- Contacto -->
+  <div class="contact-card">
+    <h3>Contacto</h3>
 
-<!-- Tarjeta de contacto -->
-<div class="contact-card">
-  <h3>Contacto
-    <i class="fas fa-pen edit-icon"></i>
-  </h3>
+    <div class="contact-item">
+      <i class="fas fa-phone-alt"></i>
+      <div>
+        <span class="label">Teléfono</span>
+        <span class="value">{{ phone }}</span>
+      </div>
+    </div>
 
-  <div class="contact-item">
-    <i class="fas fa-phone-alt"></i>
-    <div>
-      <span class="label">Teléfono</span>
-      <span class="value">+57 (313) 315-6032</span>
+    <hr />
+
+    <div class="contact-item">
+      <i class="fas fa-envelope"></i>
+      <div>
+        <span class="label">Email</span>
+        <span class="value">{{ email }}</span>
+      </div>
     </div>
   </div>
 
-  <hr>
-
-  <div class="contact-item">
-    <i class="fas fa-envelope"></i>
-    <div>
-      <span class="label">Email</span>
-      <span class="value">daniel.gomezemail.com</span>
+  <!-- Comportamiento del año -->
+  <div class="chart-card">
+    <div class="chart-header">Comportamiento del año</div>
+    <div class="chart-body">
+      <div class="chart-container">
+        <canvas id="MyChart"></canvas>
+      </div>
+      <div class="legend-side">
+        <div class="legend-head">
+          <span></span>
+          <span>Mes</span>
+          <span>Value</span>
+          <span>%</span>
+        </div>
+        <div class="legend-row" *ngFor="let item of legendData; let i = index">
+          <span class="dot" [style.backgroundColor]="colors[i]"></span>
+          <span class="label">{{ item.label }}</span>
+          <span class="value">{{ item.value }}</span>
+          <span class="pct">{{ item.percent }}%</span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-
-
 
 </div>
 
-
+<ng-template #loadingOrError>
+  <div class="role-grid" style="width:100%">
+    <div class="card"
+      style="background:#fff; border-radius:12px; padding:24px; width:100%; max-width:720px; margin:40px auto; text-align:center; box-shadow:0 10px 20px rgba(0,0,0,.06);">
+      <ng-container *ngIf="loading; else errTpl">
+        Cargando perfil del doctor…
+      </ng-container>
+      <ng-template #errTpl>
+        <div style="color:#ef4444; font-weight:600">{{ errorMsg }}</div>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>

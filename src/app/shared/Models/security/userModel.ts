@@ -37,15 +37,20 @@ export interface UsuarioListado {
 
  // Interfaces
 export interface PersonList {
+  id: number;
   fullName: string;
   fullLastName: string;
-  documentTypeId: number;
+  documentTypeName: string | null;
+  documentTypeAcronymName: string | null;
   document: string;
   dateBorn: string;
   phoneNumber: string;
+  epsName: string | null;
   epsId: number;
   gender: string;
   healthRegime: string;
+  isDeleted: boolean;
+  registrationDate: string;
 }
  // Interfaces
 export interface PersonUpdate {
