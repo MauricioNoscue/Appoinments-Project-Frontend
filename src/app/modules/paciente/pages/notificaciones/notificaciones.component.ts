@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // *ngFor, *ngIf, [ngClass]
-import { MatIconModule } from '@angular/material/icon'; // <mat-icon>
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { forkJoin } from 'rxjs';
+
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { NotificationList } from '../../../../shared/Models/Notification/Notification';
 
@@ -19,7 +21,7 @@ interface NotificacionUI {
   tipo: string;
   estado: Estado;
   icono: string;
-  leida: boolean; // derivado de stateNotification (bool)
+  leida: boolean; // derivado de stateNotification
 }
 
 @Component({
@@ -29,16 +31,27 @@ interface NotificacionUI {
   styleUrls: ['./notificaciones.component.css'],
   imports: [CommonModule, MatIconModule],
 })
-export class NotificacionesComponent implements OnInit {
+export class NotificacionesComponent implements OnInit, OnDestroy {
   tab: Tab = 'todas';
   notificaciones: NotificacionUI[] = [];
   cargando = false;
-  accionando = new Set<number>(); // IDs en acción para deshabilitar botones
+  accionando = new Set<number>();
+
+  /** Flag para evitar ejecutar el marcado múltiple más de una vez simultánea */
+  private marcandoSalida = false;
 
   constructor(private api: NotificationService) {}
 
+  // ========= Ciclo de vida =========
   ngOnInit(): void {
     this.cargar();
+  }
+
+  /** Si el usuario abandona el componente estando en "no-leídas", también marcamos al salir */
+  ngOnDestroy(): void {
+    if (this.tab === 'no-leidas') {
+      this.marcarTodasNoLeidasComoLeidas();
+    }
   }
 
   private cargar(): void {
@@ -54,12 +67,63 @@ export class NotificacionesComponent implements OnInit {
     });
   }
 
+  // ========= Tabs =========
+  setTab(t: Tab) {
+    // Si estamos en "no-leídas" y vamos a otra pestaña, primero marcamos todas como leídas
+    if (this.tab === 'no-leidas' && t !== 'no-leidas') {
+      this.marcarTodasNoLeidasComoLeidas(() => {
+        this.tab = t;
+      });
+    } else {
+      this.tab = t;
+    }
+  }
+
+  // ========= Marcado al salir de "no-leídas" =========
+  /** Marca en backend todas las no leídas (UI optimista + forkJoin para paraleo) */
+  private marcarTodasNoLeidasComoLeidas(onDone?: () => void): void {
+    if (this.marcandoSalida) {
+      onDone?.();
+      return;
+    }
+
+    const pendientes = this.notificaciones.filter((n) => !n.leida);
+    if (!pendientes.length) {
+      onDone?.();
+      return;
+    }
+
+    this.marcandoSalida = true;
+
+    const ids = pendientes.map((n) => n.id);
+
+    // (1) UI optimista
+    this.notificaciones = this.notificaciones.map((n) =>
+      ids.includes(n.id) ? { ...n, leida: true, estado: 'Realizada' } : n
+    );
+
+    // (2) PATCH en paralelo (usa tu NotificationService.markAsRead(id))
+    const reqs = ids.map((id) => this.api.markAsRead(id));
+    forkJoin(reqs).subscribe({
+      next: () => {},
+      error: () => {
+        // (3) Rollback si falla algo
+        this.notificaciones = this.notificaciones.map((n) =>
+          ids.includes(n.id) ? { ...n, leida: false, estado: 'Pendiente' } : n
+        );
+      },
+      complete: () => {
+        this.marcandoSalida = false;
+        onDone?.();
+      },
+    });
+  }
+
+  // ========= Mapeo y helpers =========
   private mapToUI(n: NotificationList): NotificacionUI {
-    // AHORA ES BOOLEANO
     const leida = !!n.stateNotification;
     const fecha = n.createdAt ? new Date(n.createdAt).toLocaleString() : '—';
 
-    // typeNotification puede venir undefined/null -> manejar seguro
     const icono =
       n.typeNotification === 'ALERT'
         ? 'warning'
@@ -82,7 +146,7 @@ export class NotificacionesComponent implements OnInit {
     };
   }
 
-  // ====== Filtros y contadores ======
+  // ========= Filtros y contadores (para tu template) =========
   get filtered(): NotificacionUI[] {
     if (this.tab === 'no-leidas')
       return this.notificaciones.filter((n) => !n.leida);
@@ -90,46 +154,34 @@ export class NotificacionesComponent implements OnInit {
       return this.notificaciones.filter((n) => n.leida);
     return this.notificaciones;
   }
+
   get unreadCount(): number {
     return this.notificaciones.filter((n) => !n.leida).length;
   }
   get readCount(): number {
     return this.notificaciones.filter((n) => n.leida).length;
   }
-  setTab(t: Tab) {
-    this.tab = t;
-  }
 
-  // ====== Leído / No leído (PERSISTE EN BD) ======
+  // ========= Acciones individuales (opcional) =========
   marcarLeida(n: NotificacionUI, valor: boolean): void {
-    if (this.accionando.has(n.id)) return; // evita doble click
+    if (this.accionando.has(n.id)) return;
     this.accionando.add(n.id);
 
-    // --- 1) Optimista: actualiza UI de inmediato
     const prev = n.leida;
     n.leida = valor;
     n.estado = valor ? 'Realizada' : 'Pendiente';
 
-    // --- 2) Persiste en backend
     const req = valor ? this.api.markAsRead(n.id) : this.api.markAsUnread(n.id);
     req.subscribe({
-      // Si quieres, puedes NO recargar para mantener el cambio instantáneo.
-      // next: () => {},
-
-      // O si prefieres garantizar sincronía, recarga desde BD:
-      next: () => this.cargar(),
-
+      next: () => {},
       error: () => {
-        // --- 3) Reversión si falla
         n.leida = prev;
         n.estado = prev ? 'Realizada' : 'Pendiente';
-        this.accionando.delete(n.id);
       },
       complete: () => this.accionando.delete(n.id),
     });
   }
 
-  // ====== Eliminar (heredado del base) ======
   eliminarNotificacion(id: number): void {
     if (!confirm('¿Estás seguro de eliminar esta notificación?')) return;
     this.api.eliminar(id).subscribe({

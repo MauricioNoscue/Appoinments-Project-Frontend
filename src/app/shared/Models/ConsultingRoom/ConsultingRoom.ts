@@ -6,7 +6,7 @@ export interface ConsultingRoomList {
   name: string;
   roomNumber: number;
   floor: number;
-
+  imageUrl?: string;
 }
 
 export interface ConsultingRoomCreate {

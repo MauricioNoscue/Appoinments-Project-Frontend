@@ -28,21 +28,21 @@
       <div class="estado" [ngClass]="n.estado.toLowerCase()">{{ n.estado }}</div>
 
       <!-- Acciones -->
-      <button class="accion"
+      <!-- <button class="accion"
               *ngIf="!n.leida"
               (click)="marcarLeida(n, true)"
               [disabled]="accionando.has(n.id)"
               title="Marcar como leída">
         <mat-icon>mark_email_read</mat-icon>
-      </button>
-
+      </button> -->
+<!--
       <button class="accion"
               *ngIf="n.leida"
               (click)="marcarLeida(n, false)"
               [disabled]="accionando.has(n.id)"
               title="Marcar como no leída">
         <mat-icon>mark_email_unread</mat-icon>
-      </button>
+      </button> -->
 
       <button class="eliminar"
               (click)="eliminarNotificacion(n.id)"
