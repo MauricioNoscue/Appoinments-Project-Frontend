@@ -223,9 +223,9 @@ export class PerfilComponent implements OnInit, OnDestroy {
     // Alimentar la leyenda del gráfico con algo realista.
     // Si más adelante consumes las citas por doctor, reemplaza esta parte.
     const base = [
-      { label: 'Ene', value: 0 },
-      { label: 'Feb', value: 0 },
-      { label: 'Mar', value: 0 },
+      { label: 'Ene', value: 33 },
+      { label: 'Feb', value: 22 },
+      { label: 'Mar', value: 12 },
       { label: 'Abr', value: 0 },
       { label: 'May', value: 0 },
       { label: 'Jun', value: 0 },

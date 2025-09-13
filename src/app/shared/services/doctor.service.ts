@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ServiceBaseService } from './base/service-base.service';
-import { DoctorList } from '../Models/hospital/DoctorListModel';
+import { DoctorCitation, DoctorList } from '../Models/hospital/DoctorListModel';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
@@ -43,6 +43,10 @@ export class DoctorService extends ServiceBaseService<DoctorList, any, any> {
     return this.http.get<DoctorList[]>(`${this.urlBase}/GetAllDoctors`).pipe(
       map(doctors => doctors.find(d => d.id === id) || {} as DoctorList)
     );
+  }
+
+  getCitationsByDoctor(doctorId: number) {
+    return this.http.get<DoctorCitation[]>(`${this.urlBase}/${doctorId}/citas`);
   }
 
   private readonly baseUrl = 'https://localhost:7186/api/ConsultingRoom';

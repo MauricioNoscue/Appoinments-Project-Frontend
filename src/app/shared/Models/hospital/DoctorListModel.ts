@@ -9,3 +9,18 @@ export interface DoctorList {
     registrationDate: Date,
     personId?: number
 }
+
+export interface DoctorCitation {
+  state: string;
+  note: string;
+  appointmentDate: string;       // ISO (fecha)
+  timeBlock: string;              // "HH:mm:ss"
+  scheduleHourId: number;
+  nameDoctor: string | null;
+  consultingRoomName: string;
+  roomNumber: number;
+  id: number;
+  isDeleted: boolean;
+  registrationDate: string;
+  patientFullName?: string | null;
+}

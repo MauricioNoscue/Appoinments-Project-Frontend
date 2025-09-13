@@ -1,0 +1,79 @@
+<section class="page">
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="left">
+            <h1 class="doctor-name">{{ doctorName }}</h1>
+            <span class="chip">{{ specialty }}</span>
+        </div>
+
+        <div class="right">
+            <div class="room-title">Consultorio</div>
+            <div class="room-code">{{ roomCode }}</div>
+        </div>
+    </header>
+
+    <!-- KPIs (jornadas) -->
+    <div class="kpi-row">
+        <mat-card class="kpi-card kpi-card--morning">
+            <div class="dot dot--blue"></div>
+            <div class="kpi-content">
+                <div class="kpi-title">Citas en la jornada de<br />la mañana</div>
+                <div class="kpi-number">{{ morningCount }}</div>
+                <div class="kpi-range">7am - 11am</div>
+            </div>
+        </mat-card>
+
+        <mat-card class="kpi-card kpi-card--afternoon">
+            <div class="dot dot--green"></div>
+            <div class="kpi-content">
+                <div class="kpi-title">Citas en la jornada de<br />la tarde</div>
+                <div class="kpi-number">{{ afternoonCount }}</div>
+                <div class="kpi-range">2pm - 4pm</div>
+            </div>
+        </mat-card>
+    </div>
+
+    <!-- Grid inferior -->
+    <div class="bottom-grid">
+        <!-- Calendario -->
+        <mat-card class="calendar-card">
+            <div class="cal-header">
+                <div class="toggle"><span class="dot on"></span></div>
+                <div class="title">{{ monthName() | titlecase }}</div>
+                <div class="nav">
+                    <button mat-icon-button (click)="prevMonth()"><mat-icon>chevron_left</mat-icon></button>
+                    <button mat-icon-button (click)="nextMonth()"><mat-icon>chevron_right</mat-icon></button>
+                </div>
+            </div>
+
+            <div class="week">
+                <div class="wd" *ngFor="let d of weekDays">{{ d }}</div>
+            </div>
+
+            <div class="days">
+                <button class="cell" *ngFor="let d of monthMatrix" [class.empty]="!d" [class.today]="isToday(d)"
+                    [class.selected]="isSelected(d)" (click)="pick(d)">
+                    <span *ngIf="d">{{ d.getDate() | number: '2.0-0' }}</span>
+                </button>
+            </div>
+        </mat-card>
+
+        <!-- CTA de jornada -->
+        <mat-card class="cta-card">
+            <div class="cta-title">¿Estás listo para<br />comenzar tu día?</div>
+            <div class="cta-sub">
+                Tienes <strong>{{ upcomingCount }}</strong> citas pendientes<br />para el día seleccionado
+            </div>
+            <button mat-raised-button color="primary" class="cta-btn" (click)="startDay()">
+                Comienza la jornada
+            </button>
+        </mat-card>
+    </div>
+
+    <!-- Loader / error -->
+    <div class="state" *ngIf="loading || errorMsg">
+        <ng-container *ngIf="loading">Cargando…</ng-container>
+        <ng-container *ngIf="!loading && errorMsg">{{ errorMsg }}</ng-container>
+    </div>
+</section>

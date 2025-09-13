@@ -5,14 +5,8 @@
 
 <!-- Stats -->
 <section class="stats">
-  <button
-    class="stat"
-    mat-stroked-button
-    *ngFor="let s of stats()"
-    [ngStyle]="{ '--color': s.color }"
-    (click)="goTo(s.label)"
-    [attr.aria-label]="'Abrir ' + s.label"
-  >
+  <button class="stat" mat-stroked-button *ngFor="let s of stats()" [ngStyle]="{ '--color': s.color }"
+    (click)="goTo(s.label)" [attr.aria-label]="'Abrir ' + s.label">
     <span class="ic" [style.background]="s.color + '20'">
       <mat-icon [style.color]="s.color">{{ s.icon }}</mat-icon>
     </span>
@@ -46,14 +40,8 @@
       </div>
 
       <div class="days">
-        <button
-          class="cell"
-          *ngFor="let d of monthMatrix"
-          [class.empty]="!d"
-          [class.today]="isToday(d)"
-          [class.selected]="isSelected(d)"
-          (click)="pick(d)"
-        >
+        <button class="cell" *ngFor="let d of monthMatrix" [class.empty]="!d" [class.today]="isToday(d)"
+          [class.selected]="isSelected(d)" (click)="pick(d)">
           <span *ngIf="d">{{ d.getDate() | number: '2.0-0' }}</span>
         </button>
       </div>
@@ -66,12 +54,7 @@
           <mat-icon>notifications</mat-icon>
           <span>Novedades</span>
         </div>
-        <button
-          mat-stroked-button
-          color="primary"
-          class="ver-todo"
-          (click)="verTodo()"
-        >
+        <button mat-stroked-button color="primary" class="ver-todo" (click)="verTodo()">
           ver todo ({{ noLeidasCnt() }})
         </button>
       </div>

@@ -47,7 +47,6 @@ const routes: Routes = [
       {path:'typecitation2', component: TypeCitationComponent},
       {path:'CitationAviable/:id', component: ViewCitationAvailableComponent},
       { path: 'medical-staff', component: MedicalStaffComponent },
-      // { path: 'doctor1/perfil', component: PerfilComponent },
       { path: 'security/form', component: FormComponent },
       { path: 'horarios', component: ScheduleComponent },
 
