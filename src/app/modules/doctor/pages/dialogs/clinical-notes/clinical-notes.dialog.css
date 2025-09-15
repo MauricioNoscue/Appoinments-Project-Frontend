@@ -1,0 +1,73 @@
+.title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 18px;
+    margin: 0 0 8px
+}
+
+.pill {
+    background: #22c55e;
+    color: #fff;
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-weight: 800
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    margin: 12px 0 18px
+}
+
+.header .tag {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1f2937
+}
+
+.header .name {
+    font-size: 22px;
+    font-weight: 700
+}
+
+.header .time {
+    font-size: 22px;
+    font-weight: 700
+}
+
+.card {
+    border-radius: 16px;
+    padding: 16px
+}
+
+.card h3 {
+    font-size: 26px;
+    margin: 0 0 10px
+}
+
+.small {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151
+}
+
+textarea {
+    width: 100%;
+    min-height: 240px;
+    border-radius: 12px;
+    border: 2px solid #dbe2ee;
+    background: #eaf5ff;
+    outline: none;
+    padding: 14px;
+    font-size: 16px
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 18px
+}

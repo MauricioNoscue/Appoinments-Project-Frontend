@@ -36,5 +36,12 @@ export class CitationService extends ServiceBaseService<Citation, any, any> {
     });
   }
 
+  /**
+   * Actualizar una cita (estado y nota)
+   */
+  updateCitation(id: number, data: { state?: string; note?: string }): Observable<any> {
+    return this.http.put(`${this.urlBase}/${id}`, data);
+  }
+
 
 }

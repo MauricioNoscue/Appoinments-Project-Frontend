@@ -1,0 +1,65 @@
+.title {
+    font-size: 28px;
+    font-weight: 800;
+    text-align: center;
+    margin: 6px 0 20px
+}
+
+.row {
+    display: flex;
+    gap: 18px;
+    align-items: center
+}
+
+.row .label {
+    width: 120px;
+    color: #111827;
+    font-weight: 700
+}
+
+.row .value {
+    font-weight: 600
+}
+
+.mt {
+    margin-top: 14px
+}
+
+.chips {
+    display: flex;
+    gap: 18px
+}
+
+.chip {
+    border: 2px solid transparent;
+    border-radius: 18px;
+    padding: 10px 20px;
+    font-weight: 700
+}
+
+.chip.danger {
+    border-color: #991b1b;
+    color: #991b1b;
+    background: #fff
+}
+
+.chip.success {
+    border-color: #047857;
+    color: #047857;
+    background: #fff
+}
+
+.chip.active.danger {
+    background: #fee2e2
+}
+
+.chip.active.success {
+    background: #d1fae5
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 26px
+}

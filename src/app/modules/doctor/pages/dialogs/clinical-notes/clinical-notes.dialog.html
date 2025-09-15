@@ -1,0 +1,20 @@
+<h2 class="title">
+    <span class="pill">Asistió / No asistió</span>
+</h2>
+
+<div class="header">
+    <div class="tag">Paciente</div>
+    <div class="name">{{ data.citation.patientName || 'Paciente' }}</div>
+    <div class="time">{{ data.citation.timeBlock | slice:0:5 }}</div>
+</div>
+
+<mat-card class="card">
+    <h3>Observaciones clínicas</h3>
+    <label class="small">Síntomas / indicaciones</label>
+    <textarea [(ngModel)]="text" placeholder="Escribe las observaciones (opcional)"></textarea>
+</mat-card>
+
+<div class="actions">
+    <button mat-stroked-button (click)="cancel()">Omitir</button>
+    <button mat-flat-button color="primary" (click)="save()">Guardar</button>
+</div>

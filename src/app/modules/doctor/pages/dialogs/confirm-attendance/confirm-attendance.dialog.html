@@ -1,0 +1,26 @@
+<h2 class="title">Confirmación de cita</h2>
+
+<div class="row">
+    <div class="label">Paciente</div>
+    <div class="value">{{ data.citation.patientName || 'Paciente' }}</div>
+</div>
+
+<div class="row mt">
+    <div class="label">Asistencia</div>
+    <div class="chips">
+        <button type="button" class="chip danger" [class.active]="attended===false" (click)="attended=false">No
+            asistió</button>
+        <button type="button" class="chip success" [class.active]="attended===true"
+            (click)="attended=true">Asistió</button>
+    </div>
+</div>
+
+<div class="row mt">
+    <div class="label">Horario</div>
+    <div class="value">{{ hourRange() }}</div>
+</div>
+
+<div class="actions">
+    <button mat-stroked-button (click)="close()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="next()" [disabled]="attended===undefined">Continuar</button>
+</div>

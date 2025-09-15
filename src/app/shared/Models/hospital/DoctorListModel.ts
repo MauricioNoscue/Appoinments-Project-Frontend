@@ -22,5 +22,5 @@ export interface DoctorCitation {
   id: number;
   isDeleted: boolean;
   registrationDate: string;
-  patientFullName?: string | null;
+  patientName?: string | null;
 }

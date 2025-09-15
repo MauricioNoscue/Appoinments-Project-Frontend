@@ -7,6 +7,9 @@ import { MaterialModule } from '../../shared/material.module';
 import { SharedModule } from '../../shared/shared.module';
 import { HistoryCitationsComponent } from './pages/history-citations/history-citations.component';
 import { CitationDetailsDialogComponent } from './pages/history-citations/citation-details-dialog/citation-details-dialog.component';
+import { DoctorAppointmentsComponent } from './pages/doctor-appointments/doctor-appointments.component';
+import { ConfirmAttendanceDialogComponent } from './pages/dialogs/confirm-attendance/confirm-attendance.dialog';
+import { ClinicalNotesDialogComponent } from './pages/dialogs/clinical-notes/clinical-notes.dialog';
 import { DoctorAgendaComponent } from './pages/doctor-agenda/doctor-agenda.component';
 
 
@@ -17,7 +20,10 @@ import { DoctorAgendaComponent } from './pages/doctor-agenda/doctor-agenda.compo
     DashboardComponent,
     HistoryCitationsComponent,
     CitationDetailsDialogComponent,
-    DoctorAgendaComponent
+    DoctorAgendaComponent,
+    DoctorAppointmentsComponent,
+    ConfirmAttendanceDialogComponent,
+    ClinicalNotesDialogComponent,
   ],
   imports: [CommonModule, DoctorRoutingModule,MaterialModule,SharedModule],
 })

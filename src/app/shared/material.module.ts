@@ -20,6 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { SectionCardComponent } from './components/Cards/section-card/section-card.component';
 import {MatStepperModule} from '@angular/material/stepper';
@@ -49,7 +50,7 @@ const materialModules = [
   MatTableModule,
   MatDialogModule,
   ReactiveFormsModule,MatSelectModule 
-  ,MatProgressSpinnerModule,MatTabsModule,
+  ,MatProgressSpinnerModule,MatProgressBarModule,MatTabsModule,
   MatFormFieldModule,MatStepperModule,MatDatepickerModule,
   MatNativeDateModule,MatButtonToggleModule
 ];
