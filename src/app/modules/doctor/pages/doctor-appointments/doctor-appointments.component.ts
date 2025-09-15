@@ -51,6 +51,15 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (all: DoctorCitation[]) => {
           const sameDay = all.filter(c => this.sameDay(new Date(c.appointmentDate as MaybeDate), d));
+
+          // Marcar automáticamente como "No asistió" las citas expiradas que no están atendidas
+          const expiredUnattended = sameDay.filter(c => this.isProgrammed(c.state) && this.isExpired(c));
+          if (expiredUnattended.length > 0) {
+            expiredUnattended.forEach(c => {
+              this.citations.updateCitation({ id: c.id, state: 'No asistió', note: c.note || '' }).subscribe();
+            });
+          }
+
           const programadas = sameDay.filter(c => this.isProgrammed(c.state) && !this.isExpired(c));
           const [am, pm] = this.partitionMorningAfternoon(programadas);
           this.morning = am.sort((a,b) => a.timeBlock.localeCompare(b.timeBlock));
@@ -92,10 +101,10 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
     for (const c of list) {
       const [hh, mm] = c.timeBlock.split(':').map(n => +n);
       const minutes = hh * 60 + mm;
-      // Mañana: 07:00–11:59 (puedes limitar a 11:00 si así lo deseas)
+      // Mañana: 07:00–11:59
       if (minutes >= 7*60 && minutes < 12*60) am.push(c);
-      // Tarde: 14:00–15:59 (o 16:00 exacto si tu ventana es 2–4 pm)
-      else if (minutes >= 14*60 && minutes < 16*60) pm.push(c);
+      // Tarde: 14:00–16:59
+      else if (minutes >= 14*60 && minutes < 17*60) pm.push(c);
     }
     return [am, pm];
   }
@@ -119,14 +128,19 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
     // 2) Observaciones clínicas
     const notesRef = this.dialog.open<ClinicalNotesDialogComponent, any, string>(
       ClinicalNotesDialogComponent,
-      { width: '900px', maxWidth: '95vw', data: { citation: c }, disableClose: true }
+      { width: '900px', maxWidth: '95vw', data: { citation: c, attended: confirmRes.attended }, disableClose: true }
     );
     const note = await notesRef.afterClosed().toPromise();   // puede venir vacío
 
     // 3) Actualizar backend
     const newState = confirmRes.attended ? 'Atendida' : 'No asistió';
     this.loading = true;
-    this.citations.updateCitation(c.id, { state: newState, note: note ?? '' })
+    const updateData = {
+      id: c.id,
+      state: newState,
+      note: note ?? ''
+    };
+    this.citations.updateCitation(updateData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {

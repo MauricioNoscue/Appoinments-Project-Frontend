@@ -52,10 +52,35 @@ export class HistoryCitationsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          // orden: más recientes primero
-          this.items = [...res].sort((a, b) =>
-            new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime()
-          );
+          const now = new Date();
+          now.setHours(0, 0, 0, 0); // inicio del día actual
+          const futureOrToday = res.filter(c => {
+            const date = new Date(c.appointmentDate);
+            date.setHours(0, 0, 0, 0);
+            return date.getTime() >= now.getTime();
+          });
+          const past = res.filter(c => {
+            const date = new Date(c.appointmentDate);
+            date.setHours(0, 0, 0, 0);
+            return date.getTime() < now.getTime();
+          });
+
+          // Futuras y hoy: orden ascendente (más cercanas primero)
+          futureOrToday.sort((a, b) => {
+            const dateA = new Date(a.appointmentDate + 'T' + a.timeBlock);
+            const dateB = new Date(b.appointmentDate + 'T' + b.timeBlock);
+            return dateA.getTime() - dateB.getTime();
+          });
+
+          // Pasadas: orden descendente (más recientes primero)
+          past.sort((a, b) => {
+            const dateA = new Date(a.appointmentDate + 'T' + a.timeBlock);
+            const dateB = new Date(b.appointmentDate + 'T' + b.timeBlock);
+            return dateB.getTime() - dateA.getTime();
+          });
+
+          // Combinar: futuras primero, luego pasadas
+          this.items = [...futureOrToday, ...past];
           // contadores
           this.countAtendidas = this.items.filter(c => this.mapState(c.state) === 'atendida').length;
           this.countNoAsistio  = this.items.filter(c => this.mapState(c.state) === 'noasistio').length;
@@ -73,7 +98,7 @@ export class HistoryCitationsComponent implements OnInit, OnDestroy {
   mapState(raw: string): StatusKey {
     const s = (raw || '').trim().toLowerCase();
     if (['atendida', 'atendido', 'hecha', 'completada'].includes(s)) return 'atendida';
-    if (['no asistio', 'noasistio', 'incomparecencia', 'ausente'].includes(s)) return 'noasistio';
+    if (['no asistió', 'no asistio', 'noasistio', 'incomparecencia', 'ausente'].includes(s)) return 'noasistio';
     if (['pendiente', 'agendada', 'programada'].includes(s)) return 'pendiente';
     if (['cancelada', 'anulada'].includes(s)) return 'cancelada';
     if (['reprogramada', 'reagendada'].includes(s)) return 'reprogramada';

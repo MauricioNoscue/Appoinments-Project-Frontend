@@ -23,4 +23,5 @@ export interface DoctorCitation {
   isDeleted: boolean;
   registrationDate: string;
   patientName?: string | null;
+  patientId?: number;
 }

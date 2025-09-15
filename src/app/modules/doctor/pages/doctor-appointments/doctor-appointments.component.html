@@ -21,6 +21,11 @@
                 <button mat-raised-button color="primary" (click)="handleAttend(c)">Atender</button>
             </div>
         </article>
+
+        <div class="no-appointments" *ngIf="!morning.length">
+            <mat-icon>event_note</mat-icon>
+            <p>No hay citas programadas para la mañana.</p>
+        </div>
     </div>
 
     <h2 class="section-title mt-40">Tarde</h2>
@@ -43,6 +48,11 @@
                 <button mat-raised-button color="primary" (click)="handleAttend(c)">Atender</button>
             </div>
         </article>
+
+        <div class="no-appointments" *ngIf="!afternoon.length">
+            <mat-icon>event_note</mat-icon>
+            <p>No hay citas programadas para la tarde.</p>
+        </div>
     </div>
 
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>

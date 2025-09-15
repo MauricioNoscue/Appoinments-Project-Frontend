@@ -13,7 +13,7 @@ export class ClinicalNotesDialogComponent {
   text = '';
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { citation: DoctorCitation },
+    @Inject(MAT_DIALOG_DATA) public data: { citation: DoctorCitation; attended: boolean },
     private ref: MatDialogRef<ClinicalNotesDialogComponent, string>
   ) {}
 

@@ -228,6 +228,6 @@ export class DoctorAgendaComponent implements OnInit, OnDestroy {
   // ======= NAVEGACIÓN =======
   startDay(): void {
     const date = this.selected().toISOString().slice(0, 10);
-    this.router.navigate(['/doctor/jornada'], { queryParams: { date } });
+    this.router.navigate(['/doctor/citas']);
   }
 }
