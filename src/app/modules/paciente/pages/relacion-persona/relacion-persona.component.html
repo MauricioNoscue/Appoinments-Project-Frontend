@@ -11,7 +11,7 @@
     [attr.aria-label]="'Seleccionar a ' + p.fullName">
 
     <div class="top">
-      <!-- 👇 color dinámico -->
+      <!-- color dinámico -->
       <div class="avatar" [style.background]="p.color || '#4f46e5'">
         {{ initials(p.fullName) }}
       </div>
@@ -36,11 +36,14 @@
         <mat-icon>visibility</mat-icon>
         <span>Ver</span>
       </button>
+
       <button mat-menu-item (click)="edit(p)">
         <mat-icon>edit</mat-icon>
         <span>Editar</span>
       </button>
-      <button mat-menu-item (click)="remove(p)">
+
+      <!-- AHORA: confirmar con modal -->
+      <button mat-menu-item (click)="confirmRemove(p)">
         <mat-icon>delete</mat-icon>
         <span>Eliminar</span>
       </button>
@@ -55,7 +58,7 @@
   </button>
 </div>
 
-<!-- Detalle -->
+<!-- Modal: Detalle -->
 <ng-template #detailDialog let-data>
   <div class="modal-container">
     <div class="modal-header">
@@ -68,7 +71,6 @@
     <div class="modal-content">
       <div class="person-info">
         <div class="avatar-container">
-          <!-- 👇 color dinámico -->
           <div class="person-avatar" [style.background]="data.color || '#4f46e5'">
             {{ initials(data.fullName) }}
           </div>
@@ -103,5 +105,42 @@
         Cerrar
       </button>
     </div>
+  </div>
+</ng-template>
+
+<!-- Modal: Confirmar eliminación -->
+<ng-template #confirmTpl>
+  <h2 mat-dialog-title>Eliminar persona relacionada</h2>
+  <div mat-dialog-content>
+    <p>
+      ¿Seguro que deseas eliminar a
+      <strong>{{ toRemove?.fullName }}</strong> ({{ toRemove?.relation }})?
+    </p>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-stroked-button mat-dialog-close (click)="onCancelRemove()">Cancelar</button>
+    <button mat-raised-button color="warn" (click)="onConfirmRemove()">Eliminar</button>
+  </div>
+</ng-template>
+
+<!-- Modal: Éxito genérico -->
+<ng-template #successTpl>
+  <h2 mat-dialog-title>Operación exitosa</h2>
+  <div mat-dialog-content>
+    <p>{{ successMessage }}</p>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" mat-dialog-close>Aceptar</button>
+  </div>
+</ng-template>
+
+<!-- Modal: Error genérico (opcional) -->
+<ng-template #errorTpl>
+  <h2 mat-dialog-title>Error</h2>
+  <div mat-dialog-content>
+    <p>{{ errorMessage }}</p>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-raised-button color="warn" mat-dialog-close>Cerrar</button>
   </div>
 </ng-template>

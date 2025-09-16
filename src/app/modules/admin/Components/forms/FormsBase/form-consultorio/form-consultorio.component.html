@@ -5,14 +5,13 @@
 <div mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="guardar()" class="form-grid">
 
-    <!-- Sucursal: muestra nombre (b.name), guarda id (b.id) en branchId -->
+    <!-- Sucursal -->
     <mat-form-field appearance="outline">
       <mat-label>Sucursal</mat-label>
       <mat-select formControlName="branchId" [disabled]="loadingBranches">
         <mat-option *ngIf="loadingBranches" [value]="null" disabled>
           Cargando sucursales...
         </mat-option>
-
         <mat-option *ngFor="let b of branches" [value]="b.id">
           {{ b.name }}
           <span *ngIf="b.institutionName">— {{ b.institutionName }}</span>
@@ -23,7 +22,7 @@
       </mat-error>
     </mat-form-field>
 
-    <!-- Nombre: SOLO letras y espacios -->
+    <!-- Nombre -->
     <mat-form-field appearance="outline">
       <mat-label>Nombre de consultoreo</mat-label>
       <input
@@ -39,12 +38,11 @@
       <mat-error *ngIf="form.get('name')?.hasError('pattern')">Solo se permiten letras y espacios.</mat-error>
     </mat-form-field>
 
-    <!-- Número de consultorio: SOLO números -->
+    <!-- Número de consultorio -->
     <mat-form-field appearance="outline">
       <mat-label>Número de consultorio</mat-label>
       <input
         matInput
-
         class="no-spin"
         formControlName="roomNumber"
         placeholder="Número de consultorio"
@@ -59,12 +57,11 @@
       <mat-error *ngIf="form.get('roomNumber')?.hasError('pattern')">Solo se permiten números.</mat-error>
     </mat-form-field>
 
-    <!-- Piso: SOLO números -->
+    <!-- Piso -->
     <mat-form-field appearance="outline">
       <mat-label>Piso </mat-label>
       <input
         matInput
-
         class="no-spin"
         formControlName="floor"
         placeholder="Piso"
@@ -78,6 +75,30 @@
       <mat-error *ngIf="form.get('floor')?.hasError('min')">No puede ser negativo.</mat-error>
       <mat-error *ngIf="form.get('floor')?.hasError('pattern')">Solo se permiten números.</mat-error>
     </mat-form-field>
+
+    <!-- Imagen del consultorio (predefinidas) -->
+    <mat-form-field appearance="outline">
+      <mat-label>Imagen del consultorio</mat-label>
+      <mat-select formControlName="image">
+        <mat-option [value]="DEFAULT_IMG">— Usar imagen por defecto —</mat-option>
+        <mat-option *ngFor="let img of PRESET_IMAGES" [value]="img.url">
+          {{ img.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Vista previa -->
+    <div class="image-preview" style="grid-column: 1 / -1; display:flex; align-items:center; gap:16px;">
+      <img
+        [src]="form.value.image || DEFAULT_IMG"
+        alt="Vista previa"
+        style="width: 160px; height: 100px; object-fit: cover; border-radius: 8px; border:1px solid #ddd;"
+      />
+      <div style="font-size:12px; color:#666;">
+        <div><strong>URL:</strong> {{ form.value.image || DEFAULT_IMG }}</div>
+        <div>Solo se guardará la URL (no el archivo).</div>
+      </div>
+    </div>
 
   </form>
 </div>

@@ -6,7 +6,7 @@ export interface ConsultingRoomList {
   name: string;
   roomNumber: number;
   floor: number;
-  imageUrl?: string;
+  image?: string;
 }
 
 export interface ConsultingRoomCreate {
@@ -14,6 +14,7 @@ export interface ConsultingRoomCreate {
   name: string;
   roomNumber: number;
   floor: number;
+  image?: string;
 }
 
 export interface ConsultingRoomUpdate {
@@ -22,6 +23,7 @@ export interface ConsultingRoomUpdate {
   name: string;
   roomNumber: number;
   floor: number;
+  image?: string;
 }
 
 export interface ConsultingRoom {
@@ -33,6 +35,7 @@ export interface ConsultingRoom {
   roomNumber: number;
   floor: number;
   branchName?: string;
+  image?: string;
 }
 
 export interface GenericService {
@@ -41,4 +44,5 @@ export interface GenericService {
   name: string;
   roomNumber: number;
   floor: number;
+  image?: string;
 }
