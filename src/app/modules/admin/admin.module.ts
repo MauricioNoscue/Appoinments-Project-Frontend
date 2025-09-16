@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AdminRoutingModule } from './admin-routing.module';
 import { DashboardAdminComponent } from './pages/dashboard-admin/dashboard-admin.component';
 import { SharedModule } from '../../shared/shared.module';
-import { DoctorComponent } from './pages/doctor/doctor.component';
+//import { DoctorComponent } from './pages/doctor/doctor.component';
 import { RolComponent } from './pages/Security/rol/rol.component';
 import { FormComponent } from './pages/Security/form/form.component';
 import { MaterialModule } from "../../shared/material.module";
@@ -50,7 +50,7 @@ import { ConsultorioComponent } from './pages/consultorio/consultorio.component'
 @NgModule({
   declarations: [
     DashboardAdminComponent,
-    DoctorComponent,
+    //DoctorComponent,
     PerfilComponent,
     DashboardComponent,
     RolComponent,
