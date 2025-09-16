@@ -260,3 +260,8 @@
     font-size: 16px;
   }
 }
+
+/* 📂 styles.css (o el SCSS global de Angular) */
+.micIta {
+  width: 700px; /* ajusta según lo que quieras */
+}

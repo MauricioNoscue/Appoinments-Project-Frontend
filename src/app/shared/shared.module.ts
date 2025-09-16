@@ -18,6 +18,8 @@ import { CardTypeCitationComponent } from './components/Cards/card-type-citation
 import { CalendarComponent } from './components/Sections/calendar/calendar.component';
 import { SheduleCardComponent } from './components/Cards/shedule-card/shedule-card.component';
 import { FormSheduleComponent } from '../modules/admin/Components/forms/form-shedule/form-shedule.component';
+import { NotificacionesComponent } from '../modules/paciente/pages/notificaciones/notificaciones.component';
+import { MiCitasComponent } from '../modules/paciente/pages/mi-citas/mi-citas.component';
 
 
 const sharedComponents =[
@@ -39,7 +41,7 @@ const sharedComponents =[
   declarations: [sharedComponents],
   imports: [
     CommonModule,
-    MaterialModule,RouterModule ,ReactiveFormsModule
+    MaterialModule,RouterModule ,ReactiveFormsModule,NotificacionesComponent,MiCitasComponent
   ],
   exports: [
    sharedComponents,DashboardLayoutComponentComponent

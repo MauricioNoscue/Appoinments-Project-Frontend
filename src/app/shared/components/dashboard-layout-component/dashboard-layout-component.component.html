@@ -15,7 +15,7 @@
          <button title="Buscar"><i class="fas fa-search"></i></button>
       </div>
       <div class="icon-container">
-         <i class="fas fa-bell"></i>
+        <i class="fas fa-bell" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"></i>
          <i class="fas fa-user-circle"(click)="onClickPerfil()"></i>
       </div>
     </div>
@@ -37,4 +37,28 @@
       <router-outlet></router-outlet>
     </mat-drawer-content>
   </mat-drawer-container>
+</div>
+
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Notificaciones</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <app-notificaciones></app-notificaciones>
+  </div>
+</div>
+
+
+
+<div class="offcanvas offcanvas-end micIta" tabindex="-1" id="offcanvasExample2" aria-labelledby="offcanvasExampleLabel2">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Mis Citas</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+   <app-mi-citas></app-mi-citas>
+  </div>
 </div>

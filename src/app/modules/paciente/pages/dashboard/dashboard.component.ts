@@ -18,6 +18,7 @@ import { RelatedPersonService } from '../../../../shared/services/related-person
 import { environment } from '../../../../../environments/environment.development';
 import { RouterModule } from '@angular/router'; // 👈 importa esto
 
+declare var bootstrap: any;
 type Stat = {
   icon: string;
   label: 'Mis citas' | 'Familia' | 'Novedades';
@@ -197,20 +198,35 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  // ===== Navegación desde los stats
-  goTo(label: Stat['label']) {
-    switch (label) {
-      case 'Mis citas':
-        this.router.navigate(['/paciente/micitas']);
-        break;
-      case 'Familia':
-        this.router.navigate(['/paciente/relacion']);
-        break;
-       case 'Novedades':
-        this.router.navigate(['/paciente/notificaciones']);
-         break;
-    }
+// ===== Navegación desde los stats
+goTo(label: Stat['label']) {
+  switch (label) {
+    case 'Mis citas':
+    // 👉 Abrir el offcanvas manualmente
+      const offcanvasEl2 = document.getElementById('offcanvasExample2');
+      if (offcanvasEl2) {
+        // Instanciar (o recuperar) el offcanvas de Bootstrap
+        const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl2);
+        bsOffcanvas.show();
+      }
+      break;
+
+    case 'Familia':
+      this.router.navigate(['/paciente/relacion']);
+      break;
+
+    case 'Novedades':
+      // 👉 Abrir el offcanvas manualmente
+      const offcanvasEl = document.getElementById('offcanvasExample');
+      if (offcanvasEl) {
+        // Instanciar (o recuperar) el offcanvas de Bootstrap
+        const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+        bsOffcanvas.show();
+      }
+      break;
   }
+}
+
 
   // ===== Util
   private updateStat(label: Stat['label'], value: number) {
