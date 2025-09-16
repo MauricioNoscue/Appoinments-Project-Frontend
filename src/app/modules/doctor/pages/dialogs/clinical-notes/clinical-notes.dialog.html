@@ -17,5 +17,5 @@
 
 <div class="actions">
     <button mat-stroked-button (click)="cancel()">Omitir</button>
-    <button mat-flat-button color="primary" (click)="save()">Guardar</button>
+    <button mat-flat-button class="boton" (click)="save()" [disabled]="text.length < 2" [class.inactive]="text.length < 2">Guardar</button>
 </div>

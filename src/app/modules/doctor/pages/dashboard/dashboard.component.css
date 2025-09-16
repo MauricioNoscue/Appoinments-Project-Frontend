@@ -75,42 +75,188 @@
     margin-bottom: 10px;
 }
 
-/* barras semanales */
-.bars {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
-    align-items: end;
-    height: 240px;
+.card-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* weekly chart */
+.weekly-chart {
     padding: 20px 0;
 }
 
-.bar {
-    display: grid;
-    gap: 6px;
-    justify-items: center;
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 0 16px;
 }
 
-.bar-col {
-    width: 32px;
+.chart-info {
+    display: flex;
+    gap: 32px;
+}
+
+.total-citas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.total-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1;
+}
+
+.total-label {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.peak-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.peak-label {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.peak-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #059669;
+}
+
+.chart-container {
+    display: flex;
+    align-items: end;
+    height: 280px;
+    margin-bottom: 16px;
+}
+
+.y-axis {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    align-items: flex-end;
+    width: 40px;
     height: 100%;
-    background: #eef2ff;
-    border-radius: 10px;
+    padding-right: 8px;
+    font-size: 11px;
+    color: #64748b;
+    border-right: 1px solid #e2e8f0;
+    margin-right: 16px;
+}
+
+.bars-container {
+    flex: 1;
+    display: flex;
+    align-items: end;
+    justify-content: space-around;
+    height: 100%;
+    padding: 0 16px;
+}
+
+.bar-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 60px;
+}
+
+.bar-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 8px;
+    min-height: 20px;
+}
+
+.bar-visual {
+    position: relative;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: flex-end;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    justify-content: center;
 }
 
 .bar-fill {
-    width: 100%;
-    background: linear-gradient(180deg, #4f46e5, #60a5fa);
-    border-radius: 10px;
-    transition: height .3s;
+    width: 32px;
+    background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+    border-radius: 6px 6px 0 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    position: relative;
+    min-height: 4px;
+}
+
+.bar-fill:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.bar-fill.peak {
+    background: linear-gradient(180deg, #059669, #047857);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+.bar-fill.peak:hover {
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
 }
 
 .bar-label {
     font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.chart-footer {
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+}
+
+.status-legend {
+    display: flex;
+    gap: 24px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
     color: #64748b;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.legend-color.peak {
+    background: linear-gradient(180deg, #059669, #047857);
 }
 
 /* donut */
@@ -340,10 +486,24 @@
     }
 }
 
-/* loading */
+/* loading and error states */
 .loading {
     min-height: 400px;
     display: grid;
     place-items: center;
+    gap: 16px;
     padding: 40px;
+    text-align: center;
+}
+
+.loading mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.loading p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 16px;
 }

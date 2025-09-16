@@ -53,7 +53,7 @@
 
             <div class="days">
                 <button class="cell" *ngFor="let d of monthMatrix" [class.empty]="!d" [class.today]="isToday(d)"
-                    [class.selected]="isSelected(d)" (click)="pick(d)">
+                    [class.selected]="isSelected(d)" [class.disabled]="isPast(d)" [disabled]="isPast(d)" (click)="pick(d)">
                     <span *ngIf="d">{{ d.getDate() | number: '2.0-0' }}</span>
                 </button>
             </div>

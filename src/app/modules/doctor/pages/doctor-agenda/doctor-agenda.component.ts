@@ -87,8 +87,13 @@ export class DoctorAgendaComponent implements OnInit, OnDestroy {
         && d.getMonth() === s.getMonth()
         && d.getDate() === s.getDate();
   }
+  isPast(d?: Date | null) {
+    if (!d) return false;
+    const t = this.today;
+    return d < new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  }
   pick(d?: Date | null) {
-    if (!d) return;
+    if (!d || this.isPast(d)) return;
     this.selected.set(d);
     this.recomputeForSelectedDay();
   }
@@ -217,12 +222,12 @@ export class DoctorAgendaComponent implements OnInit, OnDestroy {
 
   private isMorning(hhmmss: string): boolean {
     const m = this.timeToMinutes(hhmmss);
-    return m >= (7 * 60) && m < (11 * 60); // 07:00–10:59
+    return m >= (7 * 60) && m <= (11 * 60); // 07:00–11:00
   }
 
   private isAfternoon(hhmmss: string): boolean {
     const m = this.timeToMinutes(hhmmss);
-    return m >= (14 * 60) && m < (16 * 60); // 14:00–15:59
+    return m >= (14 * 60) && m <= (16 * 60); // 14:00–16:00
   }
 
   // ======= NAVEGACIÓN =======

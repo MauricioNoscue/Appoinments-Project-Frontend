@@ -1,4 +1,4 @@
-<section class="doctor-dashboard" *ngIf="!loading; else loadingTpl">
+<section class="doctor-dashboard" *ngIf="!loading && !error; else loadingTpl">
 
     <!-- Hero con KPIs -->
     <div class="hero">
@@ -27,13 +27,46 @@
     <div class="grid">
         <!-- Barras semanales -->
         <mat-card class="card">
-            <div class="card-title">Citas del día de la semana</div>
-            <div class="bars">
-                <div class="bar" *ngFor="let lbl of vm.weeklyBars.labels; let i = index">
-                    <div class="bar-col">
-                        <div class="bar-fill" [style.height]="toPct(vm.weeklyBars.values[i], maxWeekly())"></div>
+            <div class="card-title">Todas las citas semanales por día</div>
+            <div class="weekly-chart">
+                <div class="chart-header">
+                    <div class="chart-info">
+                        <div class="total-citas">
+                            <span class="total-number">{{ getTotalWeeklyCitas() }}</span>
+                            <span class="total-label">citas esta semana</span>
+                        </div>
+                        <div class="peak-day">
+                            <span class="peak-label">Día con más citas:</span>
+                            <span class="peak-value">{{ getPeakDay() }}</span>
+                        </div>
                     </div>
-                    <div class="bar-label">{{ lbl }}</div>
+                </div>
+                <div class="chart-container">
+                    <div class="y-axis">
+                        <span *ngFor="let tick of getYAxisTicks()">{{ tick }}</span>
+                    </div>
+                    <div class="bars-container">
+                        <div class="bar-wrapper" *ngFor="let lbl of vm.weeklyBars.labels; let i = index">
+                            <div class="bar-container">
+                                <div class="bar-value">{{ vm.weeklyBars.values[i] }}</div>
+                                <div class="bar-visual">
+                                    <div class="bar-fill"
+                                         [style.height]="toPct(vm.weeklyBars.values[i], maxWeekly())"
+                                         [class.peak]="isPeakDay(i)">
+                                    </div>
+                                </div>
+                                <div class="bar-label">{{ lbl }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-footer">
+                    <div class="status-legend">
+                        <div class="legend-item">
+                            <div class="legend-color peak"></div>
+                            <span>Día con más citas</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </mat-card>
@@ -110,5 +143,17 @@
 </section>
 
 <ng-template #loadingTpl>
-    <div class="loading"><mat-progress-spinner mode="indeterminate"></mat-progress-spinner></div>
+    <div class="loading">
+        <ng-container *ngIf="loading">
+            <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+            <p>Cargando dashboard...</p>
+        </ng-container>
+        <ng-container *ngIf="error">
+            <mat-icon color="warn">error</mat-icon>
+            <p>{{ error }}</p>
+            <button mat-raised-button color="primary" (click)="loadDashboard()">
+                Reintentar
+            </button>
+        </ng-container>
+    </div>
 </ng-template>

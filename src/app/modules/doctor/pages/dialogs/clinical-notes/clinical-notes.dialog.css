@@ -15,10 +15,12 @@
 
 .pill--attended {
     background: #22c55e;
+    margin-left: 20px;
 }
 
 .pill--not-attended {
     background: #ef4444;
+    margin-left: 20px;
 }
 
 .header {
@@ -26,13 +28,14 @@
     grid-template-columns: 100px 1fr auto;
     align-items: baseline;
     gap: 16px;
-    margin: 12px 0 18px
+    margin: 20px 0 18px;
+    margin-left: 20px;
 }
 
 .header .tag {
     font-size: 22px;
     font-weight: 800;
-    color: #1f2937
+    color: #657FF5;
 }
 
 .header .name {
@@ -42,7 +45,9 @@
 
 .header .time {
     font-size: 22px;
-    font-weight: 700
+    font-weight: 700;
+    margin-right: 20px;
+    color: #6b7280;
 }
 
 .card {
@@ -90,4 +95,13 @@ textarea {
     justify-content: center;
     gap: 16px;
     margin: 18px 0 16px
+}
+
+.boton {
+    background-color: #657FF5;
+    color: white;
+}
+
+.boton.inactive {
+    opacity: 0.5;
 }
