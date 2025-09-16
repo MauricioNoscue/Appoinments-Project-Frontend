@@ -29,4 +29,8 @@ export class NotificationService extends ServiceBaseService<
       stateNotification: false,
     });
   }
+
+  markManyAsRead(ids: number[]): Observable<void> {
+    return this.http.patch<void>(`${this.urlBase}/read-many`, { ids });
+  }
 }

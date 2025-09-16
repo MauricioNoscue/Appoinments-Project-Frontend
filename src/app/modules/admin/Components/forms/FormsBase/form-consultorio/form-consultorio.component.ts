@@ -42,11 +42,26 @@ import { BranchService } from '../../../../../../shared/services/branch.service'
 export class FormConsultorioComponent implements OnInit {
   modo: 'crear' | 'editar' = 'crear';
   id?: number;
-  form!: FormGroup; // se inicializa en ngOnInit
+  form!: FormGroup;
 
-  // Sucursales para el select
+  // Sucursales
   branches: BranchList[] = [];
   loadingBranches = false;
+
+  // Imagen por defecto (ajusta la ruta al assets real de tu app)
+  readonly DEFAULT_IMG = 'assets/images/consultorio.png';
+
+  // Imágenes "quemadas" disponibles para elegir
+  readonly PRESET_IMAGES = [
+    {
+      label: 'Clínica – Blanco',
+      url: 'assets/images/grafica.png',
+    },
+    { label: 'Clínica – Azul', url: 'assets/images/doctor.jpg' },
+    { label: 'Odontología', url: 'assets/images/img-home.png' },
+    { label: 'Pediatría', url: 'assets/images/fondo-doctor.png' },
+    { label: 'Cardiología', url: 'assets/images/fondo.png' },
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -64,6 +79,7 @@ export class FormConsultorioComponent implements OnInit {
         name: string;
         roomNumber: number;
         floor: number;
+        image?: string; // ← añadimos image aquí también
       };
     }
   ) {}
@@ -77,28 +93,20 @@ export class FormConsultorioComponent implements OnInit {
         [
           Validators.required,
           Validators.maxLength(60),
-          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/), // solo letras y espacios
+          Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/),
         ],
       ],
       roomNumber: [
         null,
-        [
-          Validators.required,
-          Validators.min(1),
-          Validators.pattern(/^\d+$/), // solo números
-        ],
+        [Validators.required, Validators.min(1), Validators.pattern(/^\d+$/)],
       ],
       floor: [
         null,
-        [
-          Validators.required,
-          Validators.min(0), // cambia a 1 si quieres empezar en 1
-          Validators.pattern(/^\d+$/), // solo números
-        ],
+        [Validators.required, Validators.min(0), Validators.pattern(/^\d+$/)],
       ],
+      image: [this.DEFAULT_IMG], // ← nuevo control (URL)
     });
 
-    // cargar sucursales para el select
     this.cargarBranches();
 
     // 1) Si viene por modal
@@ -112,6 +120,7 @@ export class FormConsultorioComponent implements OnInit {
           name: c.name,
           roomNumber: c.roomNumber,
           floor: c.floor,
+          image: c.image || this.DEFAULT_IMG, // ← precarga imagen
         });
       }
       return;
@@ -123,7 +132,12 @@ export class FormConsultorioComponent implements OnInit {
       this.modo = 'editar';
       this.id = Number(idParam);
       const state: any = history.state?.consultorio;
-      if (state) this.form.patchValue(state);
+      if (state) {
+        this.form.patchValue({
+          ...state,
+          image: state?.image || this.DEFAULT_IMG,
+        });
+      }
     } else {
       this.modo = 'crear';
     }
@@ -146,11 +160,8 @@ export class FormConsultorioComponent implements OnInit {
   // ─────────────────────────────────────────────────────────────
   // Bloqueadores de entrada (teclado/pegar)
   // ─────────────────────────────────────────────────────────────
-
-  // Permitir solo letras y espacios (para 'name')
   soloLetras(event: KeyboardEvent) {
     const key = event.key;
-    // Teclas de control permitidas
     const controlKeys = [
       'Backspace',
       'Delete',
@@ -161,24 +172,14 @@ export class FormConsultorioComponent implements OnInit {
       'End',
     ];
     if (controlKeys.includes(key)) return;
-
-    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/;
-    if (!regex.test(key)) {
-      event.preventDefault();
-    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(key)) event.preventDefault();
   }
-
   soloLetrasPaste(event: ClipboardEvent) {
     const pasted = (event.clipboardData?.getData('text') ?? '').trim();
-    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(pasted)) {
-      event.preventDefault();
-    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(pasted)) event.preventDefault();
   }
-
-  // Permitir solo dígitos (para 'roomNumber' y 'floor')
   soloNumeros(event: KeyboardEvent) {
     const key = event.key;
-    // Teclas de control permitidas
     const controlKeys = [
       'Backspace',
       'Delete',
@@ -189,25 +190,22 @@ export class FormConsultorioComponent implements OnInit {
       'End',
     ];
     if (controlKeys.includes(key)) return;
-
-    if (!/^\d$/.test(key)) {
-      event.preventDefault();
-    }
+    if (!/^\d$/.test(key)) event.preventDefault();
   }
-
   soloNumerosPaste(event: ClipboardEvent) {
     const pasted = (event.clipboardData?.getData('text') ?? '').trim();
-    if (!/^\d+$/.test(pasted)) {
-      event.preventDefault();
-    }
+    if (!/^\d+$/.test(pasted)) event.preventDefault();
   }
-
   // ─────────────────────────────────────────────────────────────
 
   guardar(): void {
     if (this.form.invalid) return;
 
-    const result = { modo: this.modo, id: this.id, values: this.form.value };
+    const result = {
+      modo: this.modo,
+      id: this.id,
+      values: this.form.value, // ← incluye image (URL)
+    };
 
     if (this.dialogRef) {
       this.dialogRef.close(result);
