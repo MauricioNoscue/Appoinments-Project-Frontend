@@ -1,0 +1,59 @@
+<section class="page">
+    <header class="top-gap"></header>
+
+    <h2 class="section-title">Mañana</h2>
+    <div class="timeline">
+        <div class="line"></div>
+
+        <article class="card" *ngFor="let c of morning">
+            <div class="dot"></div>
+            <div class="time">
+                <div class="h">{{ hourLabel(c.timeBlock).split(' ')[0] }}</div>
+                <div class="ampm">{{ hourLabel(c.timeBlock).split(' ')[1] }}</div>
+            </div>
+
+            <div class="info">
+                <div class="name">{{ patientName(c) }}</div>
+                <div class="type">{{ typeName(c) }}</div>
+            </div>
+
+            <div class="actions">
+                <button mat-raised-button style="background-color: #657FF5; color: #ffffff;" (click)="handleAttend(c)">Atender</button>
+            </div>
+        </article>
+
+        <div class="no-appointments" *ngIf="!morning.length">
+            <mat-icon>event_note</mat-icon>
+            <p>No hay citas programadas para la mañana.</p>
+        </div>
+    </div>
+
+    <h2 class="section-title mt-40">Tarde</h2>
+    <div class="timeline">
+        <div class="line"></div>
+
+        <article class="card" *ngFor="let c of afternoon">
+            <div class="dot"></div>
+            <div class="time">
+                <div class="h">{{ hourLabel(c.timeBlock).split(' ')[0] }}</div>
+                <div class="ampm">{{ hourLabel(c.timeBlock).split(' ')[1] }}</div>
+            </div>
+
+            <div class="info">
+                <div class="name">{{ patientName(c) }}</div>
+                <div class="type">{{ typeName(c) }}</div>
+            </div>
+
+            <div class="actions">
+                <button mat-raised-button style="background-color: #657FF5; color: #ffffff;" (click)="handleAttend(c)">Atender</button>
+            </div>
+        </article>
+
+        <div class="no-appointments" *ngIf="!afternoon.length">
+            <mat-icon>event_note</mat-icon>
+            <p>No hay citas programadas para la tarde.</p>
+        </div>
+    </div>
+
+    <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+</section>

@@ -3,6 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardLayoutComponentComponent } from '../../shared/components/dashboard-layout-component/dashboard-layout-component.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { HistoryCitationsComponent } from './pages/history-citations/history-citations.component';
+import { DoctorAgendaComponent } from './pages/doctor-agenda/doctor-agenda.component';
+import { DoctorAppointmentsComponent } from './pages/doctor-appointments/doctor-appointments.component';
 
 const routes: Routes = [
   {
@@ -12,6 +15,9 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'perfil', component: PerfilComponent },
+      { path: 'historial', component: HistoryCitationsComponent },
+      { path: 'pendientes', component: DoctorAgendaComponent },  // Nueva ruta para DoctorAgendaComponent
+      { path: 'citas', component: DoctorAppointmentsComponent }
     ],
   },
 ];

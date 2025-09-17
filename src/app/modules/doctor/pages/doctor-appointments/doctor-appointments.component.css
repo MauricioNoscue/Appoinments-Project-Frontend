@@ -1,0 +1,152 @@
+.page {
+    padding: 24px 28px 60px;
+}
+
+.top-gap {
+    height: 8px;
+}
+
+.section-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 24px 0 12px;
+}
+
+.mt-40 {
+    margin-top: 40px;
+}
+
+.timeline {
+    position: relative;
+    display: grid;
+    gap: 18px;
+}
+
+.timeline .line {
+    position: absolute;
+    left: 24px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #94b3ff, rgba(148, 179, 255, .12));
+    border-radius: 6px;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: 40px 100px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-left: 20px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, .08);
+    border: 1px solid rgba(2, 6, 23, .05);
+}
+
+.dot {
+    width: 14px;
+    height: 14px;
+    border: 4px solid #567bff;
+    border-radius: 9999px;
+    background: #fff;
+    margin-left: -5px;
+}
+
+/* --- Ajuste de bloque de hora --- */
+.time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 96px;
+    /* asegura que siempre haya espacio para hh:mm */
+}
+
+.time .h {
+    font-size: 34px;
+    line-height: 1;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    /* evita quiebres como “11:0 ↩ 0” */
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: .5px;
+}
+
+.time .ampm {
+    margin-top: -2px;
+    text-transform: lowercase;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.info .name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.info .type {
+    margin-top: 6px;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.actions button {
+    padding: 10px 20px;
+    border-radius: 12px;
+}
+
+.no-appointments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    margin-left: 20px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, .08);
+    border: 1px solid rgba(2, 6, 23, .05);
+    text-align: center;
+}
+
+.no-appointments mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+.no-appointments p {
+    font-size: 18px;
+    color: #6b7280;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .card {
+        grid-template-columns: 26px minmax(100px, auto) 1fr;
+        gap: 12px;
+    }
+
+    .time .h {
+        font-size: 30px;
+        /* reduce un poco para móvil */
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    .actions {
+        grid-column: 1 / -1;
+        justify-self: end;
+    }
+}

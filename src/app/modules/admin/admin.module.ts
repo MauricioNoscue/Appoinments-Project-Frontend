@@ -28,7 +28,6 @@ import { FormDoctorComponent } from './Components/forms/FormsBase/form-doctor/fo
 import { UserCreateComponent } from './Components/forms/FormsCreate/user-create/user-create.component';
 import { UserRoleManagementComponent } from './pages/Security/user-role-management/user-role-management.component';
 import { PermissionManagementComponent } from './pages/Security/permission-management/permission-management.component';
-import { PerfilComponent } from './pages/doctor1/perfil/perfil.component';
 
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -42,9 +41,10 @@ import { DoctorFormDialogComponent } from './pages/medical-staff/dialogs/doctor-
 import { DoctorCardComponent } from './Components/cards/doctor-card/doctor-card.component';
 import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doctor-created-dialog/doctor-created-dialog.component';
-import { DashboardComponent } from './pages/doctor1/dashboard/dashboard.component';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
+import { PerfilComponent } from '../doctor/pages/perfil/perfil.component';
+import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.component';
 
 
 @NgModule({

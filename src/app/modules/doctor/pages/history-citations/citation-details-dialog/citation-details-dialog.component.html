@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>Detalles de la cita</h2>
+
+<mat-dialog-content class="dialog-content">
+  <div class="details-grid">
+    <!-- Estado -->
+    <div class="detail-item">
+      <span class="label">Estado:</span>
+      <span [class]="stateClass()">{{ stateLabel() }}</span>
+    </div>
+
+    <!-- Paciente -->
+    <div class="detail-item">
+      <span class="label">Paciente:</span>
+      <span class="value">{{ data.citation.patientName || 'No disponible' }}</span>
+    </div>
+
+    <!-- Fecha -->
+    <div class="detail-item">
+      <span class="label">Fecha:</span>
+      <span class="value">{{ formatDateISO(data.citation.appointmentDate) }}</span>
+    </div>
+
+    <!-- Hora -->
+    <div class="detail-item">
+      <span class="label">Hora:</span>
+      <span class="value">{{ formatHour(data.citation.timeBlock) }}</span>
+    </div>
+
+    <!-- Consultorio -->
+    <div class="detail-item">
+      <span class="label">Consultorio:</span>
+      <span class="value">{{ data.citation.consultingRoomName }}</span>
+    </div>
+
+    <!-- Sala -->
+    <div class="detail-item">
+      <span class="label">Sala:</span>
+      <span class="value">{{ data.citation.roomNumber }}</span>
+    </div>
+
+    <!-- Doctor -->
+    <div class="detail-item" *ngIf="data.citation.nameDoctor">
+      <span class="label">Doctor:</span>
+      <span class="value">{{ data.citation.nameDoctor }}</span>
+    </div>
+
+    <!-- Fecha de registro -->
+    <div class="detail-item">
+      <span class="label">Fecha de registro:</span>
+      <span class="value">{{ formatDateISO(data.citation.registrationDate) }}</span>
+    </div>
+
+    <!-- Nota -->
+    <div class="detail-item full-width">
+      <span class="label">Nota:</span>
+      <div class="note-content">
+        {{ data.citation.note || 'Sin nota' }}
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>

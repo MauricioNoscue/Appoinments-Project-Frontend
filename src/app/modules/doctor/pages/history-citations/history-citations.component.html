@@ -1,0 +1,62 @@
+<section class="page">
+
+    <header class="page__header">
+        <h1 class="title">Historial de citas</h1>
+
+        <div class="kpis">
+            <div class="kpi">
+                <span class="pill pill--ok">Atendido</span>
+                <span class="kpi__value">{{ countAtendidas }}</span>
+            </div>
+            <div class="kpi">
+                <span class="pill pill--warn">No Asistio</span>
+                <span class="kpi__value">{{ countNoAsistio }}</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loader / error / empty -->
+    <div class="state" *ngIf="loading || errorMsg || (!loading && items.length===0)">
+        <ng-container *ngIf="loading">Cargando historial…</ng-container>
+        <ng-container *ngIf="!loading && errorMsg">{{ errorMsg }}</ng-container>
+        <ng-container *ngIf="!loading && !errorMsg && items.length===0">Sin registros de citas.</ng-container>
+    </div>
+
+    <!-- Lista -->
+    <div class="cards" *ngIf="!loading && !errorMsg && items.length">
+        <mat-card class="card" *ngFor="let c of items">
+            <div class="card__top">
+                <span [class]="stateClass(c)">{{ stateLabel(c) }}</span>
+
+                <div class="patient">
+                    <span class="muted">Paciente:</span>
+                    <strong>{{ c.patientName || 'No disponible' }}</strong>
+                </div>
+
+                <div class="date">
+                    <span class="muted">Fecha:</span>
+                    <strong>{{ formatDateISO(c.appointmentDate) }}</strong>
+                </div>
+            </div>
+
+            <div class="card__body">
+                <div class="desc">
+                    <div class="desc__title">Descripción</div>
+                    <div class="desc__text">
+                        {{ c.note || '—' }}
+                    </div>
+                </div>
+
+                <button mat-raised-button color="primary" class="btn" (click)="openDetails(c)">
+                    Detalles
+                </button>
+            </div>
+
+            <div class="card__meta">
+                <div>Hora: <strong>{{ formatHour(c.timeBlock) }}</strong></div>
+                <div>Consultorio: <strong>{{ c.consultingRoomName }}</strong></div>
+                <div>Sala: <strong>{{ c.roomNumber }}</strong></div>
+            </div>
+        </mat-card>
+    </div>
+</section>

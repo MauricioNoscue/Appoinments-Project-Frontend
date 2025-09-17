@@ -1,0 +1,84 @@
+.dialog-content {
+  padding-top: 6px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-weight: 700;
+  color: #327CAC;
+  font-size: 14px;
+}
+
+.value {
+  color: #374151;
+  font-size: 16px;
+}
+
+.note-content {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  color: #4b5563;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* pills */
+.pill {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+  font-size: 14px;
+  border: 2px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  align-self: flex-start;
+}
+
+.pill--ok {
+  border-color: #34d399;
+  color: #0f766e;
+}
+
+.pill--warn {
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.pill--pending {
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+.pill--cancel {
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.pill--info {
+  border-color: #a5b4fc;
+  color: #327CAC;
+}
+
+@media (max-width: 600px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
