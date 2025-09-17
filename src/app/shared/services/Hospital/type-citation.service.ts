@@ -11,5 +11,6 @@ export class TypeCitationService extends ServiceBaseService<TypeCitation, any, a
     super('TypeCitation');
    }
 
-   
+
 }
+

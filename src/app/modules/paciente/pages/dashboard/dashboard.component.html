@@ -70,7 +70,7 @@
           mat-stroked-button
           color="primary"
           class="ver-todo"
-        data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"
+          data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"
         >
           ver todo ({{ noLeidasCnt() }})
         </button>
@@ -89,13 +89,18 @@
     </mat-card>
   </div>
 
-  <!-- Columna derecha: Tipos de citas -->
+  <!-- Columna derecha: Tipos de citas (desde API) -->
   <div class="right-col">
     <h3 class="tipos-title">Tipos de citas</h3>
+
     <div class="tipos-grid">
       <button class="tipo" *ngFor="let t of tipos" (click)="openTipo(t)">
-        <div class="icon" [style.background]="t.color">
-          <mat-icon>{{ t.icon }}</mat-icon>
+        <div class="icon" >
+          <!-- Si hay imagen, úsala; si no, icono de respaldo -->
+          <img *ngIf="t.img; else icTpl" [src]="t.img" alt="{{ t.label }}" />
+          <ng-template #icTpl>
+            <!-- <mat-icon>{{ t.icon }}</mat-icon> -->
+          </ng-template>
         </div>
         <div class="label">{{ t.label }}</div>
       </button>
