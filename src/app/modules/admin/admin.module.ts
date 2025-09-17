@@ -51,8 +51,9 @@ import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.componen
   declarations: [
     DashboardAdminComponent,
     //DoctorComponent,
-    PerfilComponent,
-    DashboardComponent,
+    //PerfilComponent,
+    //DashboardComponent,
+   
     RolComponent,
     FormComponent,
     RolCreatedComponent,
