@@ -1,6 +1,7 @@
 export interface DoctorList {
     id: number,
-    specialty: string,
+    specialtyId: number,
+    specialtyName: string,
     active: boolean,
     image: string,
     fullName: string | null,

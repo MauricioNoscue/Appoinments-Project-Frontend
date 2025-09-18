@@ -6,8 +6,10 @@ import { PageEvent } from '@angular/material/paginator';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
 
 import { DoctorList } from '../../../../../shared/Models/hospital/DoctorListModel';
+import { Specialty } from '../../../../../shared/Models/hospital/SpecialtyModel';
 import { DoctorService } from '../../../../../shared/services/doctor.service';
 import { PersonaService } from '../../../../../shared/services/persona.service';
+import { SpecialtyService } from '../../../../../shared/services/Hospital/specialty.service';
 
 import { FilterDoctorsDialogComponent } from '../dialogs/filter-doctors-dialog/filter-doctors-dialog.component';
 import { DoctorCreatedDialogComponent } from '../dialogs/doctor-created-dialog/doctor-created-dialog.component';
@@ -52,7 +54,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
   form: FormGroup;
   pageIndex = 0;
   pageSize = 12;
-  specialties: string[] = [];
+  specialties: Specialty[] = [];
   searchControl!: FormControl;
 
   private destroy$ = new Subject<void>();
@@ -62,6 +64,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
     private dialog: MatDialog,
     private doctorService: DoctorService,
     private personaService: PersonaService,
+    private specialtyService: SpecialtyService,
     private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
@@ -114,7 +117,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
               (doctor.emailDoctor && doctor.emailDoctor.toLowerCase().includes(filters.search.toLowerCase()));
 
             const matchesSpecialty = !filters.specialty ||
-              (doctor.specialty && doctor.specialty === filters.specialty);
+              (doctor.specialtyName && doctor.specialtyName.toLowerCase().includes(filters.specialty.toLowerCase()));
 
             return matchesSearch && matchesSpecialty;
           });
@@ -138,13 +141,12 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadSpecialties(): void {
     // Cargar todas las especialidades sin filtros
-    this.doctorService
+    this.specialtyService
       .traerTodo()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res: DoctorList[]) => {
-          const set = new Set(res.map(d => (d.specialty || '').trim()).filter(Boolean));
-          this.specialties = Array.from(set).sort((a, b) => a.localeCompare(b));
+        next: (res: Specialty[]) => {
+          this.specialties = res.sort((a, b) => a.name.localeCompare(b.name));
         },
         error: () => { },
       });
@@ -248,7 +250,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Objeto en el formato que espera el backend
     const doctorDataCompleto = {
-      specialty: doctorData.specialty,
+      specialtyId: doctorData.specialtyId,
       emailDoctor: doctorData.emailDoctor,
       image: doctorData.image,
       active: doctorData.active,
@@ -263,7 +265,8 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
         // Crear objeto DoctorList con los datos disponibles
         const newDoctor: DoctorList = {
           id: response?.id || 0,
-          specialty: doctorData.specialty,
+          specialtyId: doctorData.specialtyId,
+          specialtyName: this.specialties.find(s => s.id === doctorData.specialtyId)?.name || 'Especialidad desconocida',
           active: doctorData.active,
           image: doctorData.image,
           fullName: this.personaDataCreada?.fullName + ' ' + this.personaDataCreada?.fullLastName,

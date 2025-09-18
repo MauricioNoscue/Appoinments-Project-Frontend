@@ -6,7 +6,7 @@
       <mat-label>Especialidad</mat-label>
       <mat-select formControlName="specialty">
         <mat-option [value]="null">Todas</mat-option>
-        <mat-option *ngFor="let s of data.specialties" [value]="s">{{ s }}</mat-option>
+        <mat-option *ngFor="let s of data.specialties" [value]="s.name">{{ s.name }}</mat-option>
       </mat-select>
     </mat-form-field>
   </form>

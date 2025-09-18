@@ -44,7 +44,7 @@
                 <label>Tipo de documento</label>
                 <select class="inp" formControlName="documentTypeId">
                   <option value="">Selecciona</option>
-                  <option *ngFor="let t of tiposDocumento" [value]="t.id">{{ t.nombre }}</option>
+                  <option *ngFor="let t of tiposDocumento" [value]="t.id">{{ t.name }}</option>
                 </select>
                 <div class="err" *ngIf="pf['documentTypeId'].touched && pf['documentTypeId'].invalid">Requerido.</div>
               </div>
@@ -85,7 +85,7 @@
                 <label>EPS</label>
                 <select class="inp" formControlName="epsId">
                   <option value="">Selecciona</option>
-                  <option *ngFor="let e of epsOptions" [value]="e.id">{{ e.nombre }}</option>
+                  <option *ngFor="let e of epsOptions" [value]="e.id">{{ e.name }}</option>
                 </select>
                 <div class="err" *ngIf="pf['epsId'].touched && pf['epsId'].invalid">Requerido.</div>
               </div>

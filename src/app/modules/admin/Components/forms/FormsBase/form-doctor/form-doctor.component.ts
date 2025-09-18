@@ -1,8 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output, Optional, Inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Optional, Inject, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Subject, takeUntil } from 'rxjs';
 
 // Interfaces
+import { EpsService } from '../../../../../../shared/services/Hospital/eps.service';
+import { DocumentTypeService } from '../../../../../../shared/services/document-type.service';
+import { SpecialtyService } from '../../../../../../shared/services/Hospital/specialty.service';
+import { EpsList } from '../../../../../../shared/Models/hospital/epsListModel';
+import { DocumentType } from '../../../../../../shared/Models/documentTypeModel';
+import { Specialty } from '../../../../../../shared/Models/hospital/SpecialtyModel';
 export interface PersonaCreacion {
   fullName: string;
   fullLastName: string;
@@ -20,7 +27,7 @@ export interface PersonaCreada extends PersonaCreacion {
 }
 
 export interface DoctorCreacion {
-  specialty: string;
+  specialtyId: number;
   emailDoctor: string;
   image: string;
   active: boolean;
@@ -38,7 +45,7 @@ export interface DoctorCompleto {
   templateUrl: './form-doctor.component.html',
   styleUrls: ['./form-doctor.component.css']
 })
-export class FormDoctorComponent implements OnInit {
+export class FormDoctorComponent implements OnInit, OnDestroy {
   @Input() modo: 'create' | 'edit' = 'create';
   @Input() data?: any;
 
@@ -54,45 +61,30 @@ export class FormDoctorComponent implements OnInit {
   isCreatingDoctor: boolean = false;
   imagePreview: string | null = null;
 
-  // Catálogos (puedes sustituirlos por inputs/datos de servicio si lo prefieres)
-  tiposDocumento = [
-    { id: 1, nombre: 'Cédula de Ciudadanía' },
-    { id: 2, nombre: 'Tarjeta de Identidad' },
-    { id: 3, nombre: 'Cédula de Extranjería' },
-    { id: 4, nombre: 'Pasaporte' }
-  ];
-
-  epsOptions = [
-    { id: 1, nombre: 'Sura' },
-    { id: 2, nombre: 'Nueva EPS' },
-    { id: 3, nombre: 'Sanitas' },
-    { id: 4, nombre: 'Compensar' },
-    { id: 5, nombre: 'Famisanar' }
-  ];
-
-  specialties = [
-    'Medicina General',
-    'Cardiología',
-    'Dermatología',
-    'Ginecología',
-    'Oftalmología',
-    'Pediatría',
-    'Psiquiatría',
-    'Radiología',
-    'Traumatología',
-    'Urología'
-  ];
+  // Catálogos dinámicos
+  tiposDocumento: DocumentType[] = [];
+  epsOptions: EpsList[] = [];
+  specialties: Specialty[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
+    private epsService: EpsService,
+    private documentTypeService: DocumentTypeService,
+    private specialtyService: SpecialtyService,
     @Optional() private dialogRef?: MatDialogRef<FormDoctorComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData?: { specialties?: string[] }
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData?: { specialties?: Specialty[] }
   ) {
     this.personaForm = this.createPersonaForm();
     this.doctorForm = this.createDoctorForm();
   }
 
   ngOnInit(): void {
+    // Cargar datos dinámicos
+    this.loadDocumentTypes();
+    this.loadEpsOptions();
+    this.loadSpecialties();
+
     // Si recibimos especialidades por diálogo, sobreescribimos
     if (this.dialogData?.specialties?.length) {
       this.specialties = this.dialogData.specialties;
@@ -101,6 +93,11 @@ export class FormDoctorComponent implements OnInit {
     if (this.data && this.modo === 'edit') {
       // Lógica para edición futura si aplica
     }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // -------- Builders --------
@@ -120,7 +117,7 @@ export class FormDoctorComponent implements OnInit {
 
   private createDoctorForm(): FormGroup {
     return this.fb.group({
-      specialty: ['', [Validators.required]],
+      specialtyId: ['', [Validators.required]],
       emailDoctor: ['', [Validators.required, Validators.email]],
       image: [''],
       active: [true]
@@ -214,11 +211,44 @@ export class FormDoctorComponent implements OnInit {
       'epsId': 'EPS',
       'gender': 'Género',
       'healthRegime': 'Régimen de salud',
-      'specialty': 'Especialidad',
+      'specialtyId': 'Especialidad',
       'emailDoctor': 'Correo electrónico',
       'image': 'Imagen'
     };
     return labels[fieldName] || fieldName;
+  }
+
+  private loadDocumentTypes(): void {
+    this.documentTypeService.traerTodo().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data: DocumentType[]) => {
+        this.tiposDocumento = data;
+      },
+      error: (err) => {
+        console.error('Error cargando tipos de documento:', err);
+      }
+    });
+  }
+
+  private loadEpsOptions(): void {
+    this.epsService.traerTodo().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data: EpsList[]) => {
+        this.epsOptions = data;
+      },
+      error: (err) => {
+        console.error('Error cargando EPS:', err);
+      }
+    });
+  }
+
+  private loadSpecialties(): void {
+    this.specialtyService.traerTodo().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data: Specialty[]) => {
+        this.specialties = data;
+      },
+      error: (err) => {
+        console.error('Error cargando especialidades:', err);
+      }
+    });
   }
 
   onImageSelected(event: any): void {

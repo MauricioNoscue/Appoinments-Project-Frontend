@@ -7,8 +7,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogContent, MatDialogActions, MatDialogTitle } from '@angular/material/dialog';
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
+import { Specialty } from '../../../../../../shared/Models/hospital/SpecialtyModel';
 
-interface Data { specialties: string[]; selected: string | null; }
+interface Data { specialties: Specialty[]; selected: string | null; }
 
 @Component({
   selector: 'app-filter-doctors-dialog',

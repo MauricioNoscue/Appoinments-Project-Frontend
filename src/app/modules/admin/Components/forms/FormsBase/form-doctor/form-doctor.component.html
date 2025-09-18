@@ -37,7 +37,7 @@
         <select id="documentTypeId" formControlName="documentTypeId" class="field-input"
           [class.error]="!!getFieldError('documentTypeId')">
           <option value="">Seleccionar tipo</option>
-          <option *ngFor="let tipo of tiposDocumento" [value]="tipo.id">{{ tipo.nombre }}</option>
+          <option *ngFor="let tipo of tiposDocumento" [value]="tipo.id">{{ tipo.name }}</option>
         </select>
         <div class="field-error" *ngIf="getFieldError('documentTypeId')">{{ getFieldError('documentTypeId') }}</div>
       </div>
@@ -67,7 +67,7 @@
         <label for="epsId" class="field-label">EPS</label>
         <select id="epsId" formControlName="epsId" class="field-input" [class.error]="!!getFieldError('epsId')">
           <option value="">Seleccionar EPS</option>
-          <option *ngFor="let eps of epsOptions" [value]="eps.id">{{ eps.nombre }}</option>
+          <option *ngFor="let eps of epsOptions" [value]="eps.id">{{ eps.name }}</option>
         </select>
         <div class="field-error" *ngIf="getFieldError('epsId')">{{ getFieldError('epsId') }}</div>
       </div>
@@ -116,13 +116,13 @@
       </div>
 
       <div class="form-field">
-        <label for="specialty" class="field-label">Especialidad</label>
-        <select id="specialty" formControlName="specialty" class="field-input"
-          [class.error]="!!getFieldError('specialty')">
+        <label for="specialtyId" class="field-label">Especialidad</label>
+        <select id="specialtyId" formControlName="specialtyId" class="field-input"
+          [class.error]="!!getFieldError('specialtyId')">
           <option value="">Seleccionar especialidad</option>
-          <option *ngFor="let s of specialties" [value]="s">{{ s }}</option>
+          <option *ngFor="let s of specialties" [value]="s.id">{{ s.name }}</option>
         </select>
-        <div class="field-error" *ngIf="getFieldError('specialty')">{{ getFieldError('specialty') }}</div>
+        <div class="field-error" *ngIf="getFieldError('specialtyId')">{{ getFieldError('specialtyId') }}</div>
       </div>
 
       <div class="form-field">

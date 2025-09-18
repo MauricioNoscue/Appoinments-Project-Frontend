@@ -50,7 +50,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
   }
 
   get specialty(): string {
-    return this.doctor?.specialty || '—';
+    return this.doctor?.specialtyName || '—';
   }
 
   get email(): string {

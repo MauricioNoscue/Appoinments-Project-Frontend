@@ -10,7 +10,7 @@ import { MatCard } from "@angular/material/card";
 export class DoctorCardComponent {
   @Input() image = '';
   @Input() fullName = '';
-  @Input() specialty = '';
+  @Input() specialtyName = '';
   @Input() email = '';
   @Input() active = false;
 }

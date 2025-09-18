@@ -6,6 +6,10 @@ import Swal from 'sweetalert2';
 
 import { PersonaService } from '../../../../shared/services/persona.service';
 import { UserService } from '../../../../shared/services/user.service';
+import { EpsService } from '../../../../shared/services/Hospital/eps.service';
+import { DocumentTypeService } from '../../../../shared/services/document-type.service';
+import { EpsList } from '../../../../shared/Models/hospital/epsListModel';
+import { DocumentType } from '../../../../shared/Models/documentTypeModel';
 
 /* ===== Validadores reutilizables ===== */
 function onlyLetters() {
@@ -64,19 +68,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   creandoUsuario = false;
   personaIdCreada: number | null = null;
 
-  tiposDocumento = [
-    { id: 1, nombre: 'Cédula de ciudadanía' },
-    { id: 2, nombre: 'Tarjeta de identidad' },
-    { id: 3, nombre: 'Cédula de extranjería' },
-    { id: 4, nombre: 'Pasaporte' },
-  ];
-  epsOptions = [
-    { id: 1, nombre: 'Sura' },
-    { id: 2, nombre: 'Nueva EPS' },
-    { id: 3, nombre: 'Sanitas' },
-    { id: 4, nombre: 'Compensar' },
-    { id: 5, nombre: 'Famisanar' },
-  ];
+  tiposDocumento: DocumentType[] = [];
+  epsOptions: EpsList[] = [];
 
   private destroy$ = new Subject<void>();
 
@@ -84,7 +77,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private personaService: PersonaService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private epsService: EpsService,
+    private documentTypeService: DocumentTypeService
   ) {}
 
   ngOnInit(): void {
@@ -113,11 +108,39 @@ export class RegisterComponent implements OnInit, OnDestroy {
       .get('password')!
       .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe(() => this.userForm.get('confirmPassword')!.updateValueAndValidity({ onlySelf: true }));
+
+    // Cargar datos dinámicos
+    this.loadDocumentTypes();
+    this.loadEpsOptions();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private loadDocumentTypes(): void {
+    this.documentTypeService.traerTodo().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data: DocumentType[]) => {
+        this.tiposDocumento = data;
+      },
+      error: (err) => {
+        console.error('Error cargando tipos de documento:', err);
+        Swal.fire('Error', 'No se pudieron cargar los tipos de documento.', 'error');
+      }
+    });
+  }
+
+  private loadEpsOptions(): void {
+    this.epsService.traerTodo().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data: EpsList[]) => {
+        this.epsOptions = data;
+      },
+      error: (err) => {
+        console.error('Error cargando EPS:', err);
+        Swal.fire('Error', 'No se pudieron cargar las EPS.', 'error');
+      }
+    });
   }
 
   /* ===== Navegación / Animación ===== */

@@ -17,7 +17,7 @@ interface Citation {
 interface User { id: number; personName: string; }
 interface Doctor {
     id: number,
-    specialty: string,
+    specialtyName: string,
     active: boolean,
     image: string,
     fullName: string | null,
@@ -110,7 +110,7 @@ export class DashboardFacadeService {
                 docs.map((d, i): StaffMember => ({
                     id: d.id,
                     fullName: d.fullName ?? '',
-                    specialty: d.specialty,
+                    specialty: d.specialtyName,
                     status: d.active === false
                         ? STAFF_STATUS.Inactivo
                         : (i % 3 === 0 ? STAFF_STATUS.Ocupado : STAFF_STATUS.Activo),
