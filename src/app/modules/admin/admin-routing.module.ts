@@ -22,11 +22,13 @@ import { ViewCitationAvailableComponent } from './pages/view-citation-available/
 import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 import { ScheduleComponent } from './pages/schedule/schedule.component';
 import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.component';
+import { authGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardLayoutComponentComponent,
+     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardAdminComponent },

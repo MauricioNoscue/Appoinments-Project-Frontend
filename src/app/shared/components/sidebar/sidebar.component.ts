@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth/auth.service';
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { MenuItem } from '../../Models/ManuItemModel';
 
@@ -19,22 +20,31 @@ export class SidebarComponent implements OnInit {
   expandedItems: Set<string> = new Set();
   isMobile: boolean = false;
 
-  constructor(private router: Router, private service:UserService) {
+  constructor(private router: Router, private service:UserService,private authService :AuthService ) {
     this.checkScreenSize();
   }
 
   ngOnInit(): void {
-    // Inicializar elementos expandidos si es necesario
+  // Sacar el roleId desde el token
+  const roleIds = this.authService.getUserRoleIds();
 
-    this.service.getMenu(4).subscribe({
+  if (roleIds.length > 0) {
+    // 👈 tomar el primer rol (o todos, según tu lógica)
+    this.service.getMenu(roleIds[0]).subscribe({
       next: (menu) => this.menuItems = menu,
       error: (err) => {
         console.error('Error cargando menú', err);
         this.menuItems = [];
       }
     });
-    this.initializeExpandedItems();
+  } else {
+    console.warn('El usuario no tiene roles en el token');
+    this.menuItems = [];
   }
+
+  this.initializeExpandedItems();
+}
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
