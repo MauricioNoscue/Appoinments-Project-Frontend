@@ -1,19 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ServiceBaseService } from './base/service-base.service';
 import { DoctorCitation, DoctorList } from '../Models/hospital/DoctorListModel';
-import { Specialty } from '../Models/hospital/SpecialtyModel';
-import { Observable, forkJoin } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 import { ConsultingRoom } from '../Models/hospital/shedule';
-import { SpecialtyService } from './Hospital/specialty.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DoctorService extends ServiceBaseService<DoctorList, any, any> {
 
-  constructor(private specialtyService: SpecialtyService) {
+  constructor() {
     super('doctor');
   }
 
@@ -28,36 +26,12 @@ export class DoctorService extends ServiceBaseService<DoctorList, any, any> {
   }
 
   public traerDoctorPersona(): Observable<DoctorList> {
-    return forkJoin({
-      doctors: this.http.get<DoctorList>(`${this.urlBase}/GetAllDoctors`),
-      specialties: this.specialtyService.traerTodo()
-    }).pipe(
-      map(({ doctors, specialties }) => {
-        // Asumir que doctors tiene specialtyId como string o number
-        // Mapear specialtyId a specialtyName
-        const specialtyMap = new Map(specialties.map(s => [s.id.toString(), s.name]));
-        if (typeof doctors === 'object' && 'specialtyId' in doctors) {
-          (doctors as any).specialtyName = specialtyMap.get((doctors as any).specialtyId?.toString()) || 'Especialidad desconocida';
-        }
-        return doctors;
-      })
-    );
+    return this.http.get<DoctorList>(`${this.urlBase}/GetAllDoctors`);
   }
 
   // Servicio
   traerDoctorPersona2(): Observable<DoctorList[]> {
-    return forkJoin({
-      doctors: this.http.get<DoctorList[]>(`${this.urlBase}/GetAllDoctors`),
-      specialties: this.specialtyService.traerTodo()
-    }).pipe(
-      map(({ doctors, specialties }) => {
-        const specialtyMap = new Map(specialties.map(s => [s.id.toString(), s.name]));
-        return doctors.map(doctor => ({
-          ...doctor,
-          specialtyName: specialtyMap.get(doctor.specialtyId?.toString()) || 'Especialidad desconocida'
-        }));
-      })
-    );
+    return this.http.get<DoctorList[]>(`${this.urlBase}/GetAllDoctors`);
   }
 
 
