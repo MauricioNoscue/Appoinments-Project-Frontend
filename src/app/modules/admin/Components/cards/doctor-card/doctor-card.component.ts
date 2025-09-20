@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatCard } from "@angular/material/card";
+import { DoctorList } from '../../../../../shared/Models/hospital/DoctorListModel';
 
 @Component({
   selector: 'app-doctor-card',
@@ -13,4 +14,16 @@ export class DoctorCardComponent {
   @Input() specialtyName = '';
   @Input() email = '';
   @Input() active = false;
+  @Input() doctor!: DoctorList;
+
+  @Output() edit = new EventEmitter<DoctorList>();
+  @Output() delete = new EventEmitter<DoctorList>();
+
+  onEdit() {
+    this.edit.emit(this.doctor);
+  }
+
+  onDelete() {
+    this.delete.emit(this.doctor);
+  }
 }

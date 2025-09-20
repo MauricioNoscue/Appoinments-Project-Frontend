@@ -29,19 +29,137 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
 }
 
-/* imagen del doctor */
+/* 🖼️ ESTÁNDAR DE IMÁGENES - Sistema de Jaula Centrada */
+
+/* Contenedor base para imágenes */
+.image-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+}
+
+/* Variantes de tamaño estándar */
+.image-container.small {
+    width: 80px;
+    height: 80px;
+}
+
+.image-container.medium {
+    width: 120px;
+    height: 120px;
+}
+
+.image-container.large {
+    width: 160px;
+    height: 160px;
+}
+
+.image-container.xlarge {
+    width: 200px;
+    height: 200px;
+}
+
+/* Jaula guía (opcional - se puede quitar en producción) */
+.image-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px dashed rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.2s ease;
+}
+
+.image-container.small::before {
+    width: 60px;
+    height: 60px;
+}
+
+.image-container.medium::before {
+    width: 100px;
+    height: 100px;
+}
+
+.image-container.large::before {
+    width: 140px;
+    height: 140px;
+}
+
+.image-container.xlarge::before {
+    width: 180px;
+    height: 180px;
+}
+
+/* Imagen dentro del contenedor */
+.image-container img {
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .06));
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s ease;
+}
+
+.image-container:hover img {
+    transform: scale(1.03);
+}
+
+/* Variante sin jaula para producción */
+.image-container.no-guide::before {
+    display: none;
+}
+
+/* imagen del doctor - Implementando el estándar directamente */
 .hero {
     height: 180px;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
+    position: relative;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px;
+    height: 140px;
+    border: 2px dashed rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .hero img {
-    max-height: 180px;
+    max-width: 140px;
+    max-height: 140px;
+    width: auto;
+    height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, .12));
+    border-radius: 6px;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, .06));
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s ease;
+}
+
+.hero:hover img {
+    transform: scale(1.03);
 }
 
 /* contenido */
@@ -92,4 +210,26 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+}
+
+.actions button {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.actions button:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.1);
 }

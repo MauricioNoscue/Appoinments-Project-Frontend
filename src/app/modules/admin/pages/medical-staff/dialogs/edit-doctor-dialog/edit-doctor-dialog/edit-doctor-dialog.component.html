@@ -1,0 +1,62 @@
+<!-- Modal limpio y centrado -->
+<div class="modal-container">
+  <div class="modal-header">
+    <h2 class="modal-title">Editar Doctor</h2>
+  </div>
+
+  <div class="modal-content">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <div class="form-field">
+        <label for="specialtyId" class="field-label">Especialidad</label>
+        <select id="specialtyId" formControlName="specialtyId" class="field-input"
+          [class.error]="form.get('specialtyId')?.invalid && form.get('specialtyId')?.touched">
+          <option value="">Seleccionar especialidad</option>
+          <option *ngFor="let s of specialties" [value]="s.id">{{ s.name }}</option>
+        </select>
+        <div class="field-error" *ngIf="form.get('specialtyId')?.invalid && form.get('specialtyId')?.touched">
+          Especialidad es requerida
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="emailDoctor" class="field-label">Correo electrónico</label>
+        <input id="emailDoctor" type="email" formControlName="emailDoctor" class="field-input"
+          [class.error]="form.get('emailDoctor')?.invalid && form.get('emailDoctor')?.touched"
+          placeholder="doctor@ejemplo.com">
+        <div class="field-error" *ngIf="form.get('emailDoctor')?.invalid && form.get('emailDoctor')?.touched">
+          Correo electrónico inválido
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="image" class="field-label">Foto de perfil (opcional)</label>
+        <input id="image" type="file" accept="image/*" (change)="onFile($event)" class="field-input">
+        <div class="image-preview" *ngIf="imagePreview">
+          <img [src]="imagePreview" alt="Vista previa" class="preview-image">
+          <button type="button" class="remove-image-btn" (click)="removeImage()" *ngIf="imagePreview" title="Remover imagen">
+            <span class="remove-icon">×</span>
+          </button>
+        </div>
+        <small class="field-hint">Selecciona una imagen para el perfil del doctor</small>
+      </div>
+
+      <div class="form-field checkbox-field">
+        <label class="checkbox-option">
+          <input type="checkbox" formControlName="active">
+          <span class="checkbox-text">Doctor activo</span>
+        </label>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-actions">
+    <button type="button" class="btn-secondary" (click)="close()" [disabled]="saving">
+      Cancelar
+    </button>
+    <button type="button" class="btn-primary" (click)="submit()"
+      [disabled]="form.invalid || saving">
+      <span *ngIf="saving" class="loading-spinner"></span>
+      {{ saving ? 'Actualizando...' : 'Actualizar Doctor' }}
+    </button>
+  </div>
+</div>

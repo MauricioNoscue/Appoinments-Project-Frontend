@@ -1,7 +1,7 @@
 <!-- Modal limpio y centrado -->
 <div class="modal-container">
   <div class="modal-header">
-    <h2 class="modal-title">{{ currentStep === 1 ? 'Registrar Persona' : 'Registrar Doctor' }}</h2>
+    <h2 class="modal-title">{{ modo === 'edit' ? 'Editar Doctor' : (currentStep === 1 ? 'Registrar Persona' : 'Registrar Doctor') }}</h2>
     <div class="progress-indicator">
       <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
         <span class="step-number">1</span>
@@ -155,14 +155,14 @@
       Cancelar
     </button>
 
-    <button type="button" class="btn-primary" *ngIf="currentStep === 1" (click)="onSubmitPersona()"
+    <button type="button" class="btn-primary" *ngIf="modo !== 'edit' && currentStep === 1" (click)="onSubmitPersona()"
       [disabled]="personaForm.invalid || isCreatingPersona">
       {{ isCreatingPersona ? 'Creando persona...' : 'Siguiente' }}
     </button>
 
     <button type="button" class="btn-primary" *ngIf="currentStep === 2" (click)="onSubmitDoctor()"
       [disabled]="doctorForm.invalid || isCreatingDoctor">
-      {{ isCreatingDoctor ? 'Creando doctor...' : 'Crear Doctor' }}
+      {{ isCreatingDoctor ? (modo === 'edit' ? 'Actualizando...' : 'Creando doctor...') : (modo === 'edit' ? 'Actualizar Doctor' : 'Crear Doctor') }}
     </button>
   </div>
 </div>

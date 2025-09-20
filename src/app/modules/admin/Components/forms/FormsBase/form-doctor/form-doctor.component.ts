@@ -60,6 +60,7 @@ export class FormDoctorComponent implements OnInit, OnDestroy {
   isCreatingPersona: boolean = false;
   isCreatingDoctor: boolean = false;
   imagePreview: string | null = null;
+  editingDoctor: any = null;
 
   // Catálogos dinámicos
   tiposDocumento: DocumentType[] = [];
@@ -91,13 +92,46 @@ export class FormDoctorComponent implements OnInit, OnDestroy {
     }
 
     if (this.data && this.modo === 'edit') {
-      // Lógica para edición futura si aplica
+      // Cargar datos para edición
+      this.loadDoctorDataForEdit();
     }
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private loadDoctorDataForEdit(): void {
+    this.editingDoctor = this.data;
+    this.currentStep = 2; // Ir directamente al paso 2 para edición
+
+    // Cargar datos en el formulario de doctor
+    this.doctorForm.patchValue({
+      specialtyId: this.data.specialtyId,
+      emailDoctor: this.data.emailDoctor,
+      image: this.data.image,
+      active: this.data.active
+    });
+
+    // Mostrar preview de imagen si existe
+    if (this.data.image) {
+      this.imagePreview = this.data.image;
+    }
+
+    // Simular persona creada para mostrar en el summary
+    this.personaCreada = {
+      id: this.data.personId || 0,
+      fullName: this.data.fullName?.split(' ')[0] || '',
+      fullLastName: this.data.fullName?.split(' ').slice(1).join(' ') || '',
+      documentTypeId: 0,
+      document: '',
+      dateBorn: '',
+      phoneNumber: '',
+      epsId: 0,
+      gender: '',
+      healthRegime: ''
+    };
   }
 
   // -------- Builders --------
@@ -224,7 +258,7 @@ export class FormDoctorComponent implements OnInit, OnDestroy {
         this.tiposDocumento = data;
       },
       error: (err) => {
-        console.error('Error cargando tipos de documento:', err);
+        // Error al cargar tipos de documento
       }
     });
   }
@@ -235,7 +269,7 @@ export class FormDoctorComponent implements OnInit, OnDestroy {
         this.epsOptions = data;
       },
       error: (err) => {
-        console.error('Error cargando EPS:', err);
+        // Error al cargar EPS
       }
     });
   }
@@ -246,7 +280,7 @@ export class FormDoctorComponent implements OnInit, OnDestroy {
         this.specialties = data;
       },
       error: (err) => {
-        console.error('Error cargando especialidades:', err);
+        // Error al cargar especialidades
       }
     });
   }
@@ -254,13 +288,76 @@ export class FormDoctorComponent implements OnInit, OnDestroy {
   onImageSelected(event: any): void {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const base64String = e.target?.result as string;
-        this.imagePreview = base64String;
-        this.doctorForm.patchValue({ image: base64String });
-      };
-      reader.readAsDataURL(file);
+      // Comprimir imagen antes de procesar
+      this.compressImage(file).then(compressedFile => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64String = e.target?.result as string;
+          this.imagePreview = base64String;
+          this.doctorForm.patchValue({ image: base64String });
+        };
+        reader.readAsDataURL(compressedFile);
+      }).catch(error => {
+        console.error('Error al comprimir imagen:', error);
+        // Fallback: procesar archivo original
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const base64String = e.target?.result as string;
+          this.imagePreview = base64String;
+          this.doctorForm.patchValue({ image: base64String });
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  }
+
+  private compressImage(file: File): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        // Dimensiones optimizadas para calidad visual en tarjetas
+        const maxWidth = 400;  // Mejor resolución para tarjetas de 180px
+        const maxHeight = 300; // Manteniendo aspect ratio 4:3
+        let { width, height } = img;
+
+        // Calcular nuevas dimensiones manteniendo aspect ratio
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Dibujar imagen comprimida
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        // Convertir a blob con calidad mucho más baja
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const compressedFile = new File([blob], file.name, {
+              type: file.type,
+              lastModified: Date.now()
+            });
+            resolve(compressedFile);
+          } else {
+            reject(new Error('No se pudo comprimir la imagen'));
+          }
+        }, file.type, 0.7); // Calidad 70% para mejor apariencia visual
+      };
+
+      img.onerror = () => reject(new Error('Error al cargar la imagen'));
+      img.src = URL.createObjectURL(file);
+    });
   }
 }

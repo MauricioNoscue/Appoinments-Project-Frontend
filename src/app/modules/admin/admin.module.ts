@@ -41,6 +41,7 @@ import { DoctorFormDialogComponent } from './pages/medical-staff/dialogs/doctor-
 import { DoctorCardComponent } from './Components/cards/doctor-card/doctor-card.component';
 import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medical-staff.component';
 import { DoctorCreatedDialogComponent } from './pages/medical-staff/dialogs/doctor-created-dialog/doctor-created-dialog.component';
+import { EditDoctorDialogComponent } from './pages/medical-staff/dialogs/edit-doctor-dialog/edit-doctor-dialog/edit-doctor-dialog.component';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
 import { PerfilComponent } from '../doctor/pages/perfil/perfil.component';
@@ -83,7 +84,8 @@ import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.componen
     ConsultorioComponent,
     TypeCitationManagementComponent,
     ViewCitationAvailableComponent,
-    DoctorCreatedDialogComponent
+    DoctorCreatedDialogComponent,
+    EditDoctorDialogComponent
   ],
   imports: [
     CommonModule,
@@ -96,6 +98,7 @@ import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.componen
     MatIconModule,
     MatDialogModule,
     MatDialogContent,
+    FormsModule,
     DatePipe,
     DecimalPipe
   ],

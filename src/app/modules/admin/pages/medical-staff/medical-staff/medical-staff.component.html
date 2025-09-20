@@ -36,7 +36,8 @@
         <ng-template #listTpl>
             <div class="cards-grid">
                 <app-doctor-card *ngFor="let d of paginatedDoctors" [image]="d.image" [fullName]="d.fullName || ''"
-                    [specialtyName]="d.specialtyName" [email]="d.emailDoctor" [active]="d.active">
+                    [specialtyName]="d.specialtyName" [email]="d.emailDoctor" [active]="d.active" [doctor]="d"
+                    (edit)="onEditDoctor($event)" (delete)="onDeleteDoctor($event)">
                 </app-doctor-card>
             </div>
         </ng-template>

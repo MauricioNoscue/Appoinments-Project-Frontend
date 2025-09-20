@@ -1,6 +1,15 @@
 <mat-card class="doctor-card" appearance="outlined">
     <div class="badge" aria-hidden="true"></div>
 
+    <div class="actions">
+        <button mat-icon-button color="primary" (click)="onEdit()" matTooltip="Editar doctor">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="onDelete()" matTooltip="Eliminar doctor">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+
     <div class="hero">
         <img *ngIf="image" [src]="image" alt="{{ fullName }}">
     </div>

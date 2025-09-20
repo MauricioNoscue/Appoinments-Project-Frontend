@@ -6,10 +6,19 @@ import { map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 import { ConsultingRoom } from '../Models/hospital/shedule';
 
+export interface DoctorUpdateDto {
+  id: number;
+  specialtyId: number;
+  personId: number;
+  emailDoctor: string;
+  image: string;
+  active: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class DoctorService extends ServiceBaseService<DoctorList, any, any> {
+export class DoctorService extends ServiceBaseService<DoctorList, any, DoctorUpdateDto> {
 
   constructor() {
     super('doctor');
@@ -55,5 +64,96 @@ export class DoctorService extends ServiceBaseService<DoctorList, any, any> {
     return this.http.get<ConsultingRoom[]>(`${this.baseUrl}`);
   }
 
+  public actualizarDoctor(dto: DoctorUpdateDto): Observable<boolean> {
+    // Si la imagen es grande, usar multipart/form-data
+    if (dto.image && dto.image.length > 50000) { // ~50KB - umbral equilibrado
+      return this.actualizarConImagenGrande(dto);
+    }
+    return this.actualizar(dto);
+  }
+
+  public crearDoctor(dto: any): Observable<any> {
+    // Si la imagen es grande, usar multipart/form-data
+    if (dto.image && dto.image.length > 50000) { // ~50KB - umbral equilibrado
+      return this.crearConImagenGrande(dto);
+    }
+    return this.crear(dto);
+  }
+
+  private crearConImagenGrande(dto: any): Observable<any> {
+    const formData = new FormData();
+
+    // Agregar campos básicos
+    formData.append('specialtyId', dto.specialtyId.toString());
+    formData.append('emailDoctor', dto.emailDoctor);
+    formData.append('active', dto.active.toString());
+    formData.append('personId', dto.personId.toString());
+
+    // Procesar imagen
+    if (dto.image) {
+      if (dto.image.startsWith('data:')) {
+        // Convertir data URL a blob
+        const base64Data = dto.image.split(',')[1];
+        const mimeType = dto.image.split(';')[0].split(':')[1];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: mimeType });
+
+        formData.append('imageFile', blob, 'image.jpg');
+        formData.append('image', ''); // Enviar vacío ya que usamos imageFile
+      } else {
+        formData.append('image', dto.image);
+      }
+    }
+
+    return this.http.post<any>(this.urlBase, formData);
+  }
+
+  private actualizarConImagenGrande(dto: DoctorUpdateDto): Observable<boolean> {
+    const formData = new FormData();
+
+    // Agregar campos básicos
+    formData.append('id', dto.id.toString());
+    formData.append('specialtyId', dto.specialtyId.toString());
+    formData.append('personId', dto.personId.toString());
+    formData.append('emailDoctor', dto.emailDoctor);
+    formData.append('active', dto.active.toString());
+
+    // Procesar imagen
+    if (dto.image) {
+      if (dto.image.startsWith('data:')) {
+        // Convertir data URL a blob
+        const base64Data = dto.image.split(',')[1];
+        const mimeType = dto.image.split(';')[0].split(':')[1];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: mimeType });
+
+        formData.append('imageFile', blob, 'image.jpg');
+        formData.append('image', ''); // Enviar vacío ya que usamos imageFile
+      } else {
+        formData.append('image', dto.image);
+      }
+    }
+
+    return this.http.put<boolean>(this.urlBase, formData);
+  }
+
+  public toBase64Raw(dataUrl: string): string {
+    if (!dataUrl || !dataUrl.includes(',')) return '';
+    return dataUrl.split(',')[1];
+  }
 
 }

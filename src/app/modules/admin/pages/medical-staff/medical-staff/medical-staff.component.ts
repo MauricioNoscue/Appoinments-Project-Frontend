@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, debounceTime, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
 
 import { DoctorList } from '../../../../../shared/Models/hospital/DoctorListModel';
 import { Specialty } from '../../../../../shared/Models/hospital/SpecialtyModel';
@@ -13,6 +13,7 @@ import { SpecialtyService } from '../../../../../shared/services/Hospital/specia
 
 import { FilterDoctorsDialogComponent } from '../dialogs/filter-doctors-dialog/filter-doctors-dialog.component';
 import { DoctorCreatedDialogComponent } from '../dialogs/doctor-created-dialog/doctor-created-dialog.component';
+import { EditDoctorDialogComponent, EditDoctorDialogData } from '../dialogs/edit-doctor-dialog/edit-doctor-dialog/edit-doctor-dialog.component';
 import {
   FormDoctorComponent,
   PersonaCreacion,
@@ -20,10 +21,6 @@ import {
   DoctorCreacion
 } from '../../../Components/forms/FormsBase/form-doctor/form-doctor.component';
 
-interface PagedResult<T> {
-  items: T[];
-  total: number;
-}
 
 @Component({
   selector: 'app-medical-staff',
@@ -43,7 +40,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
   total = 0;
 
   // Dialog ref para acceder al componente dentro del modal
-  private currentDoctorDialogRef?: MatDialogRef<FormDoctorComponent>;
+  private currentDoctorDialogRef?: MatDialogRef<any>;
 
   // Form state
   isCreatingDoctor = false;
@@ -64,8 +61,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
     private dialog: MatDialog,
     private doctorService: DoctorService,
     private personaService: PersonaService,
-    private specialtyService: SpecialtyService,
-    private snackBar: MatSnackBar
+    private specialtyService: SpecialtyService
   ) {
     this.form = this.fb.group({
       search: [''],
@@ -106,8 +102,8 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
     this.doctorService
       .traerDoctorPersona()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(
-        (res: any) => {
+      .subscribe({
+        next: (res: any) => {
           const list: DoctorList[] = Array.isArray(res) ? res : (res ? [res] : []);
 
           // Filtrar localmente los resultados
@@ -131,12 +127,11 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.loading = false;
         },
-        (err: any) => {
+        error: (err: any) => {
           this.loading = false;
           this.errorMsg = 'No fue posible cargar el personal médico.';
-          console.error(err);
         }
-      );
+      });
   }
 
   loadSpecialties(): void {
@@ -180,7 +175,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
     // Conecta los @Output() del formulario a la lógica existente
     cmp.personaCreated.subscribe((persona: PersonaCreacion) => this.onPersonaCreated(persona));
     cmp.formSubmit.subscribe((doctor: DoctorCreacion) => this.onDoctorCreated(doctor));
-    cmp.modalClosed.subscribe((payload) => this.cancelCreateDoctor(payload));
+    cmp.modalClosed.subscribe((payload: { discardPersona?: boolean; personaId?: number }) => this.cancelCreateDoctor(payload));
 
     this.currentDoctorDialogRef.afterClosed().subscribe((ok) => {
       this.currentDoctorDialogRef = undefined;
@@ -197,11 +192,11 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
       // Eliminar la persona de la base de datos para evitar registros no utilizados
       this.personaService.eliminar(payload.personaId).subscribe({
         next: () => {
-          console.log('Persona eliminada exitosamente:');
+          // Persona eliminada exitosamente
         },
         error: (error) => {
           console.error('Error al eliminar la persona:', error);
-          this.snackBar.open('Error al eliminar la persona. Contacte al administrador.', 'Cerrar', { duration: 4000 });
+          Swal.fire('Error', 'Error al eliminar la persona. Contacte al administrador.', 'error');
         }
       });
       // Reset persona data
@@ -210,7 +205,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     this.currentDoctorDialogRef?.close(false);
     this.currentDoctorDialogRef = undefined;
-    this.snackBar.open('Registro de doctor cancelado', 'Cerrar', { duration: 2000 });
+    Swal.fire('Cancelado', 'Registro de doctor cancelado', 'info');
   }
 
   /** Paso 1: crear persona (llamado por el @Output del form) */
@@ -224,7 +219,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
           id: response.id
         } as PersonaCreada;
 
-        this.snackBar.open('Persona registrada exitosamente', 'Cerrar', { duration: 2000 });
+        Swal.fire('Éxito', 'Persona registrada exitosamente', 'success');
 
         // Notificar al componente del dialog para avanzar al paso 2
         const cmp = this.currentDoctorDialogRef?.componentInstance;
@@ -233,8 +228,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       error: (error) => {
-        console.error('Error al crear persona:', error);
-        this.snackBar.open('Error al crear la persona. Verifique los datos e intente nuevamente.', 'Cerrar', { duration: 4000 });
+        Swal.fire('Error', 'Error al crear la persona. Verifique los datos e intente nuevamente.', 'error');
 
         const cmp = this.currentDoctorDialogRef?.componentInstance;
         if (cmp && typeof cmp.onPersonaCreatedError === 'function') {
@@ -257,7 +251,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
       personId: this.personaIdCreada // ≈ personId; ajusta cuando el backend acepte personId
     };
 
-    this.doctorService.crear(doctorDataCompleto).subscribe({
+    this.doctorService.crearDoctor(doctorDataCompleto).subscribe({
       next: (response: any) => {
         this.isCreatingDoctor = false;
         this.currentDoctorDialogRef?.close(true);
@@ -290,7 +284,6 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
       },
       error: (error) => {
         this.isCreatingDoctor = false;
-        console.error('Error al crear doctor:', error);
 
         let errorMessage = 'Error al crear el doctor. ';
         if (error.status === 400) {
@@ -303,7 +296,7 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
           errorMessage += 'Intente nuevamente o contacte al administrador.';
         }
 
-        this.snackBar.open(errorMessage, 'Cerrar', { duration: 5000 });
+        Swal.fire('Error', errorMessage, 'error');
 
         const cmp = this.currentDoctorDialogRef?.componentInstance;
         if (cmp && typeof cmp.onDoctorCreatedError === 'function') {
@@ -342,5 +335,92 @@ export class MedicalStaffComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get totalPages(): number {
     return Math.ceil(this.total / this.pageSize);
+  }
+
+  onEditDoctor(doctor: DoctorList): void {
+    this.openEditDialog(doctor);
+  }
+
+  onDeleteDoctor(doctor: DoctorList): void {
+    this.confirmDeleteDoctor(doctor);
+  }
+
+  private openEditDialog(doctor: DoctorList): void {
+    // Si no tiene personId, obtenerlo del servicio
+    if (doctor.personId) {
+      this.openEditDialogWithData(doctor);
+    } else {
+      this.doctorService.traerDoctorConPersona(doctor.id).subscribe({
+        next: (fullDoctor) => {
+          this.openEditDialogWithData({ ...doctor, personId: fullDoctor.personId });
+        },
+        error: (err) => {
+          Swal.fire('Error', 'No se pudo obtener la información del doctor', 'error');
+        }
+      });
+    }
+  }
+
+  private openEditDialogWithData(doctor: DoctorList): void {
+    const dialogData: EditDoctorDialogData = {
+      doctor: {
+        id: doctor.id,
+        specialtyId: doctor.specialtyId,
+        personId: doctor.personId || 0,
+        emailDoctor: doctor.emailDoctor,
+        image: doctor.image,
+        fullName: doctor.fullName,
+        specialtyName: doctor.specialtyName,
+        active: doctor.active
+      }
+    };
+
+    this.currentDoctorDialogRef = this.dialog.open(EditDoctorDialogComponent, {
+      width: '720px',
+      maxWidth: '92vw',
+      maxHeight: '90vh',
+      disableClose: true,
+      autoFocus: false,
+      restoreFocus: false,
+      hasBackdrop: true,
+      panelClass: 'doctor-dialog',
+      data: dialogData
+    });
+
+    this.currentDoctorDialogRef.afterClosed().subscribe((ok) => {
+      this.currentDoctorDialogRef = undefined;
+      if (ok) {
+        this.pageIndex = 0;
+        this.loadDoctors();
+        Swal.fire('Éxito', 'Doctor actualizado exitosamente', 'success');
+      }
+    });
+  }
+
+
+  private confirmDeleteDoctor(doctor: DoctorList): void {
+    Swal.fire({
+      title: '¿Está seguro?',
+      text: `¿Desea eliminar al doctor ${doctor.fullName}? Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.doctorService.eliminar(doctor.id).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'Doctor eliminado exitosamente', 'success');
+            this.pageIndex = 0;
+            this.loadDoctors();
+          },
+          error: (error) => {
+            Swal.fire('Error', 'Error al eliminar el doctor. Intente nuevamente.', 'error');
+          }
+        });
+      }
+    });
   }
 }
