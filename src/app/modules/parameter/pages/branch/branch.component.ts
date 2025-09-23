@@ -14,6 +14,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BranchList } from '../../../../shared/Models/parameter/Branch';
 import { BranchService } from '../../../../shared/services/branch.service';
 import { FormBranchComponent } from '../../Components/forms/FormsBase/form-branch/form-branch.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-branch',
@@ -75,10 +76,39 @@ export class BranchComponent implements OnInit {
   }
 
   eliminar(id: number): void {
-    if (!confirm('¿Estás seguro de eliminar esta sucursal?')) return;
-    this.BranchService.eliminar(id).subscribe({
-      next: () => this.cargarSucursales(),
-      error: (err) => console.error('Error al eliminar:', err),
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará la sucursal permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.BranchService.eliminar(id).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminada',
+              text: 'La sucursal fue eliminada correctamente.',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#28a745',
+            });
+            this.cargarSucursales(); // Recargar la lista
+          },
+          error: (err) => {
+            console.error('Error al eliminar:', err);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar la sucursal.',
+              confirmButtonText: 'Cerrar',
+            });
+          },
+        });
+      }
     });
   }
 
@@ -94,13 +124,50 @@ export class BranchComponent implements OnInit {
       dialogRef.afterClosed().subscribe((result) => {
         if (!result) return;
         if (modo === 'create') {
-          this.BranchService.crear(result).subscribe(() =>
-            this.cargarSucursales()
-          );
+          this.BranchService.crear(result).subscribe({
+            next: (res) => {
+              // Mostrar modal de éxito
+              Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: 'La sucursal fue creada correctamente.',
+                confirmButtonText: 'Continuar',
+                confirmButtonColor: '#28a745',
+              });
+              this.cargarSucursales();
+            },
+            error: (err) => {
+              console.error('Error al crear sucursal:', err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo crear la sucursal.',
+                confirmButtonText: 'Cerrar',
+              });
+            },
+          });
         } else {
-          this.BranchService.actualizar(result).subscribe(() =>
-            this.cargarSucursales()
-          );
+          this.BranchService.actualizar(result).subscribe({
+            next: (res) => {
+              Swal.fire({
+                icon: 'success',
+                title: '¡Actualizado!',
+                text: 'La sucursal fue actualizada correctamente.',
+                confirmButtonText: 'Continuar',
+                confirmButtonColor: '#28a745',
+              });
+              this.cargarSucursales();
+            },
+            error: (err) => {
+              console.error('Error al actualizar sucursal:', err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo actualizar la sucursal.',
+                confirmButtonText: 'Cerrar',
+              });
+            },
+          });
         }
       });
     });

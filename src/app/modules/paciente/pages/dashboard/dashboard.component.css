@@ -91,7 +91,7 @@
   width: 6px;
   height: 100%;
   background: var(--color, #3b82f6); */
-  /* usa el color definido en ngStyle */
+/* usa el color definido en ngStyle */
 
 
 /* contenido interior */
@@ -361,4 +361,12 @@
   .topbar {
     grid-template-columns: 1fr;
   }
+}
+
+.tipo .icon img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  display: block;
+
 }

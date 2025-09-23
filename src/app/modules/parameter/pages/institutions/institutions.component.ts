@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DialogContainerComponent } from "../../../../shared/components/Modal/dialog-container/dialog-container.component";
 import { InstitutionList, Institution } from "../../../../shared/Models/parameter/InstitutionModel";
 import { InstitutionService } from "../../../../shared/services/institution.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: 'app-institutions',
@@ -78,19 +79,41 @@ export class InstitutionsComponent implements OnInit {
   }
 
   eliminar(id: number): void {
-    const confirmado = confirm('¿Estás seguro de eliminar esta institución?');
-
-    if (confirmado) {
-      this.institutionService.eliminar(id).subscribe({
-        next: () => {
-          console.log('Institución eliminada exitosamente');
-          this.cargarInstituciones(); // Recargar la lista
-        },
-        error: (err) => console.error('Error al eliminar:', err),
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción eliminará la institucion permanentemente.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.institutionService.eliminar(id).subscribe({
+            next: () => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Eliminada',
+                text: 'La institucion fue eliminada correctamente.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#28a745',
+              });
+              this.cargarInstituciones(); // Recargar la lista
+            },
+            error: (err) => {
+              console.error('Error al eliminar:', err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo eliminar la institucion.',
+                confirmButtonText: 'Cerrar',
+              });
+            },
+          });
+        }
       });
     }
-  }
-
   recargarListado(): void {
     this.cargarInstituciones();
   }
@@ -108,16 +131,53 @@ export class InstitutionsComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((result) => {
         if (!result) return;
-        if (modo === 'create') {
-          this.institutionService
-            .crear(result)
-            .subscribe(() => this.cargarInstituciones());
-        } else {
-          this.institutionService
-            .actualizar(result)
-            .subscribe(() => this.cargarInstituciones());
+         if (modo === 'create') {
+                  this.institutionService.crear(result).subscribe({
+                    next: (res) => {
+                      // Mostrar modal de éxito
+                      Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: 'La institucion fue creada correctamente.',
+                        confirmButtonText: 'Continuar',
+                        confirmButtonColor: '#28a745',
+                      });
+                      this.cargarInstituciones();
+                    },
+                    error: (err) => {
+                      console.error('Error al crear institucion:', err);
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo crear la institucion.',
+                        confirmButtonText: 'Cerrar',
+                      });
+                    },
+                  });
+                } else {
+                  this.institutionService.actualizar(result).subscribe({
+                    next: (res) => {
+                      Swal.fire({
+                        icon: 'success',
+                        title: '¡Actualizado!',
+                        text: 'La institucion fue actualizada correctamente.',
+                        confirmButtonText: 'Continuar',
+                        confirmButtonColor: '#28a745',
+                      });
+                      this.cargarInstituciones();
+                    },
+                    error: (err) => {
+                      console.error('Error al actualizar institucion:', err);
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo actualizar la institucion.',
+                        confirmButtonText: 'Cerrar',
+                      });
+                    },
+                  });
+                }
+              });
+            });
+          }
         }
-      });
-    });
-  }
-}

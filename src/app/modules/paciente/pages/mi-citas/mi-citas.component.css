@@ -1,13 +1,17 @@
-:host {
-  display: block;
-}
+:host { display: block; }
 
+/* ===== LAYOUT GENERAL ===== */
 .page {
   padding: 16px;
   background: linear-gradient(155deg, #f6f9ff 0%, #f2f8ff 60%, #eef7ff 100%);
   min-height: 100%;
+  min-width: 0; /* necesario para grid/flex */
 }
 
+/* Compacto cuando está dentro del offcanvas */
+:host-context(.offcanvas-body) .page { padding: 10px; }
+
+/* ===== TOP BAR: TABS + BUSCADOR ===== */
 .topbar {
   display: flex;
   gap: 12px;
@@ -15,7 +19,6 @@
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
-
 .tabs {
   display: flex;
   gap: 8px;
@@ -23,7 +26,6 @@
   border-radius: 12px;
   padding: 6px;
 }
-
 .tab {
   border: 0;
   background: transparent;
@@ -33,13 +35,11 @@
   color: #5b6b8a;
   cursor: pointer;
 }
-
 .tab.active {
-  background: white;
+  background: #fff;
   color: #1f2a44;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .06);
+  box-shadow: 0 2px 6px rgba(0,0,0,.06);
 }
-
 .search {
   margin-left: auto;
   display: flex;
@@ -50,22 +50,18 @@
   padding: 8px 12px;
   min-width: 240px;
 }
-
-.search .icon {
-  opacity: .6;
-}
-
+.search .icon { opacity: .6; }
 .search input {
   border: 0;
   outline: none;
   background: transparent;
   width: 100%;
 }
+/* Más compacto en offcanvas */
+:host-context(.offcanvas-body) .search { min-width: 160px; }
 
-.list {
-  display: grid;
-  gap: 14px;
-}
+/* ===== LISTA Y TARJETAS ===== */
+.list { display: grid; gap: 14px; }
 
 .card {
   background: white;
@@ -73,44 +69,39 @@
   box-shadow: 0 6px 18px rgba(13, 43, 99, 0.06);
   border: 1px solid #e8eef9;
   overflow: hidden;
-  position: relative;
+  position: relative; /* necesario para posicionar ::after */
 }
 
 .card::after {
   content: "";
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 6px;
-  height: 4px;
-  border-radius: 999px;
-  background: #30d18f;
+  position: absolute;     /* se pega al borde del card */
+  left: 0;                /* ocupa todo el ancho */
+  right: 0;
+  bottom: 0;              /* al borde inferior */
+  height: 4px;            /* grosor de la línea */
+
+
+    /* 🔑 Esto hace que siga la curva del card */
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
 /* Colores por estado */
-.card.card-programada::after {
-  background: #f4d35e;
-  /* amarillo */
-}
+.card.card-programada::after { background: #f4d35e; /* amarillo */ }
+.card.card-cancelada::after  { background: #e63946; /* rojo */ }
+.card.card-asistida::after   { background: #30d18f; /* verde */ }
 
-.card.card-cancelada::after {
-  background: #e63946;
-  /* rojo */
-}
 
-.card.card-asistida::after {
-  background: #30d18f;
-  /* verde */
-}
-
+/* ===== CABECERA ===== */
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 12px 16px 4px 16px;
+  flex-wrap: wrap;
+  row-gap: 6px;
 }
-
 .pill {
   display: inline-block;
   background: #f2f6ff;
@@ -119,94 +110,99 @@
   border-radius: 8px;
   font-weight: 600;
 }
-
 .when {
   display: flex;
   gap: 18px;
   align-items: center;
+  flex-wrap: wrap;
 }
+/* En offcanvas, mantenlo en una línea */
+:host-context(.offcanvas-body) .when { flex-wrap: nowrap; gap: 12px; }
 
-.when-item {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
+.when-item { display: flex; gap: 6px; align-items: center; }
+.when-item .emoji { font-size: 18px; }
+.when-item .text  { font-weight: 600; color: #1f2a44; }
 
-.when-item .emoji {
-  font-size: 18px;
-}
-
-.when-item .text {
-  font-weight: 600;
-  color: #1f2a44;
-}
-
+/* ===== CUERPO ===== */
 .card-body {
   display: grid;
   grid-template-columns: 56px 1fr;
   gap: 12px;
   padding: 12px 16px 18px 16px;
 }
-
+/* Compacto en offcanvas */
+:host-context(.offcanvas-body) .card-body {
+  grid-template-columns: 40px 1fr;
+  gap: 8px;
+  padding: 10px 12px 14px 12px;
+}
 .avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
+  width: 56px; height: 56px; border-radius: 12px;
   background: #e7f0ff;
-  display: grid;
-  place-items: center;
-  font-size: 28px;
-  color: #3b6bff;
+  display: grid; place-items: center;
+  font-size: 28px; color: #3b6bff;
+}
+:host-context(.offcanvas-body) .avatar {
+  width: 40px; height: 40px; font-size: 20px;
 }
 
-/* Grilla principal: 5 columnas */
+/* ===== INFO: VISTA NORMAL (fuera del offcanvas) — GRID ===== */
 .info-grid {
   display: grid;
-  grid-template-columns: 180px 140px 160px 1fr auto;
-  /* Doctor, Consultorio, Estado, Nota, Botón */
+  grid-template-columns: 180px 140px 160px 1fr auto; /* Doctor, Consultorio, Estado, Nota, Botón */
   column-gap: 12px;
   gap: 8px 12px;
   align-items: start;
-  /* todo alineado arriba */
 }
 
-/* Cada celda */
-.label {
-  font-size: 12px;
-  color: #6b7a99;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.value {
-  color: #1f2a44;
-  font-weight: 600;
-}
-
-/* Nota con texto largo -> ellipsis */
-.value.note{
-  font-weight: 500;
-  color: #41506b;
-  white-space: normal;      /* permite varias líneas */
-  overflow-wrap: anywhere;  /* quiebra palabras largas si es necesario */
-  word-break: break-word;   /* fallback útil */
-  min-width: 0;             /* por si el contenedor flex/grid lo necesita */
-}
-
-/* Columna del botón */
-.action-col{
+/* ===== INFO: DENTRO DEL OFFCANVAS — UNA SOLA FILA SIN SCROLL =====
+   Convertimos la "grilla" en un contenedor flex sin saltos.
+   Cada item se achica con ellipsis, el botón NO se achica. */
+:host-context(.offcanvas-body) .info-grid {
   display: flex;
-  justify-content: flex-end;  /* a la derecha */
-  align-items: center;        /* ⬅️ centrado vertical */
-  /* si prefieres que quede arriba, usa: align-items: flex-start; */
+  flex-wrap: nowrap;         /* ⛔ nada se va abajo */
+  align-items: center;
+  gap: 8px;
+  min-width: 0;              /* permite a los hijos usar ellipsis */
+}
+:host-context(.offcanvas-body) .info-grid .info-col {
+  flex: 1 1 0;               /* que todos compartan espacio */
+  min-width: 0;              /* necesario para que ellipsis funcione */
+  padding: 6px 8px;
+  border-radius: 8px;
+
+}
+:host-context(.offcanvas-body) .info-grid .info-col:nth-child(1) { flex-basis: 34%; } /* Doctor */
+:host-context(.offcanvas-body) .info-grid .info-col:nth-child(2) { flex-basis: 18%; } /* Consultorio */
+:host-context(.offcanvas-body) .info-grid .info-col:nth-child(3) { flex-basis: 22%; } /* Estado */
+:host-context(.offcanvas-body) .info-grid .info-col:nth-child(4) { flex-basis: 26%; } /* Nota */
+
+/* Etiquetas y valores más compactos + truncado */
+:host-context(.offcanvas-body) .info-grid .label {
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+:host-context(.offcanvas-body) .info-grid .value,
+:host-context(.offcanvas-body) .info-grid .note-row .value {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;   /* 🔥 corta con … si no cabe */
 }
 
-.action-col .actions {
+/* El botón va al final, no se reduce */
+.action-col {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-start;
+  align-items: center;
+}
+:host-context(.offcanvas-body) .info-grid .action-col {
+  flex: 0 0 auto;            /* ⛔ no shrink */
+  padding: 0;
+  background: transparent;
 }
 
+/* ===== BOTÓN ===== */
 .btn-cancel {
   border: 0;
   background: #ffe9e9;
@@ -216,29 +212,14 @@
   border-radius: 8px;
   cursor: pointer;
   transition: transform .05s ease, box-shadow .15s ease;
-  box-shadow: 0 2px 6px rgba(177, 28, 28, .15);
+  box-shadow: 0 2px 6px rgba(177,28,28,.15);
 }
+.btn-cancel:hover  { box-shadow: 0 3px 10px rgba(177,28,28,.2); }
+.btn-cancel:active { transform: translateY(1px); }
+.btn-cancel[disabled] { opacity:.6; cursor: default; box-shadow: none; }
 
-.btn-cancel:hover {
-  box-shadow: 0 3px 10px rgba(177, 28, 28, .2);
-}
-
-.btn-cancel:active {
-  transform: translateY(1px);
-}
-
-.btn-cancel[disabled] {
-  opacity: .6;
-  cursor: default;
-  box-shadow: none;
-}
-
-.empty {
-  text-align: center;
-  color: #6b7a99;
-  padding: 24px;
-}
-
+/* ===== ESTADOS VACÍO / SKELETON ===== */
+.empty { text-align: center; color: #6b7a99; padding: 24px; }
 .skeleton {
   height: 110px;
   border-radius: 16px;
@@ -246,13 +227,209 @@
   background-size: 200% 100%;
   animation: shine 1.2s infinite;
 }
+@keyframes shine { from {background-position:200% 0;} to {background-position:-200% 0;} }
 
-@keyframes shine {
-  from {
-    background-position: 200% 0;
+/* ===== BREAKPOINTS (vista normal, fuera del offcanvas) ===== */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .info-grid {
+    grid-template-columns: 1fr 1fr 1fr;   /* Doctor, Consultorio, Estado */
+    gap: 10px 12px;
   }
-
-  to {
-    background-position: -200% 0;
-  }
+  .info-col:nth-child(4) { grid-column: 1 / -1; } /* Nota ancho completo */
+  .action-col { grid-column: 1 / -1; justify-content: flex-end; }
 }
+@media (max-width: 767.98px) {
+  .list { gap: 10px; }
+  .info-grid { grid-template-columns: 1fr; gap: 8px; }
+  .action-col { grid-column: 1 / -1; justify-content: stretch; }
+  .btn-cancel { width: 100%; text-align: center; }
+  .label { font-size: 11px; margin-bottom: 4px; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Nota truncada (ya lo tenías) */
+.note-row .note-value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+  cursor: default;
+}
+
+/* Tooltip custom (oculto por defecto) */
+.note-tooltip {
+  display: none;
+  position: absolute;
+  z-index: 1200;
+  left: 12px;           /* ajusta según dónde quieras que aparezca */
+  top: -6px;
+  transform: translateY(-100%);
+  background: #fff;
+  color: #1f2a44;
+  border: 1px solid #e6ecff;
+  box-shadow: 0 8px 24px rgba(21, 49, 112, .12);
+  padding: 10px 12px;
+  border-radius: 8px;
+  min-width: 200px;
+  max-width: 420px;
+  white-space: normal;      /* permite varias líneas */
+  word-break: break-word;
+  font-size: 13px;
+}
+
+/* Si usas el diseño flex en offcanvas, usamos position:relative en columna para que el tooltip se sitúe bien */
+.info-col.note-col { position: relative; }
+
+/* Mostrar tooltip al hover y cambiar aria-hidden para accesibilidad visual (no cambia DOM) */
+.info-col.note-col:hover .note-tooltip,
+.info-col.note-col:focus-within .note-tooltip {
+  display: block;
+}
+
+/* Resaltar solo la columna al hover */
+.info-col.note-col:hover,
+.info-col.note-col:focus-within {
+  background: linear-gradient(180deg, rgba(0, 55, 255, 0.9), rgba(243, 255, 240, 0.85));
+  box-shadow: 0 6px 18px rgba(13, 43, 99, 0.04);
+  border-radius: 8px;
+}
+
+/* Para pantallas muy pequeñas ajusta tamaño tooltip */
+@media (max-width: 480px) {
+  .note-tooltip { left: 8px; right: 8px; transform: none; position: fixed; top: auto; bottom: 12px; max-width: calc(100% - 32px); }
+}
+/* Nota truncada (ya lo tenías) */
+.note-row .note-value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+  cursor: default;
+}
+
+/* Tooltip custom (oculto por defecto) */
+.note-tooltip {
+  display: none;
+  position: absolute;
+  z-index: 1200;
+  left: 12px;           /* ajusta según dónde quieras que aparezca */
+  top: -6px;
+  transform: translateY(-100%);
+  background: #fff;
+  color: #1f2a44;
+  border: 1px solid #e6ecff;
+  box-shadow: 0 8px 24px rgba(21, 49, 112, .12);
+  padding: 10px 12px;
+  border-radius: 8px;
+  min-width: 200px;
+  max-width: 420px;
+  white-space: normal;      /* permite varias líneas */
+  word-break: break-word;
+  font-size: 13px;
+}
+
+/* Si usas el diseño flex en offcanvas, usamos position:relative en columna para que el tooltip se sitúe bien */
+.info-col.note-col { position: relative; }
+
+/* Mostrar tooltip al hover y cambiar aria-hidden para accesibilidad visual (no cambia DOM) */
+.info-col.note-col:hover .note-tooltip,
+.info-col.note-col:focus-within .note-tooltip {
+  display: block;
+}
+
+/* Resaltar solo la columna al hover */
+.info-col.note-col:hover,
+.info-col.note-col:focus-within {
+  background: linear-gradient(180deg, rgba(246,248,255,0.9), rgba(240,244,255,0.85));
+  box-shadow: 0 6px 18px rgba(13, 43, 99, 0.04);
+  border-radius: 8px;
+}
+
+/* Para pantallas muy pequeñas ajusta tamaño tooltip */
+@media (max-width: 480px) {
+  .note-tooltip { left: 8px; right: 8px; transform: none; position: fixed; top: auto; bottom: 12px; max-width: calc(100% - 32px); }
+}
+/* Nota truncada (ya lo tenías) */
+.note-row .note-value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+  cursor: default;
+}
+
+/* Tooltip custom (oculto por defecto) */
+.note-tooltip {
+  display: none;
+  position: absolute;
+  z-index: 1200;
+  left: -10px;           /* ajusta según dónde quieras que aparezca */
+  top: 0;
+  transform: translateY(-44%);
+  background: #fff;
+  color: #1f2a44;
+  border: 1px solid #e6ecff;
+  box-shadow: 0 8px 24px rgba(21, 49, 112, .12);
+  padding: 10px 12px;
+  border-radius: 8px;
+  min-width: 200px;
+  max-width: 420px;
+  white-space: normal;      /* permite varias líneas */
+  word-break: break-word;
+  font-size: 13px;
+}
+
+/* Si usas el diseño flex en offcanvas, usamos position:relative en columna para que el tooltip se sitúe bien */
+.info-col.note-col { position: relative; }
+
+/* Mostrar tooltip al hover y cambiar aria-hidden para accesibilidad visual (no cambia DOM) */
+.info-col.note-col:hover .note-tooltip,
+.info-col.note-col:focus-within .note-tooltip {
+  display: block;
+}
+
+/* Resaltar solo la columna al hover */
+.info-col.note-col:hover,
+.info-col.note-col:focus-within {
+  background: linear-gradient(180deg, rgba(246,248,255,0.9), rgba(240,244,255,0.85));
+  box-shadow: 0 6px 18px rgba(13, 43, 99, 0.04);
+  border-radius: 8px;
+}
+
+/* Para pantallas muy pequeñas ajusta tamaño tooltip */
+@media (max-width: 480px) {
+  .note-tooltip { left: 8px; right: 8px; transform: none; position: fixed; top: auto; bottom: 12px; max-width: calc(100% - 32px); }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

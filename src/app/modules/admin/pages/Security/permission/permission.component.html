@@ -1,4 +1,4 @@
-<!--botón de agregar formulario-->
+<!-- Botón de agregar formulario y buscador -->
 <div class="form-header">
   <button
     mat-raised-button
@@ -6,7 +6,8 @@
     class="btn-add"
     (click)="abrirDialog('create')"
   >
-    <mat-icon>assignment_add</mat-icon> Agregar permiso
+    <mat-icon>assignment_add</mat-icon>
+    Agregar permiso
   </button>
 
   <div class="search-container">
@@ -22,19 +23,18 @@
   </div>
 </div>
 
-<!-- CONTENEDOR DE TARJETAS -->
+<!-- Contenedor de tarjetas -->
 <div class="cards-container">
   <div class="card" *ngFor="let element of filteredDataSource">
     <div class="card-body">
-      <!-- Contenido: título, estado, descripción -->
       <div class="card-content">
-
-        <div class="contenedor-header ">
-          <div class="role-icon">
+        <!-- Encabezado -->
+        <div class="contenedor-header">
+          <div class="role-icon" [style.background]="getColor(element)">
             <h3>{{ element.name.slice(0, 2) }}</h3>
           </div>
-          <div class="card-text ">
-            <div class="title-row ">
+          <div class="card-text">
+            <div class="title-row">
               <h3>{{ element.name }}</h3>
               <div class="status-dot"></div>
             </div>
@@ -44,14 +44,15 @@
           </div>
         </div>
 
-        <!-- Botones -->
-        <div class="card-actions ">
+        <!-- Acciones -->
+        <div class="card-actions">
           <button
             mat-button
             class="edit-btn"
             (click)="abrirDialog('edit', element)"
           >
-            <mat-icon>edit</mat-icon> Editar
+            <mat-icon>edit</mat-icon>
+            Editar
           </button>
           <button
             mat-icon-button

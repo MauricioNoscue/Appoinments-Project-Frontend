@@ -1,8 +1,9 @@
 // consultorio.component.ts
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+
 import { FormConsultorioComponent } from '../../Components/forms/FormsBase/form-consultorio/form-consultorio.component';
 
 import {
@@ -15,6 +16,7 @@ import { ConsultingRoomService } from '../../../../shared/services/consulting-ro
 import { BranchService } from '../../../../shared/services/branch.service';
 import { BranchList } from '../../../../shared/Models/parameter/Branch';
 import { forkJoin } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 interface ConsultorioCardView {
   id: number;
@@ -43,19 +45,13 @@ export class ConsultorioComponent implements OnInit {
   searchTerm = '';
   consultorios: ConsultorioCardView[] = [];
 
-  // Imagen por defecto (ajusta el path a tu assets)
+  // Imagen por defecto
   private readonly DEFAULT_IMG = 'assets/images/consultorio.png';
-
-  // ── Modal inline (confirmación) ──────────────────────────────
-  @ViewChild('confirmTpl') confirmTpl!: TemplateRef<any>;
-  private confirmRef?: MatDialogRef<any>;
-  toDelete: ConsultorioCardView | null = null;
-  // ─────────────────────────────────────────────────────────────
 
   constructor(
     private router: Router,
-    private dialog: MatDialog,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
     private consultingSrv: ConsultingRoomService,
     private branchSrv: BranchService
   ) {}
@@ -121,7 +117,7 @@ export class ConsultorioComponent implements OnInit {
     );
   }
 
-  // ── CREAR (usa el mismo FormConsultorioComponent) ───────────
+  // ── CREAR ─────────────
   abrirDialog(_tipo: 'create') {
     const ref = this.dialog.open(FormConsultorioComponent, {
       width: '720px',
@@ -137,28 +133,22 @@ export class ConsultorioComponent implements OnInit {
         name: result.values.name,
         roomNumber: result.values.roomNumber,
         floor: result.values.floor,
-        image: result.values.image, // ← guardamos la URL
+        image: result.values.image,
       };
 
       this.consultingSrv.crear(dto).subscribe({
         next: () => {
           this.cargar();
-          this.snack.open('Consultorio creado con éxito', 'OK', {
-            duration: 2500,
-            panelClass: ['snack-success'],
-          });
+          Swal.fire('Éxito', 'Consultorio creado con éxito', 'success');
         },
         error: () => {
-          this.snack.open('Error al crear el consultorio', 'Cerrar', {
-            duration: 3500,
-            panelClass: ['snack-error'],
-          });
+          Swal.fire('Error', 'No se pudo crear el consultorio', 'error');
         },
       });
     });
   }
 
-  // ── EDITAR (usa el mismo FormConsultorioComponent) ──────────
+  // ── EDITAR ─────────────
   editarConsultorio(c: ConsultorioCardView) {
     const ref = this.dialog.open(FormConsultorioComponent, {
       width: '720px',
@@ -170,7 +160,7 @@ export class ConsultorioComponent implements OnInit {
           name: c.name,
           roomNumber: c.roomNumber,
           floor: c.floor,
-          image: c.image ?? this.DEFAULT_IMG, // ← prefill imagen
+          image: c.image ?? this.DEFAULT_IMG,
         },
       },
       disableClose: true,
@@ -185,67 +175,52 @@ export class ConsultorioComponent implements OnInit {
         name: result.values.name,
         roomNumber: result.values.roomNumber,
         floor: result.values.floor,
-        image: result.values.image, // ← guardamos la URL
+        image: result.values.image,
       };
 
       this.consultingSrv.actualizar(dto).subscribe({
         next: () => {
           this.cargar();
-          this.snack.open('Cambios guardados con éxito', 'OK', {
-            duration: 2500,
-            panelClass: ['snack-success'],
-          });
+          Swal.fire('Éxito', 'Cambios guardados con éxito', 'success');
         },
         error: () => {
-          this.snack.open('Error al actualizar el consultorio', 'Cerrar', {
-            duration: 3500,
-            panelClass: ['snack-error'],
-          });
+          Swal.fire('Error', 'No se pudo actualizar el consultorio', 'error');
         },
       });
     });
   }
 
-  // ── ELIMINAR con modal inline (sin crear otro componente) ───
+  // ── ELIMINAR con Swal ─────────────
   confirmarEliminar(c: ConsultorioCardView) {
-    this.toDelete = c;
-    this.confirmRef = this.dialog.open(this.confirmTpl, {
-      width: '420px',
-      disableClose: true,
+    Swal.fire({
+      title: '¿Eliminar consultorio?',
+      html: `Seguro que deseas eliminar <strong>${c.nombre}</strong>?<br><small>Esta acción no se puede deshacer.</small>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.consultingSrv.eliminar(c.id).subscribe({
+          next: () => {
+            this.cargar();
+            Swal.fire(
+              'Eliminado',
+              'Consultorio eliminado con éxito',
+              'success'
+            );
+          },
+          error: () => {
+            Swal.fire('Error', 'No se pudo eliminar el consultorio', 'error');
+          },
+        });
+      }
     });
   }
 
-  onConfirmDelete() {
-    if (!this.toDelete) return;
-    const id = this.toDelete.id;
-
-    this.consultingSrv.eliminar(id).subscribe({
-      next: () => {
-        this.confirmRef?.close();
-        this.toDelete = null;
-        this.cargar();
-        this.snack.open('Consultorio eliminado', 'OK', {
-          duration: 2500,
-          panelClass: ['snack-success'],
-        });
-      },
-      error: () => {
-        this.confirmRef?.close();
-        this.toDelete = null;
-        this.snack.open('Error al eliminar el consultorio', 'Cerrar', {
-          duration: 3500,
-          panelClass: ['snack-error'],
-        });
-      },
-    });
-  }
-
-  onCancelDelete() {
-    this.confirmRef?.close();
-    this.toDelete = null;
-  }
-
-  // Para optimizar el *ngFor
+  // Para optimizar *ngFor
   trackById(_i: number, item: ConsultorioCardView) {
     return item.id;
   }

@@ -48,6 +48,6 @@ export class DashboardLayoutComponentComponent implements OnInit {
     }
   }
   onClickPerfil() {
-    this.abrirPerfil.emit(); // Avisamos que el usuario hizo clic
+     this.router.navigate(['/paciente/perfil']);
   }
 }

@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatDialog } from "@angular/material/dialog";
+import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,9 +10,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DialogContainerComponent } from "../../../../shared/components/Modal/dialog-container/dialog-container.component";
-import { CityList, City } from "../../../../shared/Models/parameter/CityModel";
-import { CityService } from "../../../../shared/services/city.service";
+import Swal from 'sweetalert2';
+
+import { DialogContainerComponent } from '../../../../shared/components/Modal/dialog-container/dialog-container.component';
+import { CityList, City } from '../../../../shared/Models/parameter/CityModel';
+import { CityService } from '../../../../shared/services/city.service';
 
 @Component({
   selector: 'app-city',
@@ -58,6 +60,12 @@ export class CityComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar ciudades:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron cargar las ciudades.',
+          confirmButtonText: 'Cerrar',
+        });
       },
     });
   }
@@ -73,17 +81,40 @@ export class CityComponent implements OnInit {
   }
 
   eliminar(id: number): void {
-    const confirmado = confirm('¿Estás seguro de eliminar esta ciudad?');
-
-    if (confirmado) {
-      this.cityService.eliminar(id).subscribe({
-        next: () => {
-          console.log('Ciudad eliminada exitosamente');
-          this.cargarCiudades(); // Recargar la lista
-        },
-        error: (err) => console.error('Error al eliminar:', err),
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará la ciudad permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.cityService.eliminar(id).subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Eliminada',
+              text: 'La ciudad fue eliminada correctamente.',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#28a745',
+            });
+            this.cargarCiudades(); // Recargar la lista
+          },
+          error: (err) => {
+            console.error('Error al eliminar:', err);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo eliminar la ciudad.',
+              confirmButtonText: 'Cerrar',
+            });
+          },
+        });
+      }
+    });
   }
 
   recargarListado(): void {
@@ -101,12 +132,52 @@ export class CityComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe((result) => {
         if (!result) return;
+
         if (modo === 'create') {
-          this.cityService.crear(result).subscribe(() => this.cargarCiudades());
+          this.cityService.crear(result).subscribe({
+            next: (res) => {
+              // Mostrar modal de éxito
+              Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: 'La ciudad fue creada correctamente.',
+                confirmButtonText: 'Continuar',
+                confirmButtonColor: '#28a745',
+              });
+              this.cargarCiudades();
+            },
+            error: (err) => {
+              console.error('Error al crear ciudad:', err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo crear la ciudad.',
+                confirmButtonText: 'Cerrar',
+              });
+            },
+          });
         } else {
-          this.cityService
-            .actualizar(result)
-            .subscribe(() => this.cargarCiudades());
+          this.cityService.actualizar(result).subscribe({
+            next: (res) => {
+              Swal.fire({
+                icon: 'success',
+                title: '¡Actualizado!',
+                text: 'La ciudad fue actualizada correctamente.',
+                confirmButtonText: 'Continuar',
+                confirmButtonColor: '#28a745',
+              });
+              this.cargarCiudades();
+            },
+            error: (err) => {
+              console.error('Error al actualizar ciudad:', err);
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo actualizar la ciudad.',
+                confirmButtonText: 'Cerrar',
+              });
+            },
+          });
         }
       });
     });
