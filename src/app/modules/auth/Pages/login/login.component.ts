@@ -28,21 +28,27 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const loginData: LoginModel = this.loginForm.value;
       this.service.login(loginData).subscribe({
-        next: (data) => {
-          const token = data.token;
-          localStorage.setItem('jwt', token);
-  
-          Swal.fire({
-            icon: 'success',
-            title: '¡Login exitoso!',
-            text: 'Redirigiendo al panel principal...',
-            timer: 2000,  
-            showConfirmButton: false
-          });
-  
-          this.router.navigate(['/admin']);
-          console.log(localStorage.getItem('jwt'));
-        },
+       next: (data) => {
+  // 👈 guarda el accessToken en localStorage
+  localStorage.setItem('jwt', data.accessToken);
+
+  // 👈 si quieres guardar la expiración también
+  localStorage.setItem('jwt_expires', data.expiresAtUtc);
+
+  // 👈 si planeas usar refresh token
+  localStorage.setItem('jwt_refresh', data.refreshToken);
+
+  Swal.fire({
+    icon: 'success',
+    title: '¡Login exitoso!',
+    text: 'Redirigiendo al panel principal...',
+    timer: 2000,
+    showConfirmButton: false
+  });
+
+  this.router.navigate(['/admin']);
+}
+,
         error: (err) => {
           console.error('Error de login:', err);
   
