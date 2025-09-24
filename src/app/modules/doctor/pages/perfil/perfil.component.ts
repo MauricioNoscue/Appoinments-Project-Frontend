@@ -28,7 +28,7 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
   // TODO: cuando exista autenticación por token, reemplazar por el id del token:
   // const doctorId = this.authService.getDoctorIdFromToken();
-  private readonly DOCTOR_ID = 4;
+  private readonly DOCTOR_ID = 1;
 
   loading = false;
   errorMsg = '';

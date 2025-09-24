@@ -15,7 +15,7 @@ export const DASHBOARD_CONSTANTS = {
 
   // Default doctor ID (temporary until auth is implemented)
 //   DEFAULT_DOCTOR_ID: undefined as number | undefined,
-  DEFAULT_DOCTOR_ID: 4,
+  DEFAULT_DOCTOR_ID: 1,
 
   // Citation status mappings
   STATUS_MAPPINGS: {
