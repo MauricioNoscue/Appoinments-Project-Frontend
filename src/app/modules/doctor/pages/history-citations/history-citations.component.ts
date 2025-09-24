@@ -99,7 +99,7 @@ export class HistoryCitationsComponent implements OnInit, OnDestroy {
     const s = (raw || '').trim().toLowerCase();
     if (['atendida', 'atendido', 'hecha', 'completada'].includes(s)) return 'atendida';
     if (['no asistió', 'no asistio', 'noasistio', 'incomparecencia', 'ausente'].includes(s)) return 'noasistio';
-    if (['pendiente', 'agendada', 'programada'].includes(s)) return 'pendiente';
+    if (['pendiente', 'agendada', 'Programada'].includes(s)) return 'pendiente';
     if (['cancelada', 'anulada'].includes(s)) return 'cancelada';
     if (['reprogramada', 'reagendada'].includes(s)) return 'reprogramada';
     return 'otro';

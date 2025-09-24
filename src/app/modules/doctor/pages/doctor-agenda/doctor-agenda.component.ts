@@ -13,7 +13,7 @@ import { DoctorCitation } from '../../../../shared/Models/hospital/DoctorListMod
 export class DoctorAgendaComponent implements OnInit, OnDestroy {
 
   // TODO: cuando exista autenticación por token, reemplazar por el id real del doctor
-  private readonly DOCTOR_ID = 4;
+  private readonly DOCTOR_ID = 1;
 
   // UI state
   loading = false;
