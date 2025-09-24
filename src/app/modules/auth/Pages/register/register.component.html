@@ -8,6 +8,12 @@
       {{ step === 1 ? 'Regístrate' : 'Completa tu Información' }}
     </h1>
 
+    <!-- Loader durante el registro -->
+    <div class="loader-overlay" *ngIf="isRegistering">
+      <div class="loader-spinner"></div>
+      <p>Creando tu cuenta...</p>
+    </div>
+
     <!-- Botón de retroceso (solo visible en paso 2) -->
     <div class="back-button-container" *ngIf="step === 2">
       <button type="button" class="btn-back" (click)="goBack()" title="Volver al paso anterior">
