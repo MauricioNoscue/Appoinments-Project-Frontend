@@ -11,27 +11,71 @@ import { MatCardModule } from '@angular/material/card';
 import { MatBadgeModule } from '@angular/material/badge';
 import { Router } from '@angular/router';
 
-// Servicios propios (ajusta paths si difieren en tu proyecto)
+// Servicios propios
 import { CitationService } from '../../../../shared/services/citation.service';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { RelatedPersonService } from '../../../../shared/services/related-person.service';
+import { TypeCitationService } from '../../../../shared/services/Hospital/type-citation.service';
 import { environment } from '../../../../../environments/environment.development';
-import { RouterModule } from '@angular/router'; // 👈 importa esto
 
 declare var bootstrap: any;
+
 type Stat = {
   icon: string;
   label: 'Mis citas' | 'Familia' | 'Novedades';
   value: number;
   color?: string;
 };
+
 type NewsItem = {
   title: string;
   date: string;
   text: string;
   status: 'pendiente' | 'confirmada';
 };
-type TipoCita = { icon: string; label: string; color: string };
+
+type TipoCita = {
+  id: number;
+  label: string;
+  color: string;
+  icon?: string; // respaldo si no hay imagen
+  img?: string; // ruta a /assets/... cuando venga imageName o catálogo
+};
+
+// ====================
+// Catálogo nombres → imagen
+// ====================
+function norm(s: string): string {
+  return (s ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // quita acentos
+    .toLowerCase()
+    .trim();
+}
+
+const TIPO_CITA_CATALOGO: Array<{ name: string; img: string }> = [
+  {
+    name: 'consulta General',
+    img: '/assets/icons/IconsTypeCitation/CExterna.png',
+  },
+  {
+    name: 'odontologia',
+    img: '/assets/icons/IconsTypeCitation/odontologia.png',
+  },
+  { name: 'pediatria', img: '/assets/icons/IconsTypeCitation/pediatria.svg' },
+  { name: 'citologia', img: '/assets/icons/IconsTypeCitation/citologia.svg' },
+  { name: 'vacunacion', img: '/assets/icons/IconsTypeCitation/vacunacion.svg' },
+  { name: 'psicologia', img: '/assets/icons/IconsTypeCitation/psicologia.svg' },
+  {
+    name: 'fisioterapia',
+    img: '/assets/icons/IconsTypeCitation/fisioterapia.svg',
+  },
+  { name: 'optometria', img: '/assets/icons/IconsTypeCitation/optometria.svg' },
+];
+
+const TIPO_CITA_MAP = new Map(
+  TIPO_CITA_CATALOGO.map((x) => [norm(x.name), x.img])
+);
 
 @Component({
   selector: 'app-dashboard',
@@ -50,42 +94,35 @@ type TipoCita = { icon: string; label: string; color: string };
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
+  // ===== Inyección de servicios
   private router = inject(Router);
   private citaSrv = inject(CitationService);
   private notifSrv = inject(NotificationService);
   private relSrv = inject(RelatedPersonService);
+  private typeSrv = inject(TypeCitationService);
 
   // ===== Topbar
   query = '';
 
-  // ===== Stats (reactivos)
+  // ===== Stats
   stats = signal<Stat[]>([
     { icon: 'event', label: 'Mis citas', value: 0, color: '#ff6b6b' },
     { icon: 'groups', label: 'Familia', value: 0, color: '#7c4dff' },
     { icon: 'notifications', label: 'Novedades', value: 0, color: '#ffb300' },
   ]);
 
-  // ===== Contadores individuales
+  // Contadores
   citasProgramadasCnt = signal(0);
   noLeidasCnt = signal(0);
   familiaCnt = signal(0);
 
-  // ===== Tipos de cita (UI)
-  tipos: TipoCita[] = [
-    { icon: 'person_outline', label: 'Consulta', color: '#8ecae6' },
-    { icon: 'clean_hands', label: 'Odontología', color: '#cdb4db' },
-    { icon: 'child_friendly', label: 'Pediatría', color: '#a3d2ca' },
-    { icon: 'female', label: 'Citología', color: '#f8ad9d' },
-    { icon: 'vaccines', label: 'Vacunación', color: '#84dccf' },
-    { icon: 'psychology', label: 'Psicología', color: '#bde0fe' },
-    { icon: 'accessibility', label: 'Fisioterapia', color: '#f7b267' },
-    { icon: 'visibility', label: 'Optometría', color: '#ffd6a5' },
-  ];
+  // ===== Tipos de cita (ARRAY normal)
+  tipos: TipoCita[] = [];
 
-  // ===== Novedades (3 no leídas más recientes)
+  // ===== Novedades
   novedades = signal<NewsItem[]>([]);
 
-  // ===== Calendario (simple)
+  // ===== Calendario
   today = new Date();
   currentYear = signal(this.today.getFullYear());
   currentMonth = signal(this.today.getMonth());
@@ -99,10 +136,14 @@ export class DashboardComponent implements OnInit {
   monthName = computed(() =>
     new Date(this.currentYear(), this.currentMonth(), 1).toLocaleDateString(
       'es-CO',
-      { month: 'long', year: 'numeric' }
+      {
+        month: 'long',
+        year: 'numeric',
+      }
     )
   );
   weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
   get monthMatrix(): (Date | null)[] {
     const y = this.currentYear();
     const m = this.currentMonth();
@@ -153,6 +194,28 @@ export class DashboardComponent implements OnInit {
 
   // ===== Carga de datos
   ngOnInit(): void {
+    // 0) Tipos de cita desde API
+    this.typeSrv.traerTodo().subscribe({
+      next: (list: any[]) => {
+        this.tipos = list.map((x: any) => {
+          const rawName = x.name ?? x.title ?? 'Tipo';
+          const key = norm(rawName);
+
+          const imgFromCatalog = TIPO_CITA_MAP.get(key);
+
+          return {
+            id: x.id,
+            label: rawName,
+            color: x.color ?? '#e2e8f0',
+            img: x.imageName
+              ? `/assets/icons/IconsTypeCitation/${x.imageName}`
+              : imgFromCatalog,
+            icon: x.imageName || imgFromCatalog ? undefined : 'event',
+          } as TipoCita;
+        });
+      },
+    });
+
     // 1) Citas programadas
     this.citaSrv.traerListado().subscribe({
       next: (arr: any[]) => {
@@ -162,7 +225,7 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    // 2) Notificaciones no leídas + top 3
+    // 2) Notificaciones
     this.notifSrv.traerTodo().subscribe({
       next: (list: any[]) => {
         const noLeidas = list.filter((n) => !n?.stateNotification);
@@ -186,7 +249,7 @@ export class DashboardComponent implements OnInit {
       },
     });
 
-    // 3) Familia (relación-persona)
+    // 3) Familia
     const personId = (environment as any).defaultPersonId as number | undefined;
     if (personId && personId > 0) {
       this.relSrv.getByPerson(personId).subscribe({
@@ -198,35 +261,24 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-// ===== Navegación desde los stats
-goTo(label: Stat['label']) {
-  switch (label) {
-    case 'Mis citas':
-    // 👉 Abrir el offcanvas manualmente
-      const offcanvasEl2 = document.getElementById('offcanvasExample2');
-      if (offcanvasEl2) {
-        // Instanciar (o recuperar) el offcanvas de Bootstrap
-        const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl2);
-        bsOffcanvas.show();
+  // ===== Navegación desde los stats
+  goTo(label: Stat['label']) {
+    switch (label) {
+      case 'Mis citas': {
+        const el = document.getElementById('offcanvasExample2');
+        if (el) bootstrap.Offcanvas.getOrCreateInstance(el).show();
+        break;
       }
-      break;
-
-    case 'Familia':
-      this.router.navigate(['/paciente/relacion']);
-      break;
-
-    case 'Novedades':
-      // 👉 Abrir el offcanvas manualmente
-      const offcanvasEl = document.getElementById('offcanvasExample');
-      if (offcanvasEl) {
-        // Instanciar (o recuperar) el offcanvas de Bootstrap
-        const bsOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
-        bsOffcanvas.show();
+      case 'Familia':
+        this.router.navigate(['/paciente/relacion']);
+        break;
+      case 'Novedades': {
+        const el = document.getElementById('offcanvasExample');
+        if (el) bootstrap.Offcanvas.getOrCreateInstance(el).show();
+        break;
       }
-      break;
+    }
   }
-}
-
 
   // ===== Util
   private updateStat(label: Stat['label'], value: number) {
@@ -235,15 +287,17 @@ goTo(label: Stat['label']) {
     );
   }
 
-  // ===== Acciones UI auxiliares
+  // ===== Acciones UI
   doSearch() {
     console.log('Buscar:', this.query);
   }
+
   openTipo(t: TipoCita) {
-    console.log('Elegido tipo:', t.label);
+    if (t?.id) this.router.navigate([`admin/CitationAviable/${t.id}`]);
+    else console.log('Elegido tipo:', t.label);
   }
+
   verTodo() {
     this.router.navigate(['/paciente/notificaciones']);
-
   }
 }

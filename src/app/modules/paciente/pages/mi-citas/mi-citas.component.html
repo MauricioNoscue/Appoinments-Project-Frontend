@@ -2,9 +2,27 @@
   <!-- Tabs + buscador -->
   <div class="topbar">
     <div class="tabs">
-      <button class="tab" [class.active]="tab()==='programadas'" (click)="setTab('programadas')">Programadas</button>
-      <button class="tab" [class.active]="tab()==='canceladas'"   (click)="setTab('canceladas')">Canceladas</button>
-      <button class="tab" [class.active]="tab()==='asistidas'"    (click)="setTab('asistidas')">Asistidas</button>
+      <button
+        class="tab"
+        [class.active]="tab() === 'programadas'"
+        (click)="setTab('programadas')"
+      >
+        Programadas
+      </button>
+      <button
+        class="tab"
+        [class.active]="tab() === 'canceladas'"
+        (click)="setTab('canceladas')"
+      >
+        Canceladas
+      </button>
+      <button
+        class="tab"
+        [class.active]="tab() === 'asistidas'"
+        (click)="setTab('asistidas')"
+      >
+        Asistidas
+      </button>
     </div>
 
     <div class="search">
@@ -14,30 +32,38 @@
         type="search"
         placeholder="Buscar notificación"
         [ngModel]="q()"
-        (ngModelChange)="q.set($event)">
+        (ngModelChange)="q.set($event)"
+      />
     </div>
   </div>
 
   <!-- Lista -->
   <div *ngIf="!cargando(); else skel" class="list">
-    <div *ngFor="let c of filtered()" class="card" [ngClass]="{
-       'card-programada': c.state==='Programada',
-       'card-cancelada': c.state==='Cancelada',
-       'card-asistida': c.state==='Asistida'
-     }">
+    <div
+      *ngFor="let c of filtered()"
+      class="card"
+      [ngClass]="{
+        'card-programada': c.state === 'Programada',
+        'card-cancelada': c.state === 'Cancelada',
+        'card-asistida': c.state === 'Asistida'
+      }"
+    >
       <div class="card-header">
         <div class="type"><div class="pill">Consulta externa</div></div>
         <div class="when">
           <div class="when-item">
             <span class="emoji">📅</span>
-            <span class="text">{{ c.appointmentDate | date:'MM/dd/yyyy' }}</span>
+            <span class="text">{{
+              c.appointmentDate | date : "MM/dd/yyyy"
+            }}</span>
           </div>
           <div class="when-item">
             <span class="emoji">🕘</span>
-            <span class="text">{{ c.timeBlock ? (c.timeBlock | slice:0:5) : '—' }}</span>
+            <span class="text">{{
+              c.timeBlock ? (c.timeBlock | slice : 0 : 5) : "—"
+            }}</span>
           </div>
         </div>
-
       </div>
 
       <div class="card-body">
@@ -45,12 +71,12 @@
         <div class="info-grid">
           <div class="info-col">
             <div class="label">Doctor</div>
-            <div class="value">{{ c.nameDoctor || '—' }}</div>
+            <div class="value">{{ c.nameDoctor || "—" }}</div>
           </div>
 
           <div class="info-col">
             <div class="label">Consultorio</div>
-            <div class="value">{{ c.roomNumber || '—' }}</div>
+            <div class="value">{{ c.roomNumber || "—" }}</div>
           </div>
 
           <div class="info-col">
@@ -58,28 +84,39 @@
             <div class="value">{{ c.state }}</div>
           </div>
 
-          <div class="info-col ">
+          <div class="info-col note-col">
             <div class="label">Nota</div>
+
+            <!-- wrapper que contiene texto truncado -->
             <div class="note-row">
-              <div class="value ">{{ c.note  }}</div>
+              <div class="value note-value">{{ c.note }}</div>
+
+              <!-- tooltip custom (hidden por defecto) -->
+              <div class="note-tooltip" role="tooltip" aria-hidden="true">
+                {{ c.note }}
+              </div>
             </div>
           </div>
 
           <div class="info-col action-col">
-              <button *ngIf="tab()==='programadas' && c.state==='Programada'"
-                      class="btn-cancel"
-                      (click)="cancelar(c)"
-                      [disabled]="cancelandoIds().has(c.id)">
-                {{ cancelandoIds().has(c.id) ? 'Cancelando...' : 'Cancelar cita' }}
-              </button>
+            <button
+              *ngIf="tab() === 'programadas' && c.state === 'Programada'"
+              class="btn-cancel"
+              (click)="cancelar(c)"
+              [disabled]="cancelandoIds().has(c.id)"
+            >
+              {{
+                cancelandoIds().has(c.id) ? "Cancelando..." : "Cancelar cita"
+              }}
+            </button>
           </div>
         </div>
       </div>
-
-
     </div>
 
-    <div *ngIf="filtered().length === 0" class="empty">No hay citas para mostrar.</div>
+    <div *ngIf="filtered().length === 0" class="empty">
+      No hay citas para mostrar.
+    </div>
   </div>
 
   <ng-template #skel>

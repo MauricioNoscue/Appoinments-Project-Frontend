@@ -19,7 +19,7 @@ type MaybeDate = string | number | Date;
 export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
 
   // TODO: reemplazar por token
-  private readonly DOCTOR_ID = 4;
+  private readonly DOCTOR_ID = 1;
 
   loading = false;
   errorMsg = '';

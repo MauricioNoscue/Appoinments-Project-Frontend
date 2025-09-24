@@ -1,14 +1,8 @@
-import {
-  Component,
-  Input,
-  inject,
-  signal,
-  ViewChild,
-  TemplateRef,
-} from '@angular/core';
+import { Component, Input, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../../environments/environment.development'; // ✅ SIEMPRE este
+import Swal from 'sweetalert2';
 
 // Material
 import { MatCardModule } from '@angular/material/card';
@@ -17,11 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  MatDialog,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 import {
   RelatedPersonList,
@@ -63,7 +53,7 @@ type Relation =
     MatDialogModule,
   ],
   templateUrl: './relacion-persona.component.html',
-  styleUrl: './relacion-persona.component.css',
+  styleUrls: ['./relacion-persona.component.css'],
 })
 export class RelacionPersonaComponent {
   // Input opcional
@@ -73,20 +63,10 @@ export class RelacionPersonaComponent {
   private svc = inject(RelatedPersonService);
   private route = inject(ActivatedRoute);
 
-  @ViewChild('detailDialog') detailDialog!: TemplateRef<any>;
-
-  // NUEVO: Modales inline
-  @ViewChild('confirmTpl') confirmTpl!: TemplateRef<any>;
-  @ViewChild('successTpl') successTpl!: TemplateRef<any>;
-  @ViewChild('errorTpl') errorTpl!: TemplateRef<any>;
-  private confirmRef?: MatDialogRef<any>;
-
   // estado UI
   readonly people = signal<RelatedPersonList[]>([]);
   selectedId = signal<number | null>(null);
   toRemove: RelatedPersonList | null = null;
-  successMessage = '';
-  errorMessage = '';
 
   // ===== Resolver personId =====
   private _resolvedId: number | null = null;
@@ -151,7 +131,7 @@ export class RelacionPersonaComponent {
         map[p.id] = this.getRandomColor();
         changed = true;
       }
-      p.color = map[p.id];
+      (p as any).color = map[p.id];
     }
     if (changed) this.saveColorMap(map);
     return list;
@@ -161,7 +141,10 @@ export class RelacionPersonaComponent {
     if (!this._resolvedId || this._resolvedId <= 0) return;
     this.svc.getByPerson(this._resolvedId).subscribe({
       next: (list) => this.people.set(this.ensureColors(list)),
-      error: (err) => this.showError('Error cargando personas relacionadas'),
+      error: (err) => {
+        console.error(err);
+        this.showError('Error cargando personas relacionadas');
+      },
     });
   }
 
@@ -176,18 +159,35 @@ export class RelacionPersonaComponent {
     this.selectedId.set(this.selectedId() === p.id ? null : p.id);
   }
 
+  // ---- Ver detalle con Swal (modal bonito)
   view(p: RelatedPersonList) {
-    this.dialog.open(this.detailDialog, { data: p, autoFocus: true });
-  }
+    const html = `
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:72px;height:72px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;background:${
+          p.color || '#4f46e5'
+        }">
+          ${this.initials(p.fullName)}
+        </div>
+        <div style="flex:1">
+          <h3 style="margin:0">${p.fullName}</h3>
+          <div style="color:gray;margin-top:4px">${p.relation}</div>
+        </div>
+      </div>
+      <hr/>
+      <div style="margin-top:8px">
+        <div><strong>Identificación:</strong> ${p.document || '—'}</div>
+        <div><strong>Tipo documento:</strong> ${p.documentTypeName || '—'}</div>
+      </div>
+    `;
 
-  // ===== Utilidades de modal de feedback =====
-  private showSuccess(msg: string) {
-    this.successMessage = msg;
-    this.dialog.open(this.successTpl, { width: '420px', disableClose: true });
-  }
-  private showError(msg: string) {
-    this.errorMessage = msg;
-    this.dialog.open(this.errorTpl, { width: '420px' });
+    Swal.fire({
+      title: 'Detalles de persona',
+      html,
+      showCloseButton: true,
+      focusConfirm: false,
+      confirmButtonText: 'Cerrar',
+      width: '560px',
+    });
   }
 
   // ===== Crear =====
@@ -214,7 +214,10 @@ export class RelacionPersonaComponent {
           this.load();
           this.showSuccess('Persona creada con éxito');
         },
-        error: () => this.showError('Error creando persona relacionada'),
+        error: (err) => {
+          console.error(err);
+          this.showError('Error creando persona relacionada');
+        },
       });
     });
   }
@@ -234,7 +237,7 @@ export class RelacionPersonaComponent {
           lastname: rest,
           relation: p.relation as Relation,
           idNumero: p.document,
-          documentTypeId: undefined, // ajusta si cargas tipos reales
+          documentTypeId: undefined,
           color: p.color ?? '#4f46e5',
         },
       },
@@ -258,49 +261,82 @@ export class RelacionPersonaComponent {
           this.load();
           this.showSuccess('Cambios guardados con éxito');
         },
-        error: () => this.showError('Error actualizando persona relacionada'),
+        error: (err) => {
+          console.error(err);
+          this.showError('Error actualizando persona relacionada');
+        },
       });
     });
   }
 
-  // ===== Eliminar con confirmación =====
+  // ===== Eliminar con confirmación Swal =====
   confirmRemove(p: RelatedPersonList) {
     this.toRemove = p;
-    this.confirmRef = this.dialog.open(this.confirmTpl, {
-      width: '420px',
-      disableClose: true,
+
+    Swal.fire({
+      title: 'Eliminar persona relacionada',
+      html: `¿Seguro que deseas eliminar a <strong>${p.fullName}</strong> (${p.relation})?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      width: '520px',
+    }).then((res) => {
+      if (!res.isConfirmed) {
+        this.toRemove = null;
+        return;
+      }
+
+      // mostrar loading mientras se elimina
+      Swal.fire({
+        title: 'Eliminando...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      this.svc.eliminar(p.id).subscribe({
+        next: () => {
+          // limpiar selección y color local sin recargar
+          if (this.selectedId() === p.id) this.selectedId.set(null);
+          const map = this.loadColorMap();
+          if (map[p.id]) {
+            delete map[p.id];
+            this.saveColorMap(map);
+          }
+          this.people.update((arr) => arr.filter((x) => x.id !== p.id));
+
+          Swal.close();
+          this.toRemove = null;
+          this.showSuccess('Persona eliminada con éxito');
+        },
+        error: (err) => {
+          console.error(err);
+          Swal.close();
+          this.toRemove = null;
+          this.showError('Error eliminando persona relacionada');
+        },
+      });
     });
   }
 
-  onConfirmRemove() {
-    if (!this.toRemove) return;
-    const id = this.toRemove.id;
-
-    this.svc.eliminar(id).subscribe({
-      next: () => {
-        // limpiar selección y color local sin recargar
-        if (this.selectedId() === id) this.selectedId.set(null);
-        const map = this.loadColorMap();
-        if (map[id]) {
-          delete map[id];
-          this.saveColorMap(map);
-        }
-        this.people.update((arr) => arr.filter((x) => x.id !== id));
-
-        this.confirmRef?.close();
-        this.toRemove = null;
-        this.showSuccess('Persona eliminada con éxito');
-      },
-      error: () => {
-        this.confirmRef?.close();
-        this.toRemove = null;
-        this.showError('Error eliminando persona relacionada');
-      },
+  // ===== Helpers: mostrar feedback con Swal =====
+  private showSuccess(msg: string) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Éxito',
+      text: msg,
+      confirmButtonText: 'OK',
     });
   }
 
-  onCancelRemove() {
-    this.confirmRef?.close();
-    this.toRemove = null;
+  private showError(msg: string) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: msg,
+      confirmButtonText: 'Cerrar',
+    });
   }
 }

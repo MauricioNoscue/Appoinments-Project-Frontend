@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { DepartamentService } from '../../../../shared/services/departament.service';
 import { DepartamentList } from '../../../../shared/Models/parameter/Departament';
 import { DialogContainerComponent } from '../../../../shared/components/Modal/dialog-container/dialog-container.component';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -72,19 +73,42 @@ export class DepartamentComponent implements OnInit {
     );
   }
 
-  eliminar(id: number): void {
-    const confirmado = confirm('¿Estás seguro de eliminar este departamento?');
-
-    if (confirmado) {
-      this.departamentService.eliminar(id).subscribe({
-        next: () => {
-          console.log('Departamento eliminado exitosamente');
-          this.cargarDepartamentos();
-        },
-        error: (err) => console.error('Error al eliminar:', err),
-      });
-    }
-  }
+   eliminar(id: number): void {
+     Swal.fire({
+       title: '¿Estás seguro?',
+       text: 'Esta acción eliminará el departamento permanentemente.',
+       icon: 'warning',
+       showCancelButton: true,
+       confirmButtonText: 'Sí, eliminar',
+       cancelButtonText: 'Cancelar',
+       confirmButtonColor: '#d33',
+       cancelButtonColor: '#3085d6',
+     }).then((result) => {
+       if (result.isConfirmed) {
+         this.departamentService.eliminar(id).subscribe({
+           next: () => {
+             Swal.fire({
+               icon: 'success',
+               title: 'Eliminada',
+               text: 'El departamento fue eliminada correctamente.',
+               confirmButtonText: 'OK',
+               confirmButtonColor: '#28a745',
+             });
+             this.cargarDepartamentos(); // Recargar la lista
+           },
+           error: (err) => {
+             console.error('Error al eliminar:', err);
+             Swal.fire({
+               icon: 'error',
+               title: 'Error',
+               text: 'No se pudo eliminar la ciudad.',
+               confirmButtonText: 'Cerrar',
+             });
+           },
+         });
+       }
+     });
+   }
 
   recargarListado(): void {
     this.cargarDepartamentos();
@@ -103,15 +127,52 @@ export class DepartamentComponent implements OnInit {
         if (!result) return;
 
         if (modo === 'create') {
-          this.departamentService
-            .crear(result)
-            .subscribe(() => this.cargarDepartamentos());
-        } else {
-          this.departamentService
-            .actualizar(result)
-            .subscribe(() => this.cargarDepartamentos());
-        }
-      });
-    });
-  }
-}
+                 this.departamentService.crear(result).subscribe({
+                   next: (res) => {
+                     // Mostrar modal de éxito
+                     Swal.fire({
+                       icon: 'success',
+                       title: '¡Éxito!',
+                       text: 'El departamaneto fue creada correctamente.',
+                       confirmButtonText: 'Continuar',
+                       confirmButtonColor: '#28a745',
+                     });
+                     this.cargarDepartamentos();
+                   },
+                   error: (err) => {
+                     console.error('Error al crear departamento:', err);
+                     Swal.fire({
+                       icon: 'error',
+                       title: 'Error',
+                       text: 'No se pudo crear el departamento.',
+                       confirmButtonText: 'Cerrar',
+                     });
+                   },
+                 });
+               } else {
+                 this.departamentService.actualizar(result).subscribe({
+                   next: (res) => {
+                     Swal.fire({
+                       icon: 'success',
+                       title: '¡Actualizado!',
+                       text: 'El departamento fue actualizado correctamente.',
+                       confirmButtonText: 'Continuar',
+                       confirmButtonColor: '#28a745',
+                     });
+                     this.cargarDepartamentos();
+                   },
+                   error: (err) => {
+                     console.error('Error al actualizar departamento:', err);
+                     Swal.fire({
+                       icon: 'error',
+                       title: 'Error',
+                       text: 'No se pudo actualizar el departamento.',
+                       confirmButtonText: 'Cerrar',
+                     });
+                   },
+                 });
+               }
+             });
+           });
+         }
+       }

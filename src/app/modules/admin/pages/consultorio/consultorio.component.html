@@ -27,17 +27,12 @@
       class="card"
       *ngFor="let c of consultoriosFiltrados; trackBy: trackById"
     >
-      <!-- Imagen del consultorio -->
-      <img
-        [src]="c.imagen"
-        [alt]="'Imagen del consultorio ' + c.nombre"
-        loading="lazy"
-      />
+      <!-- Imagen -->
+      <img [src]="c.imagen" [alt]="'Imagen del consultorio ' + c.nombre" />
 
       <div class="card-info">
         <div class="card-header">
           <h3>{{ c.nombre }}</h3>
-
           <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>
           </button>
@@ -48,13 +43,10 @@
               <mat-icon>visibility</mat-icon>
               <span>Ver detalles</span>
             </button>
-
             <button mat-menu-item (click)="editarConsultorio(c)">
               <mat-icon>edit</mat-icon>
               <span>Editar</span>
             </button>
-
-            <!-- Abre el modal inline (ng-template) para confirmar -->
             <button mat-menu-item (click)="confirmarEliminar(c)">
               <mat-icon>delete</mat-icon>
               <span>Eliminar</span>
@@ -62,41 +54,16 @@
           </mat-menu>
         </div>
 
-        <!-- Nombre de la sucursal -->
         <p class="branch-name">
           <mat-icon fontIcon="store" style="color:#388e3c;"></mat-icon>
           Sucursal: {{ c.branchName }}
         </p>
-
         <p class="ubicacion">
           <mat-icon fontIcon="location_on" style="color:#1976d2;"></mat-icon>
           {{ c.ubicacion }}
         </p>
-
         <span class="estado">{{ c.estado }}</span>
       </div>
     </div>
   </div>
 </div>
-
-<!-- Modal inline de confirmación (usa @ViewChild('confirmTpl')) -->
-<ng-template #confirmTpl>
-  <h2 mat-dialog-title>Eliminar consultorio</h2>
-
-  <div mat-dialog-content>
-    <p>
-      ¿Seguro que deseas eliminar
-      <strong>{{ toDelete?.nombre }}</strong>?
-      Esta acción no se puede deshacer.
-    </p>
-  </div>
-
-  <div mat-dialog-actions align="end">
-    <button mat-stroked-button (click)="onCancelDelete()">
-      Cancelar
-    </button>
-    <button mat-raised-button color="warn" (click)="onConfirmDelete()">
-      Eliminar
-    </button>
-  </div>
-</ng-template>

@@ -22,6 +22,7 @@ import { NotificacionesComponent } from '../modules/paciente/pages/notificacione
 import { MiCitasComponent } from '../modules/paciente/pages/mi-citas/mi-citas.component';
 import { ReservationComponent } from '../modules/paciente/pages/reservation/reservation.component';
 import { ReservationViewComponent } from './components/PagesShared/reservation-view/reservation-view.component';
+import { PerfilComponent } from '../modules/paciente/pages/perfil/perfil.component';
 
 
 const sharedComponents =[
@@ -36,6 +37,8 @@ const sharedComponents =[
   DialogContainerComponent,SectionCardComponent
   ,TypeCitationComponent,CardTypeCitationComponent,CalendarComponent,SheduleCardComponent,FormSheduleComponent,ReservationViewComponent 
   
+ 
+
 
 ]
 
@@ -43,10 +46,13 @@ const sharedComponents =[
   declarations: [sharedComponents],
   imports: [
     CommonModule,
-    MaterialModule,RouterModule ,ReactiveFormsModule,NotificacionesComponent,MiCitasComponent
+    MaterialModule,
+    RouterModule,
+    ReactiveFormsModule,
+    NotificacionesComponent,
+    MiCitasComponent,
+
   ],
-  exports: [
-   sharedComponents,DashboardLayoutComponentComponent
-  ]
+  exports: [sharedComponents, DashboardLayoutComponentComponent],
 })
 export class SharedModule {}

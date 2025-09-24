@@ -1,6 +1,8 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
+
 import { CitationService } from '../../../../shared/services/citation.service';
 import { CitationList } from '../../../../shared/Models/hospital/CitationModel';
 
@@ -11,7 +13,7 @@ type TabKey = 'programadas' | 'canceladas' | 'asistidas';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './mi-citas.component.html',
-  styleUrl: './mi-citas.component.css',
+  styleUrls: ['./mi-citas.component.css'], // corregido
 })
 export class MiCitasComponent implements OnInit {
   private citaSrv = inject(CitationService);
@@ -61,48 +63,93 @@ export class MiCitasComponent implements OnInit {
         this.citas.set(r);
         this.cargando.set(false);
       },
-      error: () => this.cargando.set(false),
+      error: () => {
+        this.cargando.set(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudieron cargar las citas.',
+          confirmButtonText: 'Cerrar',
+        });
+      },
     });
   }
 
   setTab(t: TabKey) {
     this.tab.set(t);
   }
-  // ⬇️ NUEVO: método para cancelar
+
+  // ⬇️ método para cancelar (con SweetAlert2 y modal de carga)
   cancelar(c: CitationList) {
     if (c.state !== 'Programada') return;
 
-    const ok = confirm(
-      `¿Cancelar la cita del ${new Date(
-        c.appointmentDate
-      ).toLocaleDateString()} ${c.timeBlock ?? ''} con ${c.nameDoctor}?`
-    );
-    if (!ok) return;
+    const fechaStr = new Date(c.appointmentDate).toLocaleDateString();
+    const horaStr = c.timeBlock ? ` ${c.timeBlock}` : '';
 
-    const set = new Set(this.cancelandoIds());
-    set.add(c.id);
-    this.cancelandoIds.set(set);
+    Swal.fire({
+      title: 'Confirmar cancelación',
+      html: `¿Cancelar la cita del <b>${fechaStr}${horaStr}</b> con <b>${c.nameDoctor}</b>?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'No',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((choice) => {
+      if (!choice.isConfirmed) return;
 
-    this.citaSrv
-      .actualizar({ id: c.id, state: 'Cancelada', note: c.note } as any)
-      .subscribe({
-        next: () => {
-          // cambia el estado localmente
-          const arr = this.citas().map((x) =>
-            x.id === c.id ? { ...x, state: 'Cancelada' } : x
-          );
-          this.citas.set(arr);
+      // marcar como "cancelando" para bloquear UI (spinner en botón, etc.)
+      const set = new Set(this.cancelandoIds());
+      set.add(c.id);
+      this.cancelandoIds.set(set);
 
-          const s2 = new Set(this.cancelandoIds());
-          s2.delete(c.id);
-          this.cancelandoIds.set(s2);
-        },
-        error: () => {
-          const s2 = new Set(this.cancelandoIds());
-          s2.delete(c.id);
-          this.cancelandoIds.set(s2);
-          alert('No se pudo cancelar la cita. Intenta de nuevo.');
+      // mostrar modal de carga
+      Swal.fire({
+        title: 'Cancelando...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
         },
       });
+
+      this.citaSrv
+        .actualizar({ id: c.id, state: 'Cancelada', note: c.note } as any)
+        .subscribe({
+          next: () => {
+            // actualizar estado local
+            const arr = this.citas().map((x) =>
+              x.id === c.id ? { ...x, state: 'Cancelada' } : x
+            );
+            this.citas.set(arr);
+
+            // quitar del set de cancelando
+            const s2 = new Set(this.cancelandoIds());
+            s2.delete(c.id);
+            this.cancelandoIds.set(s2);
+
+            Swal.close(); // cerrar loading
+            Swal.fire({
+              icon: 'success',
+              title: 'Cancelada',
+              text: 'La cita fue cancelada correctamente.',
+              confirmButtonText: 'OK',
+            });
+          },
+          error: () => {
+            // quitar del set de cancelando
+            const s2 = new Set(this.cancelandoIds());
+            s2.delete(c.id);
+            this.cancelandoIds.set(s2);
+
+            Swal.close(); // cerrar loading
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo cancelar la cita. Intenta de nuevo.',
+              confirmButtonText: 'Cerrar',
+            });
+          },
+        });
+    });
   }
 }
