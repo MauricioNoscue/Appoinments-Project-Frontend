@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../../shared/services/user.service';
 import Swal from 'sweetalert2';
 import { LoginModel } from '../../../../shared/Models/security/userModel';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 @Component({
   selector: 'app-login',
   standalone:false,
@@ -14,7 +15,7 @@ import { LoginModel } from '../../../../shared/Models/security/userModel';
 export class LoginComponent {
 
  loginForm: FormGroup;
-  constructor(private router: Router,private fb:FormBuilder,private service : UserService) {
+  constructor(private router: Router,private fb:FormBuilder,private service : UserService,private authService :AuthService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(2)]],
@@ -46,7 +47,11 @@ export class LoginComponent {
     showConfirmButton: false
   });
 
-  this.router.navigate(['/admin']);
+
+
+  this.redirectByRole();
+
+
 }
 ,
         error: (err) => {
@@ -72,7 +77,36 @@ export class LoginComponent {
 
 
 
-// En LoginComponent
+
+
+// Método para redirigir según el rol del usuario
+redirectByRole(): void {
+  const roleIds = this.authService.getUserRoleIds(); // obtiene lista de roles
+  const firstRoleId = roleIds?.[0]; // toma el primero (maneja null/undefined)
+
+  switch (firstRoleId) {
+    case 4:
+      // 👤 Rol administrador
+      this.router.navigate(['/admin']);
+      break;
+
+    case 2:
+      // 👤 Rol paciente
+      this.router.navigate(['/paciente']);
+      break;
+       case 3:
+      // 👤 Rol paciente
+      this.router.navigate(['/doctor']);
+      break;
+
+    default:
+      // 👤 Sin rol o no coincide
+      this.router.navigate(['/']);
+      break;
+  }
+}
+
+
 
 
 

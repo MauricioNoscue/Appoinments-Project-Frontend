@@ -2,12 +2,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CoreCitationService } from '../../../../shared/services/Hospital/core-citation.service';
+import { Horario } from '../../../../shared/Models/socket/models.socket';
 
 // Interfaz para los horarios
-interface Horario {
-  hora: string;
-  estaDisponible: boolean;
-}
+
 
 @Component({
   selector: 'app-view-citation-available',

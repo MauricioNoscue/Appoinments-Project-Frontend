@@ -6,6 +6,8 @@ import { RelacionPersonaComponent } from './pages/relacion-persona/relacion-pers
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { NotificacionesComponent } from './pages/notificaciones/notificaciones.component';
 import { MiCitasComponent } from './pages/mi-citas/mi-citas.component';
+import { ReservationComponent } from './pages/reservation/reservation.component';
+import { ReservationViewComponent } from '../../shared/components/PagesShared/reservation-view/reservation-view.component';
 
 const routes: Routes = [
   {
@@ -18,6 +20,10 @@ const routes: Routes = [
       { path: 'perfil', component: PerfilComponent },
       { path: 'notificaciones', component: NotificacionesComponent },
       { path: 'micitas', component: MiCitasComponent },
+      { path: 'agendar', component: ReservationComponent },
+       {path:'CitationAviable/:id', component: ReservationViewComponent},
+
+      
     ],
   },
 ];
