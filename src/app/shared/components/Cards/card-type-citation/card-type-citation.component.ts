@@ -18,7 +18,7 @@ export class CardTypeCitationComponent {
 
   onCardClick() {
     if (!this.showOptions && this.route) {
-      this.router.navigate([`admin/CitationAviable/${this.id}`]);
+      this.router.navigate([`paciente/CitationAviable/${this.id}`]);
     }
   }
 

@@ -10,9 +10,10 @@ import { MaterialModule } from '../../shared/material.module';
 import { PerfilComponent } from './pages/perfil/perfil.component';
 import { EditProfileSectionDialogComponent } from './pages/perfil/edit-profile-section-dialog/edit-profile-section-dialog.component';
 import { FormRelacionPersonaComponent } from './Components/Form/form-relacion-persona/form-relacion-persona.component';
+import { ReservationComponent } from './pages/reservation/reservation.component';
 
 @NgModule({
-  declarations: [PerfilComponent, EditProfileSectionDialogComponent], // NO declares DashboardComponent (es standalone)
+  declarations: [PerfilComponent, EditProfileSectionDialogComponent,ReservationComponent], // NO declares DashboardComponent (es standalone)
   imports: [
     CommonModule,
     PacienteRoutingModule,

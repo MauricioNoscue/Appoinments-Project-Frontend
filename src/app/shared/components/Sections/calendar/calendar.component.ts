@@ -14,7 +14,7 @@ interface CalendarDay {
   selector: 'app-calendar',
   standalone: false,
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css'] // 👈 (ojo: plural)
+  styleUrls: ['./calendar.component.css'] //  (ojo: plural)
 })
 export class CalendarComponent implements OnInit {
 

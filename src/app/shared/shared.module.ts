@@ -20,6 +20,8 @@ import { SheduleCardComponent } from './components/Cards/shedule-card/shedule-ca
 import { FormSheduleComponent } from '../modules/admin/Components/forms/form-shedule/form-shedule.component';
 import { NotificacionesComponent } from '../modules/paciente/pages/notificaciones/notificaciones.component';
 import { MiCitasComponent } from '../modules/paciente/pages/mi-citas/mi-citas.component';
+import { ReservationComponent } from '../modules/paciente/pages/reservation/reservation.component';
+import { ReservationViewComponent } from './components/PagesShared/reservation-view/reservation-view.component';
 
 
 const sharedComponents =[
@@ -32,7 +34,7 @@ const sharedComponents =[
   CardBasicComponent,
   StaffCardComponent,
   DialogContainerComponent,SectionCardComponent
-  ,TypeCitationComponent,CardTypeCitationComponent,CalendarComponent,SheduleCardComponent,FormSheduleComponent
+  ,TypeCitationComponent,CardTypeCitationComponent,CalendarComponent,SheduleCardComponent,FormSheduleComponent,ReservationViewComponent 
   
 
 ]
