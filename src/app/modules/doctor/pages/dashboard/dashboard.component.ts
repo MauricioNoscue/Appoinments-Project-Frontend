@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { DoctorDashboardFacade, DoctorDashboardVM } from '../../../../shared/Facades/doctor-dashboard.facade';
 import { DASHBOARD_CONSTANTS } from './dashboard.constants';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,10 +15,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loading = true;
   error: string | null = null;
   private destroy$ = new Subject<void>();
+  doc!:number
 
-  constructor(private facade: DoctorDashboardFacade) {}
+  constructor(private facade: DoctorDashboardFacade,private authService:AuthService) {}
 
   ngOnInit(): void {
+    const doctorId = this.authService.getDoctorId();
+    if(doctorId){
+      this.doc = doctorId
+    }
+ 
     this.loadDashboard();
   }
 
@@ -33,8 +40,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = null;
 
+    
+
     // TODO: Get doctorId from authentication token when implemented
-    const doctorId = DASHBOARD_CONSTANTS.DEFAULT_DOCTOR_ID;
+    const doctorId = this.doc;
 
     this.facade.load(doctorId).pipe(takeUntil(this.destroy$)).subscribe({
       next: (vm) => {

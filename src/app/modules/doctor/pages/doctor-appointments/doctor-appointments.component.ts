@@ -7,6 +7,7 @@ import { ConfirmAttendanceDialogComponent, ConfirmResult } from '../dialogs/conf
 import { ClinicalNotesDialogComponent } from '../dialogs/clinical-notes/clinical-notes.dialog';
 import { DoctorService } from '../../../../shared/services/doctor.service';
 import { CitationService } from '../../../../shared/services/citation.service';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 type MaybeDate = string | number | Date;
 
@@ -19,7 +20,8 @@ type MaybeDate = string | number | Date;
 export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
 
   // TODO: reemplazar por token
-  private readonly DOCTOR_ID = 1;
+  // private readonly DOCTOR_ID = 1;
+    DOCTOR_ID! : number
 
   loading = false;
   errorMsg = '';
@@ -33,10 +35,17 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
     private citationsDoctor: DoctorService,
     private citations : CitationService,
     private dialog: MatDialog,
+    private authService:AuthService
   ) {}
 
   ngOnInit(): void {
+     const doctorId = this.authService.getDoctorId();
+    if(doctorId){
+    this.DOCTOR_ID = doctorId;
+    }
     this.loadForDate(this.selectedDate);
+   
+
   }
 
   ngOnDestroy(): void {
@@ -80,11 +89,11 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
         && a.getDate() === b.getDate();
   }
 
-  isProgrammed(state = ''): boolean {
-    // Ajusta si tu backend usa otros textos
-    const s = state.toLowerCase();
-    return s === 'pendiente' || s === 'agendada' || s === 'programada';
-  }
+isProgrammed(state = ''): boolean {
+  const s = state.toLowerCase().trim();
+  return ['pendiente', 'agendada', 'programada'].includes(s);
+}
+
 
   isExpired(c: DoctorCitation): boolean {
     // vencida si la hora ya pasó (ahora) y sigue en estado “programado”
@@ -94,20 +103,25 @@ export class DoctorAppointmentsComponent implements OnInit, OnDestroy {
     d.setHours(hh, mm, 0, 0);
     return d.getTime() < now.getTime();
   }
+partitionMorningAfternoon(list: DoctorCitation[]): [DoctorCitation[], DoctorCitation[]] {
+  const am: DoctorCitation[] = [];
+  const pm: DoctorCitation[] = [];
+  for (const c of list) {
+    const [hh, mm] = c.timeBlock.split(':').map(n => +n);
+    const minutes = hh * 60 + mm;
 
-  partitionMorningAfternoon(list: DoctorCitation[]): [DoctorCitation[], DoctorCitation[]] {
-    const am: DoctorCitation[] = [];
-    const pm: DoctorCitation[] = [];
-    for (const c of list) {
-      const [hh, mm] = c.timeBlock.split(':').map(n => +n);
-      const minutes = hh * 60 + mm;
-      // Mañana: 07:00–11:59
-      if (minutes >= 7*60 && minutes < 12*60) am.push(c);
-      // Tarde: 14:00–16:59
-      else if (minutes >= 14*60 && minutes < 17*60) pm.push(c);
+    // Mañana: 07:00–11:59
+    if (minutes >= 7*60 && minutes < 12*60) {
+      am.push(c);
+    } 
+    // Tarde: 12:00–18:59
+    else if (minutes >= 12*60 && minutes < 23*60) {
+      pm.push(c);
     }
-    return [am, pm];
   }
+  return [am, pm];
+}
+
 
   // calendario del card (lo que ya tienes): cambia selectedDate y recarga
   onPickDate(d: Date) {

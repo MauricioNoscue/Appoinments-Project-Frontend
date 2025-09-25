@@ -5,6 +5,7 @@ import { DoctorService} from '../../../../shared/services/doctor.service';
 import { DoctorCitation } from '../../../../shared/Models/hospital/DoctorListModel';
 import { DatePipe } from '@angular/common';
 import { CitationDetailsDialogComponent } from './citation-details-dialog/citation-details-dialog.component';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 type StatusKey = 'atendida' | 'noasistio' | 'pendiente' | 'cancelada' | 'reprogramada' | 'otro';
 
@@ -18,7 +19,8 @@ type StatusKey = 'atendida' | 'noasistio' | 'pendiente' | 'cancelada' | 'reprogr
 export class HistoryCitationsComponent implements OnInit, OnDestroy {
 
   // TODO: cuando exista autenticación por token, reemplazar por el id real del doctor
-  private readonly DOCTOR_ID = 4;
+  
+    DOCTOR_ID! : number
 
   loading = false;
   errorMsg = '';
@@ -33,11 +35,17 @@ export class HistoryCitationsComponent implements OnInit, OnDestroy {
   constructor(
     private doctorService: DoctorService,
     private datePipe: DatePipe,
-    private dialog: MatDialog
+    private dialog: MatDialog,private authService:AuthService
   ) {}
 
   ngOnInit(): void {
+    const doctorId = this.authService.getDoctorId();
+    if(doctorId){
+    this.DOCTOR_ID = doctorId;
+    }
     this.load();
+    
+
   }
 
   ngOnDestroy(): void {

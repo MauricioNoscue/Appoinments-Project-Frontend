@@ -8,11 +8,13 @@ import { NotificacionesComponent } from './pages/notificaciones/notificaciones.c
 import { MiCitasComponent } from './pages/mi-citas/mi-citas.component';
 import { ReservationComponent } from './pages/reservation/reservation.component';
 import { ReservationViewComponent } from '../../shared/components/PagesShared/reservation-view/reservation-view.component';
+import { authGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardLayoutComponentComponent,
+     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },

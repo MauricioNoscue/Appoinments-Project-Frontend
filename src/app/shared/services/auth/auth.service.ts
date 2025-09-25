@@ -27,9 +27,10 @@ export class AuthService {
     return token !== null && this.isTokenValid(token);
   }
 
-  logout(): void {
-    localStorage.removeItem(this.tokenKey);
-  }
+logout(): void {
+  this.clearAuthData();
+}
+
 
   private isTokenValid(token: string): boolean {
     try {
@@ -73,4 +74,34 @@ export class AuthService {
       return [];
     }
   }
+
+
+// Devuelve el DoctorId del token, si existe
+getDoctorId(): number | null {
+  const token = this.getToken();
+  if (!token) return null;
+
+  try {
+    const decoded: JwtPayload = jwtDecode(token);
+
+    // El claim puede venir como string o número
+    const doctorId = decoded['DoctorId'];
+    if (!doctorId) return null;
+
+    return typeof doctorId === 'string' ? Number(doctorId) : doctorId;
+  } catch {
+    return null;
+  }
+}
+
+
+// Elimina todos los datos relacionados con autenticación
+clearAuthData(): void {
+  localStorage.removeItem(this.tokenKey);        // accessToken
+  localStorage.removeItem('jwt_expires');        // expiración
+  localStorage.removeItem('jwt_refresh');        // refresh token
+}
+
+
+
 }

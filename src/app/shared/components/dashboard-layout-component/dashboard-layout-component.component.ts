@@ -2,6 +2,8 @@ import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/
 import { MenuItem } from '../../Models/ManuItemModel';
 import { menuAdmin } from '../../../modules/admin/Menu-config/menu-admin';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard-layout-component',
@@ -16,7 +18,7 @@ export class DashboardLayoutComponentComponent implements OnInit {
 
   @Output() abrirPerfil = new EventEmitter<void>(); // Evento para abrir el perfil
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,private authservice:AuthService) {}
 
   ngOnInit(): void {
     this.initializeFromRoute();
@@ -32,6 +34,54 @@ export class DashboardLayoutComponentComponent implements OnInit {
   private checkScreenSize(): void {
     this.isMobile = window.innerWidth <= 768;
   }
+
+CerrarSession(): void {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Vas a cerrar sesión',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, continuar',
+    cancelButtonText: 'Cancelar'
+  }).then((result1) => {
+    if (result1.isConfirmed) {
+      Swal.fire({
+        title: '¿Completamente seguro?',
+        text: 'Esta acción cerrará tu sesión actual',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, continuar',
+        cancelButtonText: 'Cancelar'
+      }).then((result2) => {
+        if (result2.isConfirmed) {
+          Swal.fire({
+            title: '¿Muy muy seguro?',
+            text: 'Ya no podrás deshacer esta acción',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cerrar sesión',
+            cancelButtonText: 'Cancelar'
+          }).then((result3) => {
+            if (result3.isConfirmed) {
+              // 👇 Ejecuta el logout
+              this.authservice.logout();
+              this.router.navigate(['/']);
+              Swal.fire({
+                icon: 'success',
+                title: 'Sesión cerrada',
+                text: 'Has cerrado sesión correctamente',
+                timer: 2000,
+                showConfirmButton: false
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
+
 
   private initializeFromRoute(): void {
     const url = this.router.url;
