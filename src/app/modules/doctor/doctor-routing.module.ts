@@ -6,11 +6,13 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HistoryCitationsComponent } from './pages/history-citations/history-citations.component';
 import { DoctorAgendaComponent } from './pages/doctor-agenda/doctor-agenda.component';
 import { DoctorAppointmentsComponent } from './pages/doctor-appointments/doctor-appointments.component';
+import { authGuard } from '../../../guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardLayoutComponentComponent,
+     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },

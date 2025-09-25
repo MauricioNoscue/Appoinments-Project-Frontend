@@ -6,16 +6,26 @@
   font-family: Arial, sans-serif;
   gap: 20px;
   width: 100%;
+  justify-content: space-between; /* Distribuye los elementos */
+}
+
+/* Contenedor izquierdo: título y buscador */
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0; /* Permite que se comprima */
 }
 
 /* Texto de bienvenida */
-.top-bar h1 {
+.top-bar .header-title {
   margin: 0;
   font-size: 16px;
   font-weight: 500;
   color: #333;
   white-space: nowrap;
-  flex-shrink: 0; /* Evita que se comprima */
+  flex-shrink: 0;
 }
 
 /* Contenedor central: buscador */
@@ -23,7 +33,7 @@
   display: flex;
   flex: 1;
   min-width: 200px;
-  max-width: 400px; /* Limite máximo */
+  max-width: 400px;
 }
 
 .search-container input {
@@ -56,12 +66,12 @@
   color: white;
 }
 
-/* Contenedor de iconos */
+/* Contenedor de iconos - ahora separado en dos secciones */
 .icon-container {
   display: flex;
   align-items: center;
   gap: 15px;
-  flex-shrink: 0; /* Importante: evita que se compriman */
+  flex-shrink: 0;
 }
 
 .icon-container i {
@@ -75,6 +85,45 @@
   color: #5a7ee0;
 }
 
+/* Contenedor derecho: botón cerrar sesión */
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+  margin-left: auto; /* Empuja hacia la derecha */
+}
+
+/* Estilo específico para cerrar sesión */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+
+.logout-btn .material-icons {
+  font-size: 20px;
+  margin-right: 0; /* Resetea el margin inline */
+}
+
+.logout-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 /* dashboard-layout.component.css - SOLO LOS AJUSTES NECESARIOS */
 .dashboard-container {
   height: 100vh;
@@ -85,7 +134,7 @@
 .header-fixed {
   position: fixed;
   top: 0;
-  left: 280px; /* Desktop: después del sidebar */
+  left: 280px;
   right: 0;
   height: 60px;
   background: #fff;
@@ -115,13 +164,6 @@
   background: rgba(0, 0, 0, 0.1);
 }
 
-.header-title {
-  margin: 0;
-  font-size: 18px;
-  color: #333;
-  font-weight: 600;
-}
-
 .drawer-container {
   flex: 1;
   margin-top: 60px;
@@ -140,21 +182,24 @@
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .header-fixed {
-    left: 0; /* Header ocupa todo el ancho en móvil */
+    left: 0;
     padding: 0 15px;
   }
 
   .top-bar {
-    gap: 10px; /* Reduce el espacio entre elementos */
+    gap: 15px;
   }
 
-  .top-bar h1 {
-    font-size: 14px; /* Reduce el tamaño del título */
-    min-width: 0; /* Permite que se comprima si es necesario */
+  .left-section {
+    gap: 15px;
+  }
+
+  .top-bar .header-title {
+    font-size: 14px;
   }
 
   .search-container {
-    min-width: 150px; /* Reduce el ancho mínimo */
+    min-width: 150px;
     max-width: 200px;
   }
 
@@ -172,7 +217,15 @@
   }
 
   .icon-container i {
-    font-size: 20px; /* Reduce ligeramente el tamaño de los iconos */
+    font-size: 20px;
+  }
+
+  .logout-btn {
+    padding: 6px 10px;
+  }
+
+  .logout-text {
+    font-size: 13px;
   }
 
   .sidebar-drawer {
@@ -191,10 +244,14 @@
   }
 
   .top-bar {
-    gap: 8px;
+    gap: 10px;
   }
 
-  .top-bar h1 {
+  .left-section {
+    gap: 10px;
+  }
+
+  .top-bar .header-title {
     font-size: 13px;
     display: none; /* Oculta el título en pantallas muy pequeñas */
   }
@@ -221,8 +278,17 @@
     font-size: 18px;
   }
 
-  .header-title {
-    font-size: 14px;
+  /* En móvil, solo mostrar el ícono de logout */
+  .logout-text {
+    display: none;
+  }
+
+  .logout-btn {
+    padding: 6px 8px;
+  }
+
+  .logout-btn .material-icons {
+    font-size: 18px;
   }
 
   .drawer-container {
@@ -246,6 +312,14 @@
     padding: 0 8px;
   }
 
+  .top-bar {
+    gap: 8px;
+  }
+
+  .left-section {
+    gap: 8px;
+  }
+
   .search-container {
     min-width: 100px;
     max-width: 130px;
@@ -259,9 +333,13 @@
   .icon-container i {
     font-size: 16px;
   }
+
+  .logout-btn .material-icons {
+    font-size: 16px;
+  }
 }
 
-/* 📂 styles.css (o el SCSS global de Angular) */
+/* Clase micIta (mantenida como estaba) */
 .micIta {
-  width: 790px; /* ajusta según lo que quieras */
+  width: 790px;
 }

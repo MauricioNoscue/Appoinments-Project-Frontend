@@ -4,6 +4,7 @@ import { DoctorService } from '../../../../shared/services/doctor.service';
 import { PersonaService } from '../../../../shared/services/persona.service';
 import { DoctorList } from '../../../../shared/Models/hospital/DoctorListModel';
 import { PersonList } from '../../../../shared/Models/security/userModel';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 type MaybeDate = string | number | Date | null | undefined;
 
@@ -27,8 +28,8 @@ interface DoctorPersona extends DoctorList {
 export class PerfilComponent implements OnInit, OnDestroy {
   // TODO: cuando exista autenticación por token, reemplazar por el id del token:
   // const doctorId = this.authService.getDoctorIdFromToken();
-  private readonly DOCTOR_ID = 1;
-
+  // private readonly DOCTOR_ID = 1;
+ DOCTOR_ID! : number
   loading = false;
   errorMsg = '';
 
@@ -98,13 +99,19 @@ export class PerfilComponent implements OnInit, OnDestroy {
 
   constructor(
     private doctorService: DoctorService,
-    private personaService: PersonaService
+    private personaService: PersonaService,
+    private authService:AuthService
   ) // private authService: AuthService  // cuando exista token
   {}
 
   ngOnInit(): void {
-    console.log('🚀 Iniciando carga del perfil del doctor');
+   // console.log('🚀 Iniciando carga del perfil del doctor');
+     const doctorId = this.authService.getDoctorId();
+    if(doctorId){
+    this.DOCTOR_ID = doctorId;
+    }
     this.loadDoctor(this.DOCTOR_ID);
+
   }
 
   ngOnDestroy(): void {

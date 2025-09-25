@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { DoctorService } from '../../../../shared/services/doctor.service';
 import { DoctorCitation } from '../../../../shared/Models/hospital/DoctorListModel';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-doctor-agenda',
@@ -13,8 +14,8 @@ import { DoctorCitation } from '../../../../shared/Models/hospital/DoctorListMod
 export class DoctorAgendaComponent implements OnInit, OnDestroy {
 
   // TODO: cuando exista autenticación por token, reemplazar por el id real del doctor
-  private readonly DOCTOR_ID = 1;
-
+  // private readonly DOCTOR_ID = 1;
+ DOCTOR_ID! : number
   // UI state
   loading = false;
   errorMsg = '';
@@ -102,12 +103,17 @@ export class DoctorAgendaComponent implements OnInit, OnDestroy {
 
   constructor(
     private doctorService: DoctorService,
-    private router: Router
+    private router: Router,    private authService:AuthService
   ) {}
 
   ngOnInit(): void {
+     const doctorId = this.authService.getDoctorId();
+    if(doctorId){
+    this.DOCTOR_ID = doctorId;
+    }
     this.loadDoctorHeader();
     this.loadCitations();
+    
   }
 
   ngOnDestroy(): void {
@@ -159,10 +165,11 @@ export class DoctorAgendaComponent implements OnInit, OnDestroy {
     };
 
     // 2) Solo programadas y no vencidas (ni atendidas/no asistió/canceladas)
-    const isPendingState = (s: string) => {
-      const v = (s || '').toLowerCase().trim();
-      return ['pendiente', 'programada', 'agendada'].includes(v);
-    };
+   const isPendingState = (s: string) => {
+    const v = (s || '').toLowerCase().trim();
+    return ['pendiente', 'programada', 'agendada'].some(state => v.includes(state));
+  };
+
 
     const now = new Date();
     const isFutureOrNow = (dateISO: string, timeBlock: string) => {
@@ -227,7 +234,7 @@ export class DoctorAgendaComponent implements OnInit, OnDestroy {
 
   private isAfternoon(hhmmss: string): boolean {
     const m = this.timeToMinutes(hhmmss);
-    return m >= (14 * 60) && m <= (16 * 60); // 14:00–16:00
+    return m >= (14 * 60) && m <= (23 * 60); // 14:00–16:00
   }
 
   // ======= NAVEGACIÓN =======
