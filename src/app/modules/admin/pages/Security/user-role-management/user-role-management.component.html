@@ -21,17 +21,17 @@
       <mat-card-content>
         <div class="user-details-grid">
 
-          <app-section-card icono="badge" tittle="Documento" Value="{{userDetail.document}}"></app-section-card>
+          <app-section-card icono="badge" tittle="Documento" [Value]="userDetail.document"></app-section-card>
 
-          <app-section-card icono="email" tittle="Correo" Value="{{userDetail.email}}"></app-section-card>
+          <app-section-card icono="email" tittle="Correo" [Value]="userDetail.email"></app-section-card>
 
-          <app-section-card icono="phone" tittle="Teléfono" Value="{{userDetail.phoneNumber}}"></app-section-card>
+          <app-section-card icono="phone" tittle="Teléfono" [Value]="userDetail.phoneNumber"></app-section-card>
 
-          <app-section-card icono="wc" tittle="Género" Value="{{userDetail.gender}}"></app-section-card>
+          <app-section-card icono="wc" tittle="Género" [Value]="userDetail.gender"></app-section-card>
 
-          <app-section-card icono="medical_services" tittle="Régimen de Salud" Value="{{userDetail.healthRegime}}"></app-section-card>
+          <app-section-card icono="medical_services" tittle="Régimen de Salud" [Value]="userDetail.healthRegime"></app-section-card>
           
-          <app-section-card icono="calendar_today" tittle="Fecha de Registro:" Value="{{userDetail.registerDate | date:'dd/MM/yyyy'}}"></app-section-card>
+          <app-section-card icono="calendar_today" tittle="Fecha de Registro:" [Value]="(userDetail.registerDate | date:'dd/MM/yyyy') || 'No disponible'"></app-section-card>
             
         </div>
 
@@ -42,12 +42,12 @@
             Roles Actuales
           </h4>
           <div class="roles-chips">
-            <mat-chip-set *ngIf="userDetail.roles.length > 0">
+            <mat-chip-set *ngIf="userDetail.roles && userDetail.roles.length > 0">
               <mat-chip *ngFor="let role of userDetail.roles" class="role-chip">
                 {{role}}
               </mat-chip>
             </mat-chip-set>
-            <p *ngIf="userDetail.roles.length === 0" class="no-roles-message">
+            <p *ngIf="!userDetail.roles || userDetail.roles.length === 0" class="no-roles-message">
               No hay roles asignados
             </p>
           </div>
@@ -68,31 +68,31 @@
                 Permisos por Rol
               </h3>
               
-              <div *ngIf="userRolesPermissions.length === 0" class="no-data-message">
+              <div *ngIf="!userRolesPermissions || userRolesPermissions.length === 0" class="no-data-message">
                 <mat-icon>info</mat-icon>
                 <p>No hay permisos asignados para este usuario</p>
               </div>
 
-              <mat-expansion-panel *ngFor="let rolePermission of userRolesPermissions" class="role-permission-panel">
+              <mat-expansion-panel *ngFor="let rolePermission of userRolesPermissions; trackBy: trackByRolePermission" class="role-permission-panel">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
                     <mat-icon>security</mat-icon>
                     {{rolePermission.rol}}
                   </mat-panel-title>
                   <mat-panel-description>
-                    {{rolePermission.permisos.length}} permisos asignados
+                    {{(rolePermission.permisos && rolePermission.permisos.length) || 0}} permisos asignados
                   </mat-panel-description>
                 </mat-expansion-panel-header>
 
                 <div class="permissions-by-form">
-                  <div *ngFor="let formPermissions of getRolePermissionsByForm(rolePermission) | keyvalue" class="form-permissions">
+                  <div *ngFor="let formPermissions of getRolePermissionsByForm(rolePermission) | keyvalue; trackBy: trackByFormPermissions" class="form-permissions">
                     <div class="form-header">
                       <mat-icon>description</mat-icon>
                       <strong>{{formPermissions.key}}</strong>
                     </div>
                     <div class="permissions-list">
                       <mat-chip-set>
-                        <mat-chip *ngFor="let permission of formPermissions.value" class="permission-chip">
+                        <mat-chip *ngFor="let permission of formPermissions.value; trackBy: trackByPermission" class="permission-chip">
                           {{permission}}
                         </mat-chip>
                       </mat-chip-set>
@@ -116,7 +116,7 @@
               <mat-form-field class="full-width">
                 <mat-label>Seleccionar Roles</mat-label>
                 <mat-select multiple formControlName="selectedRoles">
-                  <mat-option *ngFor="let role of availableRoles" [value]="role.id">
+                  <mat-option *ngFor="let role of availableRoles; trackBy: trackByRole" [value]="role.id">
                     <div class="role-option">
                       <span class="role-name">{{role.name}}</span>
                       <span class="role-description">{{role.description}}</span>
@@ -128,8 +128,6 @@
                   Debe seleccionar al menos un rol
                 </mat-error>
               </mat-form-field>
-
-
 
               <div class="form-actions">
                 <button mat-raised-button 
@@ -154,8 +152,6 @@
             </form>
           </div>
         </mat-tab>
-
-       
 
       </mat-tab-group>
     </mat-card>
