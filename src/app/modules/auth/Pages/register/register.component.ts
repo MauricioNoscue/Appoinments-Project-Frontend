@@ -236,7 +236,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
             // Crear RolUser
             const rolUserPayload: any = {
-              rolId: 2,
+              rolId: 2, // Id del rol "Paciente" para que siempre sea paciente por defecto
               userId: userId
             };
 

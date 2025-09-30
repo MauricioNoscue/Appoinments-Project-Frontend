@@ -59,7 +59,7 @@ export class DoctorService extends ServiceBaseService<DoctorList, any, DoctorUpd
   }
 
   // private readonly baseUrl = 'https://localhost:7186/api/ConsultingRoom';
-  private readonly baseUrl = 'http://localhost:8080/api/ConsultingRoom';
+  private readonly baseUrl = 'http://localhost:7186/api/ConsultingRoom';
 
 
   getConsultingRooms(): Observable<ConsultingRoom[]> {
