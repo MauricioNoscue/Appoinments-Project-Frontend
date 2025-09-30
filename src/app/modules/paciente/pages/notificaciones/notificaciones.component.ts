@@ -8,7 +8,7 @@ import { NotificationList } from '../../../../shared/Models/Notification/Notific
 
 type Estado =
   | 'Confirmada'
-  | 'Pendiente'
+  | 'Programada'
   | 'Cancelada'
   | 'Reagendada'
   | 'Realizada';
@@ -87,15 +87,15 @@ export class NotificacionesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const pendientes = this.notificaciones.filter((n) => !n.leida);
-    if (!pendientes.length) {
+    const Programadas = this.notificaciones.filter((n) => !n.leida);
+    if (!Programadas.length) {
       onDone?.();
       return;
     }
 
     this.marcandoSalida = true;
 
-    const ids = pendientes.map((n) => n.id);
+    const ids = Programadas.map((n) => n.id);
 
     // (1) UI optimista
     this.notificaciones = this.notificaciones.map((n) =>
@@ -109,7 +109,7 @@ export class NotificacionesComponent implements OnInit, OnDestroy {
       error: () => {
         // (3) Rollback si falla algo
         this.notificaciones = this.notificaciones.map((n) =>
-          ids.includes(n.id) ? { ...n, leida: false, estado: 'Pendiente' } : n
+          ids.includes(n.id) ? { ...n, leida: false, estado: 'Programada' } : n
         );
       },
       complete: () => {
@@ -133,7 +133,7 @@ export class NotificacionesComponent implements OnInit, OnDestroy {
         ? 'settings'
         : 'notifications';
 
-    const estado: Estado = leida ? 'Realizada' : 'Pendiente';
+    const estado: Estado = leida ? 'Realizada' : 'Programada';
 
     return {
       id: n.id,
@@ -169,14 +169,14 @@ export class NotificacionesComponent implements OnInit, OnDestroy {
 
     const prev = n.leida;
     n.leida = valor;
-    n.estado = valor ? 'Realizada' : 'Pendiente';
+    n.estado = valor ? 'Realizada' : 'Programada';
 
     const req = valor ? this.api.markAsRead(n.id) : this.api.markAsUnread(n.id);
     req.subscribe({
       next: () => {},
       error: () => {
         n.leida = prev;
-        n.estado = prev ? 'Realizada' : 'Pendiente';
+        n.estado = prev ? 'Realizada' : 'Programada';
       },
       complete: () => this.accionando.delete(n.id),
     });

@@ -219,4 +219,24 @@ export class UserRoleManagementComponent  implements OnInit{
     
     return groupedByForm;
   }
+  // Agregar estos métodos al final de la clase UserRoleManagementComponent
+
+trackByRolePermission(index: number, item: RolPermisosResponse): string {
+  return item.rol;
+}
+
+trackByFormPermissions(index: number, item: any): string {
+  return item.key;
+}
+
+trackByPermission(index: number, item: string): string {
+  return item;
+}
+
+trackByRole(index: number, item: RolList): number {
+  return item.id;
+}
+
+
+
 }
