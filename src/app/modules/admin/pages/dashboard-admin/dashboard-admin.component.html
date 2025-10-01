@@ -5,88 +5,175 @@
         <div class="hero-title">Buenos días {{ usuarioActual }}!</div>
     </div>
 
-    <!-- Stats + Estado de citas -->
-    <div class="row g-3 mb-4" *ngIf="stats$ | async as stats">
-        <div class="col-lg-3 col-md-6" *ngFor="let card of [
-            {label:'Citas del mes', num:stats.totalCitasMes, change:stats.variationMonth},
-            {label:'Citas del día', num:stats.totalCitasDia, change:stats.variationDay},
-            {label:'Usuarios registrados', num:stats.totalUsuarios, change:null}
-        ]">
-            <app-card-basic
-                [label]="card.label"
-                [number]="card.num "
-                [change]="card.change !== null ? card.change + '%' : ''"
-                type="basic">
-            </app-card-basic>
+    <!-- Citas Médicas -->
+    <div class="row g-3 mb-4" *ngIf="dashboard$ | async as dashboard">
+        <div class="col-12">
+            <h4>Citas Médicas</h4>
         </div>
-
-        <div class="col-lg-3 col-md-6" *ngIf="appointmentStatus$ | async as appt">
+        <div class="col-lg-3 col-md-6">
+            <app-card-basic [label]="'Citas del día'" [number]="dashboard.citas.totalCitasDia" type="basic"></app-card-basic>
+        </div>
+        <div class="col-lg-3 col-md-6" *ngIf="citasPorSemana$ | async as semana">
+            <app-card-basic [label]="'Citas de la semana'" [number]="semana" type="basic"></app-card-basic>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <app-card-basic [label]="'Citas del mes'" [number]="dashboard.citas.totalCitasMes" type="basic"></app-card-basic>
+        </div>
+        <div class="col-lg-3 col-md-6">
             <div class="card h-100 appointment-card">
                 <div class="card-body">
                     <div class="stat-label">Estado de Citas</div>
-                    <div class="stat-number">{{ appt.total | number }}</div>
+                    <div class="stat-number">{{ (dashboard.citas.estadosCitas['Pendiente'] || 0) + (dashboard.citas.estadosCitas['Atendida'] || 0) + (dashboard.citas.estadosCitas['Cancelada'] || 0) | number }}</div>
                     <div class="status-tabs mt-3">
-                        <div class="status-tab tab-scheduled">Programadas {{ appt.scheduled }}</div>
-                        <div class="status-tab tab-completed">Completadas {{ appt.completed }}</div>
-                        <div class="status-tab tab-canceled">Canceladas {{ appt.canceled }}</div>
+                        <div class="status-tab tab-scheduled">Pendiente {{ dashboard.citas.estadosCitas['Pendiente'] || 0 }}</div>
+                        <div class="status-tab tab-completed">Atendida {{ dashboard.citas.estadosCitas['Atendida'] || 0 }}</div>
+                        <div class="status-tab tab-canceled">Cancelada {{ dashboard.citas.estadosCitas['Cancelada'] || 0 }}</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Comportamiento del año y Staff -->
-    <div class="row g-3">
-        <!-- Comportamiento del año -->
-        <div class="col-lg-6" *ngIf="chartItems$ | async as items">
-            <div class="card h-100">
+    <!-- Distribución de citas por especialidad -->
+    <div class="row g-3 mb-4" *ngIf="citasPorEspecialidad$ | async as especialidades">
+        <div class="col-12">
+            <h5>Distribución de Citas por Especialidad</h5>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
                 <div class="card-body">
-                    <h5 class="mb-3">Comportamiento del año</h5>
-                    <div class="table-responsive">
-                        <table class="table table-sm align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Mes</th>
-                                    <th>Valor</th>
-                                    <th>%</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let item of items">
-                                    <td>
-                                        <span class="legend-color" [style.background]="item.color"></span>
-                                        {{ item.label }}
-                                    </td>
-                                    <td>{{ item.value }}</td>
-                                    <td>{{ item.percent }}%</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="text-end">
-                        <button class="btn btn-danger btn-sm" (click)="exportarYearBehavior(items)">Exportar</button>
-                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let esp of especialidades">
+                            {{ esp.specialty }}
+                            <span class="badge bg-primary rounded-pill">{{ esp.count }}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
+        <div class="col-md-6">
+            <canvas id="especialidadChart" width="400" height="200"></canvas>
+        </div>
+    </div>
 
-        <!-- Staff -->
-        <div class="col-lg-6" *ngIf="staff$ | async as staff">
-            <div class="card h-100">
+    <!-- Pacientes -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <h4>Pacientes</h4>
+        </div>
+        <div class="col-lg-6" *ngIf="pacientesActivosInactivos$ | async as pacientes">
+            <div class="card">
                 <div class="card-body">
-                    <h5 class="mb-4">Nuestro personal</h5>
-                    <div class="row g-3">
-                        <div class="col-md-4" *ngFor="let member of staff">
-                            <div class="staff-card text-center p-3 rounded" [style.background]="member.color">
-                                <div class="staff-avatar mx-auto mb-2" [style.background]="member.color">
-                                    {{ member.fullName | slice:0:2 | uppercase }}
-                                </div>
-                                <div class="status-indicator" [ngClass]="member.status"></div>
-                                <h6>{{ member.fullName }}</h6>
-                                <small class="text-muted">{{ member.specialty }}</small>
-                            </div>
-                        </div>
-                    </div>
+                    <h5>Pacientes Activos vs Inactivos</h5>
+                    <p>Activos: {{ pacientes.activos }}</p>
+                    <p>Inactivos: {{ pacientes.inactivos }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6" *ngIf="pacientesNuevos$ | async as nuevos">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Nuevos Pacientes Registrados</h5>
+                    <canvas id="pacientesChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctores -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <h4>Doctores</h4>
+        </div>
+        <div class="col-lg-4" *ngIf="doctoresMasCitas$ | async as doctores">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Doctores con Más Citas Atendidas</h5>
+                    <ol>
+                        <li *ngFor="let doc of doctores">{{ doc.nombreDoctor }}: {{ doc.citasAtendidas }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" *ngIf="disponibilidadDoctores$ | async as disponibilidad">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Disponibilidad de Doctores</h5>
+                    <ul>
+                        <li *ngFor="let doc of disponibilidad">{{ doc.nombreDoctor }}: {{ doc.cuposLibres > 0 ? 'Disponible (' + doc.cuposLibres + ' cupos)' : 'Sin cupos' }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" *ngIf="rankingEspecialidades$ | async as ranking">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Ranking Especialidades Más Demandadas</h5>
+                    <ol>
+                        <li *ngFor="let esp of ranking">{{ esp.specialty }}: {{ esp.count }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <h4>KPIs de Desempeño</h4>
+        </div>
+        <div class="col-lg-6" *ngIf="tasaAsistencia$ | async as tasa">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Tasa de Asistencia</h5>
+                    <div class="display-4">{{ tasa }}%</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6" *ngIf="tiempoPromedioEspera$ | async as tiempo">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Tiempo Promedio de Espera</h5>
+                    <div class="display-4">{{ tiempo | number:'1.1-1' }} horas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="row g-3">
+        <div class="col-12">
+            <h4>Gráficas</h4>
+        </div>
+        <div class="col-lg-4" *ngIf="graficaBarrasTipoCita$ | async as barras">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Citas por Tipo de Cita</h5>
+                    <canvas id="barrasChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" *ngIf="pacientesNuevos$ | async as linea">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Evolución de Pacientes Nuevos</h5>
+                    <canvas id="lineaChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" *ngIf="graficaTortaEstados$ | async as torta">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Proporción de Estados de Citas</h5>
+                    <canvas id="tortaChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6" *ngIf="rankingDoctores$ | async as rankingDoc">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Top 5 Doctores con Más Pacientes Atendidos</h5>
+                    <canvas id="rankingChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
