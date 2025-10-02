@@ -2,7 +2,7 @@
 <div class="calendar-wrapper">
   <div class="calendar-header">
     <button class="nav-button" (click)="previousMonth()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="15,18 9,12 15,6"></polyline>
       </svg>
     </button>
@@ -10,24 +10,28 @@
     <h2 class="month-title">{{ getMonthName() }} {{ currentYear }}</h2>
     
     <button class="nav-button" (click)="nextMonth()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="9,18 15,12 9,6"></polyline>
       </svg>
     </button>
   </div>
 
   <div class="calendar-container">
-    <div class="calendar-week">
-      <div 
-        *ngFor="let day of visibleDays" 
-        class="calendar-day"
-        [class.today]="day.isToday"
-        [class.selected]="day.isSelected"
-        [class.other-month]="!day.isCurrentMonth"
-        (click)="selectDay(day.day)"
-      >
-        <div class="day-name">{{ day.dayName }}</div>
-        <div class="day-number">{{ day.day }}</div>
+    <div class="calendar-grid">
+      <div class="weekday-headers">
+        <div class="weekday-header" *ngFor="let dayName of dayNames">{{ dayName }}</div>
+      </div>
+      <div class="calendar-days">
+        <div 
+          *ngFor="let day of visibleDays" 
+          class="calendar-day"
+          [class.today]="day.isToday"
+          [class.selected]="day.isSelected"
+          [class.other-month]="!day.isCurrentMonth"
+          (click)="selectDay(day.day)"
+        >
+          <span class="day-number">{{ day.day }}</span>
+        </div>
       </div>
     </div>
   </div>

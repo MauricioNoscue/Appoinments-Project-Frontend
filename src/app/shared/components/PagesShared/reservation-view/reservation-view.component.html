@@ -1,68 +1,91 @@
-<app-calendar
-  [idTypeCitation]="idTypeCitation"
-  [todos]="todos"
-  (dateChange)="onDateChange($event)"
-  (blocksLoaded)="onBlocksLoaded($event)">
-</app-calendar>
-
-<div class="horarios-container" *ngIf="blocks.length > 0">
-  <div class="header-section">
-    <h2 class="horarios-title">Horarios disponibles</h2>
-    <button class="toggle-view-btn" (click)="toggleView()">
-      <span>{{ vistaColumnas ? 'Vista vertical' : 'Vista en columnas' }}</span>
-      <span>{{ vistaColumnas ? '📋' : '📊' }}</span>
-    </button>
+<!-- reservation.component.html -->
+<div class="schedule-layout">
+  <!-- Columna 1: Calendario -->
+  <div class="calendar-column">
+    <app-calendar
+      [idTypeCitation]="idTypeCitation"
+      [todos]="todos"
+      (dateChange)="onDateChange($event)"
+      (blocksLoaded)="onBlocksLoaded($event)">
+    </app-calendar>
   </div>
 
-  <div class="horarios-grid" [class.columnas]="vistaColumnas">
-    <!-- Mañana -->
-    <div class="horarios-section" *ngIf="horariosManana.length > 0">
-      <h3 class="section-title">Horarios de Mañana</h3>
-      <div class="horarios-scroll">
-        <div *ngFor="let h of horariosManana"
-             class="horario-item"
-             [class.horario-disponible]="h.estaDisponible"
-             [class.horario-ocupado]="!h.estaDisponible"
-             (click)="seleccionarHorario(h)">
-          <div class="horario-info">
-            <div class="hora-label">Hora:</div>
-            <div class="hora-time">{{ formatearHora(h.hora) }}</div>
-          </div>
-          <div class="medico-info">
-            <div class="especialidad">{{ especialidad }}</div>
-            <div class="doctor-name">{{ nombreDoctor }}</div>
-          </div>
-          <div class="badge" *ngIf="h.bookedCitationId">Booked</div>
-          <div class="badge" *ngIf="!h.bookedCitationId && !h.estaDisponible">Hold</div>
+  <!-- Columna 2: Citas de la mañana -->
+  <div class="schedule-column morning-column">
+    <div class="column-header">
+      <h3 class="column-title">Horarios de Mañana</h3>
+    </div>
+    
+    <div class="schedule-scroll" *ngIf="horariosManana.length > 0; else noMorningSlots">
+      <div *ngFor="let h of horariosManana"
+           class="schedule-item"
+           [class.available]="h.estaDisponible"
+           [class.occupied]="!h.estaDisponible"
+           (click)="seleccionarHorario(h)">
+        
+        <div class="time-info">
+          <div class="time-display">{{ formatearHora(h.hora) }}</div>
+        </div>
+        
+        <div class="doctor-info">
+          <div class="specialty">{{ especialidad }}</div>
+          <div class="doctor-name">{{ nombreDoctor }}</div>
+        </div>
+        
+        <div class="status-indicator">
+          <div class="status-badge" *ngIf="h.bookedCitationId">Reservado</div>
+          <div class="status-badge hold" *ngIf="!h.bookedCitationId && !h.estaDisponible">En Espera</div>
+          <div class="check-icon" *ngIf="h.estaDisponible">✓</div>
         </div>
       </div>
     </div>
 
-    <!-- Tarde -->
-    <div class="horarios-section" *ngIf="horariosTarde.length > 0">
-      <h3 class="section-title">Horarios de Tarde</h3>
-      <div class="horarios-scroll">
-        <div *ngFor="let h of horariosTarde"
-             class="horario-item"
-             [class.horario-disponible]="h.estaDisponible"
-             [class.horario-ocupado]="!h.estaDisponible"
-             (click)="seleccionarHorario(h)">
-          <div class="horario-info">
-            <div class="hora-label">Hora:</div>
-            <div class="hora-time">{{ formatearHora(h.hora) }}</div>
-          </div>
-          <div class="medico-info">
-            <div class="especialidad">{{ especialidad }}</div>
-            <div class="doctor-name">{{ nombreDoctor }}</div>
-          </div>
-          <div class="badge" *ngIf="h.bookedCitationId">Booked</div>
-          <div class="badge" *ngIf="!h.bookedCitationId && !h.estaDisponible">Hold</div>
+    <ng-template #noMorningSlots>
+      <div class="no-slots">
+        <p>No hay horarios disponibles en la mañana</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Columna 3: Citas de la tarde -->
+  <div class="schedule-column afternoon-column">
+    <div class="column-header">
+      <h3 class="column-title">Horarios de Tarde</h3>
+    </div>
+    
+    <div class="schedule-scroll" *ngIf="horariosTarde.length > 0; else noAfternoonSlots">
+      <div *ngFor="let h of horariosTarde"
+           class="schedule-item"
+           [class.available]="h.estaDisponible"
+           [class.occupied]="!h.estaDisponible"
+           (click)="seleccionarHorario(h)">
+        
+        <div class="time-info">
+          <div class="time-display">{{ formatearHora(h.hora) }}</div>
+        </div>
+        
+        <div class="doctor-info">
+          <div class="specialty">{{ especialidad }}</div>
+          <div class="doctor-name">{{ nombreDoctor }}</div>
+        </div>
+        
+        <div class="status-indicator">
+          <div class="status-badge" *ngIf="h.bookedCitationId">Reservado</div>
+          <div class="status-badge hold" *ngIf="!h.bookedCitationId && !h.estaDisponible">En Espera</div>
+          <div class="check-icon" *ngIf="h.estaDisponible">✓</div>
         </div>
       </div>
     </div>
+
+    <ng-template #noAfternoonSlots>
+      <div class="no-slots">
+        <p>No hay horarios disponibles en la tarde</p>
+      </div>
+    </ng-template>
   </div>
 </div>
 
-<div class="no-horarios" *ngIf="blocks.length === 0">
+<!-- Mensaje cuando no hay citas en absoluto -->
+<div class="no-appointments" *ngIf="blocks.length === 0 && selectedDate">
   <p>No hay horarios disponibles para la fecha seleccionada.</p>
 </div>

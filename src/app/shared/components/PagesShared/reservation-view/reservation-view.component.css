@@ -1,273 +1,323 @@
-.horarios-container {
-  background: #f0f2f5;
+.schedule-layout {
+   display: grid;
+  grid-template-columns: 420px 1fr 1fr;
+  gap: 24px;
+  height: 100vh;
   padding: 20px;
-  border-radius: 12px;
-  max-width: 900px;
-  margin: 20px auto;
+  background: #f5f7fa;
+  .calendar-column {
+    background: transparent;
+     display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .schedule-column {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: calc(100vh - 160px); 
+    .column-header {
+      background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      flex-shrink: 0;
+
+      .column-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    &.morning-column .column-header {
+      background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    }
+
+    &.afternoon-column .column-header {
+      background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+    }
+
+    .schedule-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      min-height: 0; 
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+
+        &:hover {
+          background: #a8a8a8;
+        }
+      }
+
+      .schedule-item {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-height: 80px; 
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        &.available {
+          background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+          color: white;
+          border-color: #4a90e2;
+
+          &:hover {
+            background: linear-gradient(135deg, #357abd 0%, #2968a3 100%);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
+          }
+        }
+
+        &.occupied {
+          background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+          color: #ffffff;
+          cursor: not-allowed;
+          opacity: 0.8;
+        }
+
+        .time-info {
+          flex-shrink: 0;
+          text-align: center;
+          min-width: 80px;
+
+          .time-display {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.2;
+          }
+        }
+
+        .doctor-info {
+          flex: 1;
+          text-align: center;
+
+          .specialty {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+          }
+
+          .doctor-name {
+            font-size: 12px;
+            opacity: 0.9;
+            line-height: 1.3;
+          }
+        }
+
+        .status-indicator {
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 60px;
+
+          .status-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            &.hold {
+              background: rgba(255, 193, 7, 0.9);
+              color: #212529;
+            }
+          }
+
+          .check-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .no-slots {
+      padding: 40px 20px;
+      text-align: center;
+      color: #666;
+      font-style: italic;
+    }
+  }
 }
 
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.horarios-title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-}
-
-.toggle-view-btn {
-  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(74, 144, 226, 0.3);
-}
-
-.toggle-view-btn:hover {
-  background: linear-gradient(135deg, #357abd 0%, #2968a3 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
-}
-
-.horarios-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.horarios-grid.columnas {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.horarios-section {
+.no-appointments {
+  grid-column: 1 / -1;
   background: white;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 16px;
+  margin: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 16px;
+  padding: 40px 20px;
   text-align: center;
-  padding-bottom: 8px;
-  border-bottom: 2px solid #e0e6ed;
+  color: #666;
+  font-style: italic;
 }
 
-.horarios-scroll {
-  max-height: 300px;
-  overflow-y: auto;
-  padding-right: 4px;
+@media (max-width: 1400px) {
+  .schedule-layout {
+    grid-template-columns: 380px 1fr 1fr;
+    gap: 20px;
+  }
 }
 
-.horarios-scroll::-webkit-scrollbar {
-  width: 6px;
+@media (max-width: 1200px) {
+  .schedule-layout {
+    grid-template-columns: 350px 1fr 1fr;
+    gap: 16px;
+  }
 }
 
-.horarios-scroll::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 6px;
-}
+@media (max-width: 1024px) {
+  .schedule-layout {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+    gap: 16px;
 
-.horarios-scroll::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 6px;
-}
+    .calendar-column {
+      grid-column: 1 / -1;
+      order: 1;
+      
+      .calendar-container {
+        height: 400px;
+      }
+    }
 
-.horarios-scroll::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
+    .morning-column {
+      order: 2;
+    }
 
-.horario-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
+    .afternoon-column {
+      order: 3;
+    }
 
-.horario-disponible {
-  background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
-  color: white;
-  box-shadow: 0 2px 6px rgba(74, 144, 226, 0.3);
-}
-
-.horario-disponible:hover {
-  background: linear-gradient(135deg, #357abd 0%, #2968a3 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
-}
-
-.horario-ocupado {
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  color: #bdc3c7;
-  cursor: not-allowed;
-}
-
-.horario-info {
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  min-width: 80px;
-}
-
-.hora-label {
-  font-size: 12px;
-  font-weight: 500;
-  opacity: 0.8;
-  margin-bottom: 4px;
-}
-
-.hora-time {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.medico-info {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  flex-grow: 1;
-  padding: 0 16px;
-}
-
-.especialidad {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-
-.doctor-name {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
-.check-icon {
-  width: 24px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
-}
-
-.horario-disponible .check-icon:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.8);
-}
-
-.ocupado-indicator {
-  width: 24px;
-  height: 24px;
-  background: #7f8c8d;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  flex-shrink: 0;
-}
-
-.ocupado-indicator::before,
-.ocupado-indicator::after {
-  content: '';
-  position: absolute;
-  width: 12px;
-  height: 2px;
-  background: #34495e;
-}
-
-.ocupado-indicator::before {
-  transform: rotate(45deg);
-}
-
-.ocupado-indicator::after {
-  transform: rotate(-45deg);
+    .schedule-column {
+      height: calc(100vh - 480px); 
+    }
+  }
 }
 
 @media (max-width: 768px) {
-  .horarios-grid,
-  .horarios-grid.columnas {
+  .schedule-layout {
     grid-template-columns: 1fr;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .header-section {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-  }
-  
-  .horario-item {
+    grid-template-rows: auto 1fr 1fr;
     padding: 12px;
-  }
-  
-  .hora-time {
-    font-size: 14px;
-  }
-  
-  .especialidad {
-    font-size: 13px;
-  }
-  
-  .doctor-name {
-    font-size: 11px;
-  }
-  
-  .medico-info {
-    padding: 0 8px;
+    gap: 12px;
+    height: 100vh;
+
+    .calendar-column {
+      order: 1;
+      
+      .calendar-container {
+        height: 350px;
+        padding: 16px;
+      }
+    }
+
+    .morning-column {
+      order: 2;
+    }
+
+    .afternoon-column {
+      order: 3;
+    }
+
+    .schedule-column {
+      height: calc((100vh - 400px) / 2);
+      min-height: 300px;
+
+      .schedule-scroll {
+        padding: 16px;
+
+        .schedule-item {
+          padding: 12px;
+          flex-direction: column;
+          text-align: center;
+          gap: 8px;
+          min-height: 60px;
+
+          .time-info, .doctor-info, .status-indicator {
+            min-width: auto;
+            width: 100%;
+          }
+        }
+      }
+
+      .column-header {
+        padding: 16px;
+        
+        .column-title {
+          font-size: 16px;
+        }
+      }
+    }
   }
 }
 
-/* Agregar al final de tu view-citation-available.component.css */
+@media (max-width: 480px) {
+  .schedule-layout {
+    padding: 8px;
+    gap: 8px;
 
-.no-horarios {
-  background: white;
-  border-radius: 12px;
-  padding: 40px;
-  text-align: center;
-  margin: 20px auto;
-  max-width: 500px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+    .calendar-column .calendar-container {
+      height: 320px;
+      padding: 12px;
+    }
 
-.no-horarios p {
-  color: #666;
-  font-size: 16px;
-  margin: 0;
-}
+    .schedule-column {
+      height: calc((100vh - 360px) / 2);
+      min-height: 250px;
 
-/* Mejorar el cursor para horarios no disponibles */
-.horario-ocupado {
-  cursor: not-allowed !important;
-}
+      .schedule-scroll {
+        padding: 12px;
+      }
 
-.horario-disponible {
-  cursor: pointer;
+      .column-header {
+        padding: 12px;
+        
+        .column-title {
+          font-size: 14px;
+        }
+      }
+    }
+  }
 }
