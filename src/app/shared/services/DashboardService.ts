@@ -16,6 +16,7 @@ export class DashboardFacadeService {
     ) {}
 
     loadDashboardData(): void {
+        console.log('Loading dashboard data...');
         const token = this.authService.getToken();
         if (!token) {
             console.error('No token available');
@@ -28,10 +29,14 @@ export class DashboardFacadeService {
         });
 
         const url = `${environment.apiURL}/api/dashboard/data`;
+        console.log('Dashboard URL:', url);
 
         this.http.get<DashboardDto>(url, { headers })
             .subscribe({
-                next: (data) => this.dashboardData$.next(data),
+                next: (data) => {
+                    console.log('Dashboard data loaded successfully:', data);
+                    this.dashboardData$.next(data);
+                },
                 error: (error) => {
                     console.error('Error loading dashboard data:', error);
                     this.dashboardData$.next(null);

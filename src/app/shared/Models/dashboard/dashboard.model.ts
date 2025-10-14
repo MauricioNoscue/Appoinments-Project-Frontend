@@ -37,6 +37,7 @@ export interface StaffMember {
   specialty: string;
   status: StaffStatus;
   color: string;
+  emailDoctor?: string;
 }
 
 // Nuevas interfaces para el DashboardDto del backend

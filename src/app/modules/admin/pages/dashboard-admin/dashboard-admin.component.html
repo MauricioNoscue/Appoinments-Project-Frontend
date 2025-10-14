@@ -1,179 +1,498 @@
-<div class="container-fluid p-4 dashboard-wrapper">
-    <!-- Hero -->
-    <div class="hero-card mb-4 p-3 rounded">
-        <div class="hero-date">{{ fechaActual | date:'MMM d, y h:mm a' }}</div>
-        <div class="hero-title">Buenos días {{ usuarioActual }}!</div>
+<div class="dashboard-container">
+    <!-- Hero Section Mejorado -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-header">
+                <div class="hero-greeting">
+                    <div class="greeting-icon">
+                        <mat-icon class="wave-icon">waving_hand</mat-icon>
+                    </div>
+                    <div>
+                        <h1 class="hero-title">¡Bienvenido, {{ usuarioActual }}!</h1>
+                        <p class="hero-subtitle">Aquí está el resumen de tu plataforma hoy</p>
+                    </div>
+                </div>
+                <div class="hero-date-badge">
+                    <mat-icon class="date-icon">schedule</mat-icon>
+                    <span>{{ fechaActual | date:'EEEE, d \'de\' MMMM \'de\' y' }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-decoration">
+            <div class="decoration-circle circle-1"></div>
+            <div class="decoration-circle circle-2"></div>
+            <div class="decoration-circle circle-3"></div>
+        </div>
     </div>
 
-    <!-- Citas Médicas -->
-    <div class="row g-3 mb-4" *ngIf="dashboard$ | async as dashboard">
-        <div class="col-12">
-            <h4>Citas Médicas</h4>
+    <!-- Estadísticas Principales -->
+    <div class="stats-section" *ngIf="stats$ | async as stats">
+        <div class="stats-grid">
+            <!-- Citas del Mes -->
+            <div class="stat-card stat-primary">
+                <div class="stat-icon-wrapper">
+                    <mat-icon class="stat-icon">calendar_month</mat-icon>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Citas del Mes</p>
+                    <h2 class="stat-number">{{ stats.totalCitasMes | number }}</h2>
+                    <div class="stat-trend" *ngIf="stats.variationMonth !== null">
+                        <mat-icon class="trend-icon">trending_up</mat-icon>
+                        <span class="trend-text">+{{ stats.variationMonth }}% vs mes anterior</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Citas del Día -->
+            <div class="stat-card stat-success">
+                <div class="stat-icon-wrapper">
+                    <mat-icon class="stat-icon">today</mat-icon>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Citas del Día</p>
+                    <h2 class="stat-number">{{ stats.totalCitasDia | number }}</h2>
+                    <div class="stat-trend" *ngIf="stats.variationDay !== null">
+                        <mat-icon class="trend-icon">trending_up</mat-icon>
+                        <span class="trend-text">+{{ stats.variationDay }}% vs ayer</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usuarios Registrados -->
+            <div class="stat-card stat-info">
+                <div class="stat-icon-wrapper">
+                    <mat-icon class="stat-icon">people</mat-icon>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Usuarios Registrados</p>
+                    <h2 class="stat-number">{{ stats.totalUsuarios | number }}</h2>
+                    <div class="stat-trend">
+                        <span class="trend-text-neutral">Total en plataforma</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado de Citas -->
         </div>
-        <div class="col-lg-3 col-md-6">
-            <app-card-basic [label]="'Citas del día'" [number]="dashboard.citas.totalCitasDia" type="basic"></app-card-basic>
+    </div>
+
+    <!-- Estadísticas Adicionales -->
+    <div class="stats-section" *ngIf="dashboard$ | async as dashboard">
+        <div class="stats-grid">
+            <!-- Citas de la Semana -->
+            <div class="stat-card stat-secondary" *ngIf="citasPorSemana$ | async as semana">
+                <div class="stat-icon-wrapper">
+                    <mat-icon class="stat-icon">date_range</mat-icon>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Citas de la Semana</p>
+                    <h2 class="stat-number">{{ semana | number }}</h2>
+                    <div class="stat-trend">
+                        <span class="trend-text-neutral">Esta semana</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pacientes Activos -->
+            <div class="stat-card stat-success" *ngIf="pacientesActivosInactivos$ | async as pacientes">
+                <div class="stat-icon-wrapper">
+                    <mat-icon class="stat-icon">person_add</mat-icon>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Pacientes Activos</p>
+                    <h2 class="stat-number">{{ pacientes.activos | number }}</h2>
+                    <div class="stat-trend">
+                        <span class="trend-text-neutral">{{ pacientes.inactivos }} inactivos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasa de Asistencia -->
+            <div class="stat-card stat-warning" *ngIf="tasaAsistencia$ | async as tasa">
+                <div class="stat-icon-wrapper">
+                    <mat-icon class="stat-icon">check_circle</mat-icon>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Tasa de Asistencia</p>
+                    <h2 class="stat-number">{{ tasa | number:'1.1-1' }}%</h2>
+                    <div class="stat-trend">
+                        <span class="trend-text-neutral">Citas atendidas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tiempo Promedio de Espera -->
         </div>
-        <div class="col-lg-3 col-md-6" *ngIf="citasPorSemana$ | async as semana">
-            <app-card-basic [label]="'Citas de la semana'" [number]="semana" type="basic"></app-card-basic>
+    </div>
+
+    <!-- Sección de Análisis y Personal -->
+    <div class="content-grid">
+        <!-- Comportamiento del Año -->
+
+        <!-- Distribución por Especialidad -->
+        <div class="section-card specialty-card" *ngIf="citasPorEspecialidad$ | async as especialidades">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <mat-icon class="section-icon">medical_services</mat-icon>
+                    <h3 class="section-title">Citas por Especialidad</h3>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <div class="specialty-chart-container">
+                    <canvas id="especialidadChart" width="400" height="200"></canvas>
+                </div>
+                <div class="specialty-list">
+                    <div class="specialty-item" *ngFor="let esp of especialidades">
+                        <span class="specialty-name">{{ esp.specialty }}</span>
+                        <span class="specialty-count">{{ esp.count }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-3 col-md-6">
-            <app-card-basic [label]="'Citas del mes'" [number]="dashboard.citas.totalCitasMes" type="basic"></app-card-basic>
+    
+        <!-- Modal: Lista Completa de Doctores -->
+        <div class="modal-overlay" *ngIf="showAllDoctorsModal" (click)="closeAllDoctorsModal()">
+            <div class="modal-content all-doctors-modal" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <mat-icon>badge</mat-icon>
+                        Todos los Doctores
+                    </h3>
+                    <button class="modal-close-btn" (click)="closeAllDoctorsModal()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="all-doctors-grid" *ngIf="staff$ | async as staff">
+                        <div class="doctor-card-modal" *ngFor="let member of staff">
+                            <div class="doctor-modal-header">
+                                <div class="doctor-avatar-modal" [style.background]="member.color">
+                                    <span class="avatar-initials-modal">{{ member.fullName | slice:0:2 | uppercase }}</span>
+                                </div>
+                                <div class="doctor-status-modal">
+                                    <div class="status-dot-modal" [ngClass]="{
+                                        'status-active': member.status === 'activo',
+                                        'status-busy': member.status === 'ocupado',
+                                        'status-inactive': member.status === 'inactivo'
+                                    }"></div>
+                                    <span class="status-text">{{ member.status | titlecase }}</span>
+                                </div>
+                            </div>
+
+                            <div class="doctor-info-modal">
+                                <h4 class="doctor-name-modal">{{ member.fullName }}</h4>
+                                <p class="doctor-specialty-modal">{{ member.specialty }}</p>
+                            </div>
+
+                            <div class="doctor-actions-modal">
+                                <button mat-stroked-button color="primary" (click)="openDoctorProfileModal(member)">
+                                    <mat-icon>visibility</mat-icon>
+                                    Ver Perfil
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Modal: Agenda del Doctor (Fuera de otros modales) -->
+            <div class="modal-overlay" *ngIf="showDoctorAgendaModal && selectedDoctorForAgenda" (click)="closeDoctorAgendaModal()">
+                <div class="modal-content doctor-agenda-modal" (click)="$event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3 class="modal-title">
+                            <mat-icon>schedule</mat-icon>
+                            Agenda del Dr. {{ selectedDoctorForAgenda.fullName }}
+                        </h3>
+                        <button class="modal-close-btn" (click)="closeDoctorAgendaModal()">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+        
+                    <div class="modal-body">
+                        <div class="agenda-content">
+                            <!-- Loading State -->
+                            <div *ngIf="loadingCitations" class="loading-container">
+                                <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+                                <p>Cargando citas...</p>
+                            </div>
+        
+                            <!-- No Citations Message -->
+                            <div *ngIf="!loadingCitations && doctorCitations.length === 0" class="no-citations-container">
+                                <mat-icon class="no-citations-icon">event_note</mat-icon>
+                                <h4>No tiene citas programadas</h4>
+                                <p>El doctor no tiene citas pendientes o programadas en este momento.</p>
+                            </div>
+        
+                            <!-- Citations List -->
+                            <div *ngIf="!loadingCitations && doctorCitations.length > 0" class="citations-list">
+                                <div class="citations-header">
+                                    <span class="citation-count">{{ doctorCitations.length }} cita(s) programada(s)</span>
+                                </div>
+        
+                                <div class="citation-item" *ngFor="let citation of doctorCitations">
+                                    <div class="citation-main">
+                                        <div class="citation-date">
+                                            <mat-icon>calendar_today</mat-icon>
+                                            <span>{{ citation.appointmentDate | date:'dd/MM/yyyy' }}</span>
+                                        </div>
+                                        <div class="citation-time">
+                                            <mat-icon>schedule</mat-icon>
+                                            <span>{{ citation.timeBlock }}</span>
+                                        </div>
+                                    </div>
+        
+                                    <div class="citation-details">
+                                        <div class="citation-patient">
+                                            <mat-icon>person</mat-icon>
+                                            <span>{{ citation.patientName || 'Paciente no especificado' }}</span>
+                                        </div>
+                                        <div class="citation-room">
+                                            <mat-icon>room</mat-icon>
+                                            <span>{{ citation.consultingRoomName }} - Sala {{ citation.roomNumber }}</span>
+                                        </div>
+                                    </div>
+        
+                                    <div class="citation-status">
+                                        <span class="status-badge" [ngClass]="{
+                                            'status-scheduled': citation.state === 'scheduled',
+                                            'status-pending': citation.state === 'pending'
+                                        }">
+                                            {{ citation.state === 'scheduled' ? 'Programada' : 'Pendiente' }}
+                                        </span>
+                                    </div>
+        
+                                    <div class="citation-note" *ngIf="citation.note">
+                                        <mat-icon>note</mat-icon>
+                                        <span>{{ citation.note }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-3 col-md-6">
-            <div class="card h-100 appointment-card">
-                <div class="card-body">
-                    <div class="stat-label">Estado de Citas</div>
-                    <div class="stat-number">{{ (dashboard.citas.estadosCitas['Pendiente'] || 0) + (dashboard.citas.estadosCitas['Atendida'] || 0) + (dashboard.citas.estadosCitas['Cancelada'] || 0) | number }}</div>
-                    <div class="status-tabs mt-3">
-                        <div class="status-tab tab-scheduled">Pendiente {{ dashboard.citas.estadosCitas['Pendiente'] || 0 }}</div>
-                        <div class="status-tab tab-completed">Atendida {{ dashboard.citas.estadosCitas['Atendida'] || 0 }}</div>
-                        <div class="status-tab tab-canceled">Cancelada {{ dashboard.citas.estadosCitas['Cancelada'] || 0 }}</div>
+    
+        <!-- Modal: Perfil Completo de Doctor -->
+        <div class="modal-overlay" *ngIf="showDoctorProfileModal && selectedDoctorForProfile" (click)="closeDoctorProfileModal()">
+            <div class="modal-content doctor-profile-modal" (click)="$event.stopPropagation()">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <mat-icon>person</mat-icon>
+                        Perfil del Doctor
+                    </h3>
+                    <button class="modal-close-btn" (click)="closeDoctorProfileModal()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="profile-content">
+                        <!-- Avatar y Estado -->
+                        <div class="profile-header">
+                            <div class="profile-avatar-large" [style.background]="selectedDoctorForProfile.color">
+                                <span class="avatar-initials-large">{{ selectedDoctorForProfile.fullName?.slice(0,2)?.toUpperCase() }}</span>
+                            </div>
+                            <div class="profile-status">
+                                <div class="status-indicator-large" [ngClass]="{
+                                    'status-active': selectedDoctorForProfile.status === 'activo',
+                                    'status-busy': selectedDoctorForProfile.status === 'ocupado',
+                                    'status-inactive': selectedDoctorForProfile.status === 'inactivo'
+                                }">
+                                    <mat-icon>{{ selectedDoctorForProfile.status === 'activo' ? 'check_circle' : selectedDoctorForProfile.status === 'ocupado' ? 'schedule' : 'cancel' }}</mat-icon>
+                                </div>
+                                <span class="status-label">{{ selectedDoctorForProfile.status | titlecase }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Información Detallada -->
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <mat-icon>person</mat-icon>
+                                <div class="detail-content">
+                                    <label>Nombre Completo</label>
+                                    <span>{{ selectedDoctorForProfile.fullName }}</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <mat-icon>medical_services</mat-icon>
+                                <div class="detail-content">
+                                    <label>Especialidad</label>
+                                    <span>{{ selectedDoctorForProfile.specialty }}</span>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <mat-icon>email</mat-icon>
+                                <div class="detail-content">
+                                    <label>Correo Electrónico</label>
+                                    <span>{{ selectedDoctorForProfile.emailDoctor || 'No disponible' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Acciones -->
+                        <div class="profile-actions">
+                            <button mat-raised-button color="primary" (click)="openDoctorAgendaModal(selectedDoctorForProfile)">
+                                <mat-icon>message</mat-icon>
+                                Enviar Mensaje
+                            </button>
+                            <button mat-stroked-button color="accent" (click)="openDoctorAgendaModal(selectedDoctorForProfile)">
+                                <mat-icon>schedule</mat-icon>
+                                Ver Agenda
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Distribución de citas por especialidad -->
-    <div class="row g-3 mb-4" *ngIf="citasPorEspecialidad$ | async as especialidades">
-        <div class="col-12">
-            <h5>Distribución de Citas por Especialidad</h5>
-        </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let esp of especialidades">
-                            {{ esp.specialty }}
-                            <span class="badge bg-primary rounded-pill">{{ esp.count }}</span>
-                        </li>
-                    </ul>
+    <!-- Sección de Pacientes y Doctores -->
+    <div class="content-grid">
+        <!-- Pacientes Nuevos -->
+        <div class="section-card patients-card" *ngIf="pacientesNuevos$ | async as pacientes">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <mat-icon class="section-icon">person_add</mat-icon>
+                    <h3 class="section-title">Registro de Pacientes</h3>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <canvas id="especialidadChart" width="400" height="200"></canvas>
-        </div>
-    </div>
 
-    <!-- Pacientes -->
-    <div class="row g-3 mb-4">
-        <div class="col-12">
-            <h4>Pacientes</h4>
-        </div>
-        <div class="col-lg-6" *ngIf="pacientesActivosInactivos$ | async as pacientes">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Pacientes Activos vs Inactivos</h5>
-                    <p>Activos: {{ pacientes.activos }}</p>
-                    <p>Inactivos: {{ pacientes.inactivos }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6" *ngIf="pacientesNuevos$ | async as nuevos">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Nuevos Pacientes Registrados</h5>
+            <div class="section-content">
+                <div class="patients-chart-container">
                     <canvas id="pacientesChart" width="400" height="200"></canvas>
                 </div>
+                <div class="patients-summary" *ngIf="pacientesActivosInactivos$ | async as stats">
+                    <div class="summary-item">
+                        <span class="summary-label">Activos:</span>
+                        <span class="summary-value active">{{ stats.activos }}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Inactivos:</span>
+                        <span class="summary-value inactive">{{ stats.inactivos }}</span>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- Top Doctores -->
     </div>
 
-    <!-- Doctores -->
-    <div class="row g-3 mb-4">
-        <div class="col-12">
-            <h4>Doctores</h4>
-        </div>
-        <div class="col-lg-4" *ngIf="doctoresMasCitas$ | async as doctores">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Doctores con Más Citas Atendidas</h5>
-                    <ol>
-                        <li *ngFor="let doc of doctores">{{ doc.nombreDoctor }}: {{ doc.citasAtendidas }}</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4" *ngIf="disponibilidadDoctores$ | async as disponibilidad">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Disponibilidad de Doctores</h5>
-                    <ul>
-                        <li *ngFor="let doc of disponibilidad">{{ doc.nombreDoctor }}: {{ doc.cuposLibres > 0 ? 'Disponible (' + doc.cuposLibres + ' cupos)' : 'Sin cupos' }}</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4" *ngIf="rankingEspecialidades$ | async as ranking">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Ranking Especialidades Más Demandadas</h5>
-                    <ol>
-                        <li *ngFor="let esp of ranking">{{ esp.specialty }}: {{ esp.count }}</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Sección de Disponibilidad y Ranking -->
+    <div class="content-grid">
 
-    <!-- KPIs -->
-    <div class="row g-3 mb-4">
-        <div class="col-12">
-            <h4>KPIs de Desempeño</h4>
-        </div>
-        <div class="col-lg-6" *ngIf="tasaAsistencia$ | async as tasa">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Tasa de Asistencia</h5>
-                    <div class="display-4">{{ tasa }}%</div>
+
+        <!-- Ranking de Especialidades -->
+        <div class="section-card ranking-card" *ngIf="rankingEspecialidades$ | async as ranking">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <mat-icon class="section-icon">trending_up</mat-icon>
+                    <h3 class="section-title">Especialidades Más Demandadas</h3>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6" *ngIf="tiempoPromedioEspera$ | async as tiempo">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Tiempo Promedio de Espera</h5>
-                    <div class="display-4">{{ tiempo | number:'1.1-1' }} horas</div>
+
+            <div class="section-content">
+                <div class="ranking-list">
+                    <div class="ranking-item" *ngFor="let esp of ranking; let i = index">
+                        <div class="ranking-position">#{{ i + 1 }}</div>
+                        <div class="ranking-info">
+                            <span class="ranking-name">{{ esp.specialty }}</span>
+                            <span class="ranking-count">{{ esp.count }} citas</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Gráficas -->
-    <div class="row g-3">
-        <div class="col-12">
-            <h4>Gráficas</h4>
-        </div>
-        <div class="col-lg-4" *ngIf="graficaBarrasTipoCita$ | async as barras">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Citas por Tipo de Cita</h5>
-                    <canvas id="barrasChart" width="400" height="200"></canvas>
+    <!-- Sección de Gráficas Avanzadas -->
+    <div class="content-grid">
+
+        <!-- Gráfica de Torta - Estados de Citas -->
+        <div class="section-card chart-card" *ngIf="graficaTortaEstados$ | async as torta">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <mat-icon class="section-icon">pie_chart</mat-icon>
+                    <h3 class="section-title">Estados de Citas</h3>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <div class="chart-container">
+                    <canvas id="tortaChart" width="400" height="250"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4" *ngIf="pacientesNuevos$ | async as linea">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Evolución de Pacientes Nuevos</h5>
-                    <canvas id="lineaChart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Sección de Ranking de Doctores -->
+    <div class="content-grid">
+        <div class="section-card ranking-doctors-card" *ngIf="rankingDoctores$ | async as ranking">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <mat-icon class="section-icon">leaderboard</mat-icon>
+                    <h3 class="section-title">Ranking de Doctores</h3>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <div class="chart-container">
+                    <canvas id="rankingChart" width="400" height="250"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4" *ngIf="graficaTortaEstados$ | async as torta">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Proporción de Estados de Citas</h5>
-                    <canvas id="tortaChart" width="400" height="200"></canvas>
+
+        <!-- Nuestro Personal -->
+        <div class="section-card staff-card" *ngIf="staff$ | async as staff">
+            <div class="section-header">
+                <div class="section-title-wrapper">
+                    <mat-icon class="section-icon">badge</mat-icon>
+                    <h3 class="section-title">Nuestro Personal</h3>
                 </div>
+                <span class="staff-count-badge">{{ staff.length }} miembros</span>
             </div>
-        </div>
-        <div class="col-lg-6" *ngIf="rankingDoctores$ | async as rankingDoc">
-            <div class="card">
-                <div class="card-body">
-                    <h5>Top 5 Doctores con Más Pacientes Atendidos</h5>
-                    <canvas id="rankingChart" width="400" height="200"></canvas>
+
+            <div class="section-content">
+                <div class="staff-grid">
+                    <div class="staff-member-card" *ngFor="let member of staff | slice:0:4; let i = index">
+                        <div class="staff-status-indicator">
+                            <div class="status-dot" [ngClass]="{
+                                     'status-active': member.status === 'activo',
+                                     'status-busy': member.status === 'ocupado',
+                                     'status-inactive': member.status === 'inactivo'
+                                 }" [matTooltip]="member.status | titlecase">
+                            </div>
+                        </div>
+
+                        <div class="staff-avatar-wrapper">
+                            <div class="staff-avatar" [style.background]="member.color">
+                                <span class="avatar-initials">{{ member.fullName | slice:0:2 | uppercase }}</span>
+                            </div>
+                        </div>
+
+                        <div class="staff-info">
+                            <h4 class="staff-name">{{ member.fullName }}</h4>
+                            <p class="staff-specialty">{{ member.specialty }}</p>
+                        </div>
+
+                        <div class="staff-actions">
+                            <button mat-icon-button matTooltip="Ver perfil" (click)="openDoctorProfileModal(member)">
+                                <mat-icon>visibility</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Ver Más -->
+                <div class="view-more-container" *ngIf="staff.length > 4">
+                    <button class="view-more-btn" (click)="openAllDoctorsModal()">
+                        <mat-icon>expand_more</mat-icon>
+                        <span>Ver más</span>
+                    </button>
                 </div>
             </div>
         </div>
