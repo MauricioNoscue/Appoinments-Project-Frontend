@@ -57,30 +57,7 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Usuarios Registrados -->
-            <div class="stat-card stat-info">
-                <div class="stat-icon-wrapper">
-                    <mat-icon class="stat-icon">people</mat-icon>
-                </div>
-                <div class="stat-content">
-                    <p class="stat-label">Usuarios Registrados</p>
-                    <h2 class="stat-number">{{ stats.totalUsuarios | number }}</h2>
-                    <div class="stat-trend">
-                        <span class="trend-text-neutral">Total en plataforma</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Estado de Citas -->
-        </div>
-    </div>
-
-    <!-- Estadísticas Adicionales -->
-    <div class="stats-section" *ngIf="dashboard$ | async as dashboard">
-        <div class="stats-grid">
-            <!-- Citas de la Semana -->
-            <div class="stat-card stat-secondary" *ngIf="citasPorSemana$ | async as semana">
+             <div class="stat-card stat-secondary" *ngIf="citasPorSemana$ | async as semana">
                 <div class="stat-icon-wrapper">
                     <mat-icon class="stat-icon">date_range</mat-icon>
                 </div>
@@ -93,8 +70,32 @@
                 </div>
             </div>
 
+            <!-- Usuarios Registrados -->
+            <!-- <div class="stat-card stat-info">
+                <div class="stat-icon-wrapper">
+                    <mat-icon class="stat-icon">people</mat-icon>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Usuarios Registrados</p>
+                    <h2 class="stat-number">{{ stats.totalUsuarios | number }}</h2>
+                    <div class="stat-trend">
+                        <span class="trend-text-neutral">Total en plataforma</span>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Estado de Citas -->
+        </div>
+    </div>
+
+    <!-- Estadísticas Adicionales -->
+    <div class="stats-section" *ngIf="dashboard$ | async as dashboard">
+        <div class="stats-grid">
+            <!-- Citas de la Semana -->
+           
+
             <!-- Pacientes Activos -->
-            <div class="stat-card stat-success" *ngIf="pacientesActivosInactivos$ | async as pacientes">
+            <!-- <div class="stat-card stat-success" *ngIf="pacientesActivosInactivos$ | async as pacientes">
                 <div class="stat-icon-wrapper">
                     <mat-icon class="stat-icon">person_add</mat-icon>
                 </div>
@@ -105,7 +106,7 @@
                         <span class="trend-text-neutral">{{ pacientes.inactivos }} inactivos</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Tasa de Asistencia -->
             <div class="stat-card stat-warning" *ngIf="tasaAsistencia$ | async as tasa">

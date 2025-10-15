@@ -60,7 +60,7 @@ displayedColumns: string[] = [
   'personName',      // nombre de la persona
   'active',          // estado activo/inactivo
   'restrictionPoint',// puntos de restricción
-  'isDeleted',       // estado de eliminación
+     // estado de eliminación
   'actions'          // botones de editar/eliminar
 ];
 
