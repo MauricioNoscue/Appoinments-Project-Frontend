@@ -32,10 +32,8 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardAdminComponent },
-
       { path: 'doctor', component: MedicalStaffComponent },
       //{ path: 'doctor', component: DoctorComponent },
-
       { path: 'security/form', component: FormComponent },
       { path: 'security/rol', component: RolComponent },
       { path: 'security/user', component: UserComponent },

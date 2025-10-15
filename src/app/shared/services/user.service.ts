@@ -63,7 +63,7 @@ private ur = environment.apiURL
 
 
  getMenu(roleId: number): Observable<MenuItem[]> {
-    return this.http.get<MenuItem[]>(`${this.baseUrl}?roleId=${roleId}`);
+    return this.http.get<MenuItem[]>(`${this.ur}/api/security/menu?roleId=${roleId}`);
   }
 
 }

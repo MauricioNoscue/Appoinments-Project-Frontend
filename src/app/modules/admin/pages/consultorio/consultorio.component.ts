@@ -17,6 +17,7 @@ import { BranchService } from '../../../../shared/services/branch.service';
 import { BranchList } from '../../../../shared/Models/parameter/Branch';
 import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
 
 interface ConsultorioCardView {
   id: number;
@@ -224,4 +225,16 @@ export class ConsultorioComponent implements OnInit {
   trackById(_i: number, item: ConsultorioCardView) {
     return item.id;
   }
+
+
+
+  // consultorios.component.ts
+pageIndex = 0;
+pageSize = 12;
+
+onPageChange(event: PageEvent): void {
+  this.pageIndex = event.pageIndex;
+  this.pageSize = event.pageSize;
+}
+
 }

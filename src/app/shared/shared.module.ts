@@ -23,6 +23,7 @@ import { MiCitasComponent } from '../modules/paciente/pages/mi-citas/mi-citas.co
 import { ReservationComponent } from '../modules/paciente/pages/reservation/reservation.component';
 import { ReservationViewComponent } from './components/PagesShared/reservation-view/reservation-view.component';
 import { PerfilComponent } from '../modules/paciente/pages/perfil/perfil.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 
 
 const sharedComponents =[
@@ -35,7 +36,12 @@ const sharedComponents =[
   CardBasicComponent,
   StaffCardComponent,
   DialogContainerComponent,SectionCardComponent
-  ,TypeCitationComponent,CardTypeCitationComponent,CalendarComponent,SheduleCardComponent,FormSheduleComponent,ReservationViewComponent 
+  ,TypeCitationComponent,CardTypeCitationComponent,
+  CalendarComponent,
+  SheduleCardComponent,
+  FormSheduleComponent,
+  ReservationViewComponent,
+  ToolbarComponent
   
  
 

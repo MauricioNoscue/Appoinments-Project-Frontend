@@ -59,11 +59,11 @@ export class DoctorService extends ServiceBaseService<DoctorList, any, DoctorUpd
   }
 
   // private readonly baseUrl = 'https://localhost:7186/api/ConsultingRoom';
-  private readonly baseUrl = 'http://localhost:8080/api/ConsultingRoom';
+  // private readonly baseUrl = 'http://localhost:8080/api/ConsultingRoom';
 
 
   getConsultingRooms(): Observable<ConsultingRoom[]> {
-    return this.http.get<ConsultingRoom[]>(`${this.baseUrl}`);
+    return this.http.get<ConsultingRoom[]>(`${this.urlBase}/ConsultingRoom`);
   }
 
   public actualizarDoctor(dto: DoctorUpdateDto): Observable<boolean> {

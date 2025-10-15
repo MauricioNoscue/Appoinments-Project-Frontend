@@ -1,0 +1,33 @@
+<div class="toolbar">
+  <!-- Título -->
+  <h2>{{ title }}</h2>
+
+  <div class="actions">
+    <!-- Botón principal -->
+    <button
+      mat-raised-button
+      class="btn-add"
+      *ngIf="showAddButton"
+      (click)="onAdd.emit()"
+    >
+      <mat-icon>assignment_add</mat-icon>
+      <span class="btn-text">
+        <strong>{{ addLabel || 'Agregar' }}</strong><br />
+        {{ addSubtitle || 'registro' }}
+      </span>
+    </button>
+
+    <!-- Buscador -->
+    <form class="search-form" role="search" *ngIf="showSearch">
+      <input
+        class="search-input"
+        type="search"
+        placeholder="Buscar"
+        aria-label="Buscar"
+        [(ngModel)]="searchTerm"
+        name="searchTerm"
+        (ngModelChange)="onSearch.emit(searchTerm)"
+      />
+    </form>
+  </div>
+</div>

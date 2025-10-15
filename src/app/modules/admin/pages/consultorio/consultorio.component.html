@@ -1,43 +1,39 @@
-<!-- Barra superior -->
-<div class="toolbar">
-  <h2>Consultorios</h2>
+<!-- 🔹 Barra superior -->
+<app-toolbar
+  title="Consultorios"
+  addLabel="Agregar"
+  addSubtitle="consultorio"
+  (onAdd)="abrirDialog('create')"
+  (onSearch)="searchTerm = $event"
+></app-toolbar>
 
-  <div class="actions">
-    <button mat-raised-button class="btn-add" (click)="abrirDialog('create')">
-      <mat-icon>assignment_add</mat-icon>
-      <span class="btn-text"><strong>Agregar</strong><br />consultorio</span>
-    </button>
 
-    <form class="search-form" role="search">
-      <input
-        class="search-input"
-        type="search"
-        placeholder="Buscar"
-        aria-label="Buscar"
-        [(ngModel)]="searchTerm"
-        name="searchTerm"
-      />
-    </form>
-  </div>
-</div>
-
+<!-- 🔹 Contenedor principal -->
 <div class="consultorios-container">
   <div class="consultorios-grid">
+    <!-- Cartas paginadas -->
     <div
       class="card"
-      *ngFor="let c of consultoriosFiltrados; trackBy: trackById"
+      *ngFor="
+        let c of consultoriosFiltrados
+          | slice:(pageIndex * pageSize):(pageIndex * pageSize + pageSize);
+        trackBy: trackById
+      "
     >
       <!-- Imagen -->
-      <img [src]="c.imagen" [alt]="'Imagen del consultorio ' + c.nombre" />
+      <img
+        [src]="c.imagen"
+        [alt]="'Imagen del consultorio ' + c.nombre"
+      />
 
       <div class="card-info">
         <div class="card-header">
           <h3>{{ c.nombre }}</h3>
+
+          <!-- Menú de acciones -->
           <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon>more_vert</mat-icon>
           </button>
-
-          <!-- Menú de acciones -->
           <mat-menu #menu="matMenu">
             <button mat-menu-item>
               <mat-icon>visibility</mat-icon>
@@ -58,12 +54,24 @@
           <mat-icon fontIcon="store" style="color:#388e3c;"></mat-icon>
           Sucursal: {{ c.branchName }}
         </p>
+
         <p class="ubicacion">
           <mat-icon fontIcon="location_on" style="color:#1976d2;"></mat-icon>
           {{ c.ubicacion }}
         </p>
+
         <span class="estado">{{ c.estado }}</span>
       </div>
     </div>
   </div>
+
+  <!-- 🔹 Paginador Angular Material -->
+  <mat-paginator
+    [length]="consultoriosFiltrados.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[6, 12, 24, 48]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
 </div>
