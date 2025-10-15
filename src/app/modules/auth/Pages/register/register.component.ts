@@ -8,6 +8,7 @@ import { PersonaService } from '../../../../shared/services/persona.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { EpsService } from '../../../../shared/services/Hospital/eps.service';
 import { DocumentTypeService } from '../../../../shared/services/document-type.service';
+import { RolUserService } from '../../../../shared/services/rol-user.service';
 import { EpsList } from '../../../../shared/Models/hospital/epsListModel';
 import { DocumentType } from '../../../../shared/Models/documentTypeModel';
 
@@ -66,6 +67,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   creandoPersona = false;
   creandoUsuario = false;
+  isRegistering = false;
   personaIdCreada: number | null = null;
 
   tiposDocumento: DocumentType[] = [];
@@ -79,7 +81,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private router: Router,
     private epsService: EpsService,
-    private documentTypeService: DocumentTypeService
+    private documentTypeService: DocumentTypeService,
+    private rolUserService: RolUserService
   ) {}
 
   ngOnInit(): void {
@@ -200,6 +203,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.isRegistering = true;
+
     (async () => {
       try {
         if (!this.personaIdCreada) {
@@ -220,14 +225,40 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
         this.creandoUsuario = true;
         this.userService.crear(userPayload).subscribe({
-          next: () => {
+          next: (res: any) => {
             this.creandoUsuario = false;
-            Swal.fire('¡Cuenta creada!', 'Ya puedes iniciar sesión.', 'success').then(() => {
-              this.router.navigate(['/auth/login']);
+            const userId = res?.id ?? res?.Id ?? null;
+            if (!userId) {
+              this.isRegistering = false;
+              Swal.fire('Error', 'No se pudo obtener el ID del usuario creado.', 'error');
+              return;
+            }
+
+            // Crear RolUser
+            const rolUserPayload: any = {
+              rolId: 2, // Id del rol "Paciente" para que siempre sea paciente por defecto
+              userId: userId
+            };
+
+            this.rolUserService.crear(rolUserPayload).subscribe({
+              next: () => {
+                this.isRegistering = false;
+                Swal.fire('¡Cuenta creada!', 'Ya puedes iniciar sesión.', 'success').then(() => {
+                  this.router.navigate(['/auth/login']);
+                });
+              },
+              error: (err) => {
+                this.isRegistering = false;
+                console.error('Error creando RolUser:', err);
+                Swal.fire('Cuenta creada, pero error asignando rol', 'La cuenta se creó, pero hubo un problema asignando el rol. Contacta al administrador.', 'warning').then(() => {
+                  this.router.navigate(['/auth/login']);
+                });
+              }
             });
           },
           error: (err) => {
             this.creandoUsuario = false;
+            this.isRegistering = false;
             const friendly = this.getFriendlyErrorMessage(err);
             if (friendly.field) {
               this.uf[friendly.field].setErrors({ duplicate: true });
@@ -236,6 +267,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           },
         });
       } catch (e) {
+        this.isRegistering = false;
         const friendly = this.getFriendlyErrorMessage(e);
         if (friendly.field) {
           this.pf[friendly.field].setErrors({ duplicate: true });

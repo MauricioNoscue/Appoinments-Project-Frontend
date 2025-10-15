@@ -37,5 +37,39 @@ export interface StaffMember {
   specialty: string;
   status: StaffStatus;
   color: string;
+  emailDoctor?: string;
+}
+
+// Nuevas interfaces para el DashboardDto del backend
+export interface CitasDashboard {
+  totalCitasDia: number;
+  totalCitasSemana: number;
+  totalCitasMes: number;
+  distribucionPorEspecialidad: { [key: string]: number };
+  estadosCitas: { [key: string]: number };
+}
+
+export interface PacientesDashboard {
+  nuevosRegistrados: { fecha: string; cantidad: number }[];
+  pacientesActivos: number;
+  pacientesInactivos: number;
+}
+
+export interface DoctoresDashboard {
+  topDoctores: { nombreDoctor: string; citasAtendidas: number }[];
+  doctoresDisponibles: { nombreDoctor: string; cuposLibres: number }[];
+  rankingEspecialidades: { [key: string]: number };
+}
+
+export interface KpisDashboard {
+  tasaAsistencia: number;
+  tiempoPromedioEspera: number;
+}
+
+export interface DashboardDto {
+  citas: CitasDashboard;
+  pacientes: PacientesDashboard;
+  doctores: DoctoresDashboard;
+  kpis: KpisDashboard;
 }
 
