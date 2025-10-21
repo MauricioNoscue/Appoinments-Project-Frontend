@@ -37,8 +37,8 @@
                     <p class="stat-label">Citas del Mes</p>
                     <h2 class="stat-number">{{ stats.totalCitasMes | number }}</h2>
                     <div class="stat-trend" *ngIf="stats.variationMonth !== null">
-                        <mat-icon class="trend-icon">trending_up</mat-icon>
-                        <span class="trend-text">+{{ stats.variationMonth }}% vs mes anterior</span>
+                        <!-- <mat-icon class="trend-icon">trending_up</mat-icon> -->
+                      <!-- <span class="trend-text">+{{ stats.variationMonth }}% vs mes anterior</span> -->
                     </div>
                 </div>
             </div>
@@ -52,8 +52,8 @@
                     <p class="stat-label">Citas del Día</p>
                     <h2 class="stat-number">{{ stats.totalCitasDia | number }}</h2>
                     <div class="stat-trend" *ngIf="stats.variationDay !== null">
-                        <mat-icon class="trend-icon">trending_up</mat-icon>
-                        <span class="trend-text">+{{ stats.variationDay }}% vs ayer</span>
+                        <!-- <mat-icon class="trend-icon">trending_up</mat-icon> -->
+                        <!-- <span class="trend-text">+{{ stats.variationDay }}% vs ayer</span> -->
                     </div>
                 </div>
             </div>

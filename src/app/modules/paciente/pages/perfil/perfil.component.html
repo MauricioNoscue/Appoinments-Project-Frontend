@@ -11,14 +11,37 @@
     </mat-card>
 
     <!-- Centro: Estado de citas -->
-    <mat-card class="card tolerance-card">
+    <!-- <mat-card class="card tolerance-card">
       <div class="card-title">My estado de citas</div>
       <div class="hearts">
         <mat-icon [class.active]="user.toleranceLevel >= 1">favorite</mat-icon>
         <mat-icon [class.active]="user.toleranceLevel >= 2">favorite</mat-icon>
         <mat-icon [class.active]="user.toleranceLevel >= 3">favorite</mat-icon>
       </div>
+    </mat-card> -->
+ <mat-card class="card info-card">
+      <div class="card-head">
+        <div class="card-title">Contacto</div>
+        <button mat-icon-button (click)="openEdit('contact')"><mat-icon>edit</mat-icon></button>
+      </div>
+
+      <div class="info-row">
+        <mat-icon>call</mat-icon>
+        <div>
+          <div class="label">Teléfono</div>
+          <div class="value">{{ user.phoneNumber }}</div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <mat-icon>mail</mat-icon>
+        <div>
+          <div class="label">Correo</div>
+          <div class="value">{{ user.email }}</div>
+        </div>
+      </div>
     </mat-card>
+
 
     <!-- Derecha: Información Personal -->
     <mat-card class="card info-card">
@@ -122,7 +145,7 @@
     </mat-card>
 
     <!-- Derecha abajo: Contacto -->
-    <mat-card class="card info-card">
+    <!-- <mat-card class="card info-card">
       <div class="card-head">
         <div class="card-title">Contacto</div>
         <button mat-icon-button (click)="openEdit('contact')"><mat-icon>edit</mat-icon></button>
@@ -143,7 +166,7 @@
           <div class="value">{{ user.email }}</div>
         </div>
       </div>
-    </mat-card>
+    </mat-card> -->
   </div>
 </section>
 

@@ -29,7 +29,7 @@ export class SidebarComponent implements OnInit {
   const roleIds = this.authService.getUserRoleIds();
 
   if (roleIds.length > 0) {
-    // 👈 tomar el primer rol (o todos, según tu lógica)
+   
     this.service.getMenu(roleIds[0]).subscribe({
       next: (menu) => this.menuItems = menu,
       error: (err) => {

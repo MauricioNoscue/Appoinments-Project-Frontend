@@ -22,8 +22,9 @@ export class ReservationViewComponent implements OnInit, OnDestroy {
   horariosManana: Horario[] = [];
   horariosTarde: Horario[] = [];
   vistaColumnas = false;
+  esp!:string
 
-  especialidad = 'Medicina General';
+  especialidad ="";
   nombreDoctor = 'Dr. Ortis Acosta Jhoyner Duvan';
 
   private subs: Subscription[] = [];
@@ -37,6 +38,16 @@ export class ReservationViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     this.idTypeCitation = idParam ? +idParam : 0;
+
+    if(idParam == "2"){
+      this.especialidad = "Odontología"
+    }
+
+    
+    if(idParam == "4"){
+      this.especialidad = "Consulta externa"
+    }
+
   }
 
   ngOnDestroy(): void {

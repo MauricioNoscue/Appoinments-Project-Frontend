@@ -76,7 +76,7 @@ logout(): void {
   }
 
 
-// Devuelve el DoctorId del token, si existe
+
 getDoctorId(): number | null {
   const token = this.getToken();
   if (!token) return null;
@@ -95,11 +95,27 @@ getDoctorId(): number | null {
 }
 
 
+ getUserId(): number | null {
+  const token = this.getToken();
+  if (!token) return null;
+  try{
+    const decoded: JwtPayload = jwtDecode(token);
+
+    const UserId = decoded['sub'];
+
+    return typeof UserId === 'string' ? Number(UserId) : UserId;
+
+  }catch{
+    return null;
+  }
+ }
+
+
 // Elimina todos los datos relacionados con autenticación
 clearAuthData(): void {
-  localStorage.removeItem(this.tokenKey);        // accessToken
-  localStorage.removeItem('jwt_expires');        // expiración
-  localStorage.removeItem('jwt_refresh');        // refresh token
+  localStorage.removeItem(this.tokenKey);        
+  localStorage.removeItem('jwt_expires');    
+  localStorage.removeItem('jwt_refresh');      
 }
 
 
