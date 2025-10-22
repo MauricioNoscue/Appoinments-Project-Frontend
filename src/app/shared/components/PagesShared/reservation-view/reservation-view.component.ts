@@ -115,7 +115,7 @@ async seleccionarHorario(h: Horario) {
       await Swal.fire({
         icon: 'error',
         title: 'Horario ocupado',
-        text: `Ya está en uso (hasta ${lock.lockedUntil}).`,
+        text: `Ya está en uso.`,
         confirmButtonText: 'Entendido'
       });
       return;
@@ -145,6 +145,7 @@ async seleccionarHorario(h: Horario) {
         showConfirmButton: false
       });
     } else {
+      debugger;
       await Swal.fire({
         icon: 'error',
         title: 'No se pudo agendar',

@@ -34,7 +34,7 @@
         
         <div class="status-indicator">
           <div class="status-badge" *ngIf="h.bookedCitationId">Reservado</div>
-          <div class="status-badge hold" *ngIf="!h.bookedCitationId && !h.estaDisponible">En Espera</div>
+          <div class="status-badge hold" *ngIf="!h.bookedCitationId && !h.estaDisponible">Ocupado</div>
           <div class="check-icon" *ngIf="h.estaDisponible">✓</div>
         </div>
       </div>
@@ -71,7 +71,7 @@
         
         <div class="status-indicator">
           <div class="status-badge" *ngIf="h.bookedCitationId">Reservado</div>
-          <div class="status-badge hold" *ngIf="!h.bookedCitationId && !h.estaDisponible">En Espera</div>
+          <div class="status-badge hold" *ngIf="!h.bookedCitationId && !h.estaDisponible">Ocupado</div>
           <div class="check-icon" *ngIf="h.estaDisponible">✓</div>
         </div>
       </div>

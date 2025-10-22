@@ -16,7 +16,7 @@ export class CitationService extends ServiceBaseService<Citation, any, any> {
    * GET /api/citation/list   -> devuelve CitationList[] con NameDoctor/ConsultingRoom/RoomNumber
    */
   traerListado(): Observable<CitationList[]> {
-    return this.http.get<CitationList[]>(`${this.urlBase}/list`);
+    return this.http.get<CitationList[]>(`${this.urlBase}`);
   }
 
   /**
