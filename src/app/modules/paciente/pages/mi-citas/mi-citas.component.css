@@ -1,5 +1,12 @@
-:host { display: block; }
-
+:host {
+  background-image: url("../../../../../assets/images/fondo.png");
+  background-size: cover;
+  background-position: center;
+  display: block;
+  min-height: 100%;
+  width: 100%;
+  position: relative;
+}
 /* ===== LAYOUT GENERAL ===== */
 .page {
   padding: 16px;

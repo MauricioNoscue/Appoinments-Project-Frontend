@@ -59,8 +59,10 @@ export class FormConsultorioComponent implements OnInit {
     },
     { label: 'Clínica – Azul', url: 'assets/images/doctor.jpg' },
     { label: 'Odontología', url: 'assets/images/img-home.png' },
-    { label: 'Pediatría', url: 'assets/images/fondo-doctor.png' },
+    { label: 'Pediatría', url: 'assets/images/Pediatria.png' },
     { label: 'Cardiología', url: 'assets/images/fondo.png' },
+    { label: 'Consulta externa', url: 'assets/images/externa.jpg' },
+    { label: 'Consulta general', url: 'assets/images/general.jpg' },
   ];
 
   constructor(

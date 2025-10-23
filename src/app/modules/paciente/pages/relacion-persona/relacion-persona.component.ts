@@ -23,6 +23,7 @@ import {
   FormRelacionPersonaComponent,
   PersonFormValue,
 } from '../../Components/Form/form-relacion-persona/form-relacion-persona.component';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 type Relation =
   | 'Papá'
@@ -80,14 +81,16 @@ export class RelacionPersonaComponent {
     return this.personId;
   }
 
-  constructor() {
+  constructor(private readonly userService : AuthService) {
     const fromRoute = Number(this.route.snapshot.paramMap.get('personId'));
     this.tryResolveAndLoad(
       Number.isFinite(fromRoute) && fromRoute > 0 ? fromRoute : null
     );
 
     if (!this._resolvedId || this._resolvedId <= 0) {
-      const devId = (environment as any).defaultPersonId as number | undefined;
+      // const devId = (environment as any).defaultPersonId as number | undefined;
+      const devId = this.userService.getUserId()
+
       if (devId && devId > 0) {
         console.warn('[DEV] Usando defaultPersonId:', devId);
         this.tryResolveAndLoad(devId);

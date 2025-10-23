@@ -62,8 +62,9 @@ const TIPO_CITA_CATALOGO: Array<{ name: string; img: string }> = [
     name: 'odontologia',
     img: '/assets/icons/IconsTypeCitation/odontologia.png',
   },
-  { name: 'pediatria', img: '/assets/icons/IconsTypeCitation/pediatria.svg' },
-  { name: 'citologia', img: '/assets/icons/IconsTypeCitation/citologia.svg' },
+
+  { name: 'pediatria', img: '/assets/icons/IconsTypeCitation/pediatria.png' },
+  { name: 'consulta externa', img: '/assets/icons/IconsTypeCitation/psicologia.png' },
   { name: 'vacunacion', img: '/assets/icons/IconsTypeCitation/vacunacion.svg' },
   { name: 'psicologia', img: '/assets/icons/IconsTypeCitation/psicologia.svg' },
   {

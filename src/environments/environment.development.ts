@@ -3,7 +3,7 @@ export const environment = {
   apiURL: 'https://localhost:7186',
   // apiURL: 'http://localhost:8080',
 
-  //defaultPersonId: 1, //  solo para pruebas sin login
+  // defaultPersonId: 2, //  solo para pruebas sin login
 
    hubs: {
     appointments: '/hubs/appointments'

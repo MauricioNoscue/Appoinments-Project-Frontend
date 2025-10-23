@@ -1,7 +1,12 @@
 :host {
+  background-image: url("../../../../../assets/images/fondo.png");
+  background-size: cover;
+  background-position: center;
   display: block;
+  min-height: 100%;
+  width: 100%;
+  position: relative;
 }
-
 .cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
