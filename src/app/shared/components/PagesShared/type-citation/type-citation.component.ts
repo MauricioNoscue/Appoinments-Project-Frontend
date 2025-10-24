@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 
 
 export interface TypeCitation {
@@ -20,16 +21,25 @@ export class TypeCitationComponent {
 
    @Input()  typeCitations: TypeCitation[] = []
 
-    // 🧠 Convierte "Consulta externa" -> "/consulta-externa"
   toRoute(name: string): string {
     return '/' + name
-      .normalize('NFD')                 // separa acentos
-      .replace(/[\u0300-\u036f]/g, '') // elimina acentos
+      .normalize('NFD')               
+      .replace(/[\u0300-\u036f]/g, '') 
       .trim()
       .toLowerCase()
-      .replace(/\s+/g, '-')            // espacios -> guiones
-      .replace(/[^a-z0-9\-]/g, '');    // limpia caracteres raros
+      .replace(/\s+/g, '-')          
+      .replace(/[^a-z0-9\-]/g, '');  
   }
  trackById = (_: number, item: TypeCitation) => item.id;
+
+pageIndex = 0;
+pageSize = 12;
+
+onPageChange(event: PageEvent): void {
+  this.pageIndex = event.pageIndex;
+  this.pageSize = event.pageSize;
+
+
+}
 
 }

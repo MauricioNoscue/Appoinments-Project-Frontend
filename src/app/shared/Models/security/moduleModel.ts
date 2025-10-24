@@ -18,8 +18,8 @@ export interface ModuleC {
 
 export interface ModuleList{
     id:number
-    Name: string,
-    Description:string
+    name: string,
+    description:string
     IsDeleted:boolean
 
 }

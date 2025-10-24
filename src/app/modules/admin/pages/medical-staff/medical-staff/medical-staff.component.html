@@ -1,63 +1,57 @@
-<!-- Encabezado + acciones -->
 <section class="page">
-    <header class="page-header">
-        <h1 class="title">Personal de la salud</h1>
+  <header class="page-header">
+    <h1 class="title">Personal de la salud</h1>
 
-        <div class="header-actions" [formGroup]="form">
-            <button mat-raised-button color="primary" class="btn-add" (click)="openCreateDialog()">
-                <mat-icon>add</mat-icon>
-                Agregar personal
-            </button>
+    <div class="header-actions" [formGroup]="form">
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon> Agregar personal
+      </button>
 
-            <!-- Búsqueda -->
-            <div class="search-container">
+       <div class="search-container">
                 <form class="d-flex search-bar" role="search">
                     <input type="search" class="form-control me-2 barra" matInput placeholder="Buscar"
                         [formControl]="searchControl" />
                 </form>
             </div>
 
-            <button mat-stroked-button class="filter" (click)="openFilters()">
-                <mat-icon>filter_list</mat-icon>
-                Filtrar
-            </button>
-        </div>
-    </header>
+      <!-- <button mat-stroked-button (click)="openFilters()">
+        <mat-icon>filter_list</mat-icon> Filtrar
+      </button> -->
+    </div>
+  </header>
 
-    <!-- Contenido: grilla de tarjetas -->
-    <div class="cards-container">
-        <ng-container *ngIf="!loading && doctors.length === 0; else listTpl">
-            <mat-card class="empty">
-                <mat-icon>person_off</mat-icon>
-                <p>No se encontraron médicos.</p>
-            </mat-card>
-        </ng-container>
+  <div class="cards-container" *ngIf="!loading; else loaderTpl">
+    <div *ngIf="filteredDoctors.length === 0" class="empty">
+      <mat-icon>person_off</mat-icon>
+      <p>No se encontraron médicos.</p>
+    </div>
 
-        <ng-template #listTpl>
-            <div class="cards-grid">
-                <app-doctor-card *ngFor="let d of paginatedDoctors" [image]="d.image" [fullName]="d.fullName || ''"
+    <div class="cards-grid">
+      <app-doctor-card
+        *ngFor="
+          let d of filteredDoctors
+          | slice: pageIndex * pageSize : (pageIndex + 1) * pageSize;
+          trackBy: trackById
+        "
+        [image]="d.image" [fullName]="d.fullName || ''"
                     [specialtyName]="d.specialtyName" [email]="d.emailDoctor" [active]="d.active" [doctor]="d"
-                    (edit)="onEditDoctor($event)" (delete)="onDeleteDoctor($event)">
-                </app-doctor-card>
-            </div>
-        </ng-template>
+        (edit)="onEditDoctor(d)"
+        (delete)="onDeleteDoctor(d)">
+      </app-doctor-card>
     </div>
+  </div>
 
-    <!-- Controles de paginación tipo carrusel -->
-    <div class="carousel-controls" *ngIf="total > 12">
-        <button class="carousel-btn" (click)="prevPage()" [disabled]="pageIndex <= 0">
-            <mat-icon>chevron_left</mat-icon>
-        </button>
-        <span class="page-indicator">
-            {{ pageIndex + 1 }} / {{ totalPages || 1 }}
-        </span>
-        <button class="carousel-btn" (click)="nextPage()" [disabled]="(pageIndex + 1) * pageSize >= total">
-            <mat-icon>chevron_right</mat-icon>
-        </button>
+  <ng-template #loaderTpl>
+    <div class="loader">
+      <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
     </div>
+  </ng-template>
 
-    <!-- Loader -->
-    <div class="loader" *ngIf="loading">
-        <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
-    </div>
+  <mat-paginator
+    [length]="filteredDoctors.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[6, 12, 24, 48]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons>
+  </mat-paginator>
 </section>

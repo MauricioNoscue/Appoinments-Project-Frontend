@@ -54,6 +54,7 @@ const materialModules = [
   ,MatProgressSpinnerModule,MatProgressBarModule,MatTabsModule,
   MatFormFieldModule,MatStepperModule,MatDatepickerModule,
   MatNativeDateModule,MatButtonToggleModule,MatPaginatorModule 
+
 ];
 
 @NgModule({

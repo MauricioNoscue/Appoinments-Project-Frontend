@@ -1,0 +1,81 @@
+<div class="table-container tabla-diseño">
+  <table mat-table [dataSource]="paginatedData" class="mat-elevation-z2">
+
+    <!-- Columnas dinámicas -->
+    <ng-container *ngFor="let col of columnDefs" [matColumnDef]="col.key">
+      <th mat-header-cell *matHeaderCellDef>{{ col.label }}</th>
+
+      <td mat-cell *matCellDef="let element; let i = index">
+
+        <!-- #️ Índice incremental -->
+        <ng-container *ngIf="col.key === 'index'">
+         {{ getRowIndex(i) }}
+        </ng-container>
+
+        <!-- Texto normal -->
+        <ng-container *ngIf="!col.type && col.key !== '#'">
+          {{ col.format ? col.format(element) : (element )[col.key] }}
+        </ng-container>
+
+        <!-- Chip -->
+        <ng-container *ngIf="col.type === 'chip'">
+          <mat-chip
+            [color]="col.colorFn ? col.colorFn(element) : 'primary'"
+            selected>
+            {{ col.format ? col.format(element) : (element)[col.key] }}
+          </mat-chip>
+        </ng-container>
+
+        <!-- Icono -->
+        <ng-container *ngIf="col.type === 'icon'">
+          <button
+            mat-icon-button
+            [matTooltip]="col.tooltip || ''"
+            color="primary">
+            <mat-icon>{{ col.icon || 'info' }}</mat-icon>
+          </button>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container *ngIf="col.type === 'actions'">
+          <button
+            mat-icon-button
+            color="primary"
+            matTooltip="Editar"
+            (click)="emitAction('edit', element)">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="warn"
+            matTooltip="Eliminar"
+            (click)="emitAction('delete', element)">
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <button
+            mat-icon-button
+            color="accent"
+            matTooltip="Detalle"
+            (click)="emitAction('detail', element)">
+            <mat-icon>info</mat-icon>
+          </button>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <!-- Filas -->
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+</div>
+
+<!-- Paginador -->
+<mat-paginator
+  [length]="dataSource.length"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 15, 25, 55]"
+  (page)="onPageChange($event)"
+  showFirstLastButtons>
+</mat-paginator>

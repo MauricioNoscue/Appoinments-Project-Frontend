@@ -27,4 +27,16 @@
     
     >
   </app-shedule-card>
+
+  
+ 
 </div>
+
+ <mat-paginator
+    [length]="shedules.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[6, 12, 24, 48]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>

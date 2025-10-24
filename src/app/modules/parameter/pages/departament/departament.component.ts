@@ -14,23 +14,12 @@ import { DepartamentService } from '../../../../shared/services/departament.serv
 import { DepartamentList } from '../../../../shared/Models/parameter/Departament';
 import { DialogContainerComponent } from '../../../../shared/components/Modal/dialog-container/dialog-container.component';
 import Swal from 'sweetalert2';
+import { ColumnDefinition } from '../../../../shared/Models/Tables/TableModels';
 
 
 @Component({
   selector: 'app-departament',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatTableModule,
-    MatChipsModule,
-    MatTooltipModule,
-  ],
   templateUrl: './departament.component.html',
   styleUrl: './departament.component.css',
 })
@@ -41,138 +30,128 @@ export class DepartamentComponent implements OnInit {
   ) {}
 
   dataSource: DepartamentList[] = [];
-  displayedColumns: string[] = [
-    'index',
-    'name',
-    'registrationDate',
-    'status',
-    'actions',
+  searchTerm = '';
+
+  columnDefs: ColumnDefinition[] = [
+    { key: 'index', label: '#', type: 'text' },
+    { key: 'name', label: 'Nombre' },
+    {
+      key: 'registrationDate',
+      label: 'Fecha Registro',
+      type: 'text',
+      format: (x) =>
+        x.registrationDate
+          ? new Date(x.registrationDate).toLocaleDateString('es-CO')
+          : 'Sin registro',
+    },
+    {
+      key: 'status',
+      label: 'Estado',
+      type: 'chip',
+      colorFn: (x) => (x.isDeleted ? 'warn' : 'primary'),
+      format: (x) => (x.isDeleted ? 'Inactivo' : 'Activo'),
+    },
+    { key: 'actions', label: 'Acciones', type: 'actions' },
   ];
-  searchTerm: string = '';
+
+  displayedColumns: string[] = this.columnDefs.map((c) => c.key);
 
   ngOnInit(): void {
     this.cargarDepartamentos();
-    console.log('¿Data cargada?', this.dataSource); // async
   }
 
+  /** 🔄 Cargar todos los departamentos */
   cargarDepartamentos(): void {
     this.departamentService.traerTodo().subscribe({
-      next: (departamentos: DepartamentList[]) => {
-        this.dataSource = departamentos;
-        console.log('Departamentos cargados:', departamentos);
-      },
+      next: (departamentos) => (this.dataSource = departamentos),
       error: (err) => {
         console.error('Error al cargar departamentos:', err);
+        Swal.fire('Error', 'No se pudieron cargar los departamentos.', 'error');
       },
     });
   }
 
+  /** 🔍 Filtro de búsqueda */
   get filteredDataSource(): DepartamentList[] {
+    const q = this.searchTerm.toLowerCase().trim();
     return this.dataSource.filter((item) =>
-      item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      item.name.toLowerCase().includes(q)
     );
   }
 
-   eliminar(id: number): void {
-     Swal.fire({
-       title: '¿Estás seguro?',
-       text: 'Esta acción eliminará el departamento permanentemente.',
-       icon: 'warning',
-       showCancelButton: true,
-       confirmButtonText: 'Sí, eliminar',
-       cancelButtonText: 'Cancelar',
-       confirmButtonColor: '#d33',
-       cancelButtonColor: '#3085d6',
-     }).then((result) => {
-       if (result.isConfirmed) {
-         this.departamentService.eliminar(id).subscribe({
-           next: () => {
-             Swal.fire({
-               icon: 'success',
-               title: 'Eliminada',
-               text: 'El departamento fue eliminada correctamente.',
-               confirmButtonText: 'OK',
-               confirmButtonColor: '#28a745',
-             });
-             this.cargarDepartamentos(); // Recargar la lista
-           },
-           error: (err) => {
-             console.error('Error al eliminar:', err);
-             Swal.fire({
-               icon: 'error',
-               title: 'Error',
-               text: 'No se pudo eliminar la ciudad.',
-               confirmButtonText: 'Cerrar',
-             });
-           },
-         });
-       }
-     });
-   }
-
-  recargarListado(): void {
-    this.cargarDepartamentos();
+  /** 🗑️ Eliminar departamento */
+  eliminar(id: number): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el departamento permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.departamentService.eliminar(id).subscribe({
+          next: () => {
+            Swal.fire(
+              'Eliminado',
+              'El departamento fue eliminado correctamente.',
+              'success'
+            );
+            this.cargarDepartamentos();
+          },
+          error: (err) => {
+            console.error('Error al eliminar departamento:', err);
+            Swal.fire('Error', 'No se pudo eliminar el departamento.', 'error');
+          },
+        });
+      }
+    });
   }
 
+  /** ✏️ Crear o editar departamento */
   abrirFormulario(modo: 'create' | 'edit', data?: DepartamentList): void {
-    import(
-      '../../Components/forms/FormsBase/form-departament/form-departament.component'
-    ).then(({ FormDepartamentComponent }) => {
-      const dialogRef = this.dialog.open(FormDepartamentComponent, {
-        width: '600px',
-        data: { modo, data }, // viaja por MAT_DIALOG_DATA
-      });
+    import('../../Components/forms/FormsBase/form-departament/form-departament.component').then(
+      ({ FormDepartamentComponent }) => {
+        const dialogRef = this.dialog.open(FormDepartamentComponent, {
+          width: '600px',
+          data: { modo, data },
+        });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (!result) return;
+        dialogRef.afterClosed().subscribe((result) => {
+          if (!result) return;
 
-        if (modo === 'create') {
-                 this.departamentService.crear(result).subscribe({
-                   next: (res) => {
-                     // Mostrar modal de éxito
-                     Swal.fire({
-                       icon: 'success',
-                       title: '¡Éxito!',
-                       text: 'El departamaneto fue creada correctamente.',
-                       confirmButtonText: 'Continuar',
-                       confirmButtonColor: '#28a745',
-                     });
-                     this.cargarDepartamentos();
-                   },
-                   error: (err) => {
-                     console.error('Error al crear departamento:', err);
-                     Swal.fire({
-                       icon: 'error',
-                       title: 'Error',
-                       text: 'No se pudo crear el departamento.',
-                       confirmButtonText: 'Cerrar',
-                     });
-                   },
-                 });
-               } else {
-                 this.departamentService.actualizar(result).subscribe({
-                   next: (res) => {
-                     Swal.fire({
-                       icon: 'success',
-                       title: '¡Actualizado!',
-                       text: 'El departamento fue actualizado correctamente.',
-                       confirmButtonText: 'Continuar',
-                       confirmButtonColor: '#28a745',
-                     });
-                     this.cargarDepartamentos();
-                   },
-                   error: (err) => {
-                     console.error('Error al actualizar departamento:', err);
-                     Swal.fire({
-                       icon: 'error',
-                       title: 'Error',
-                       text: 'No se pudo actualizar el departamento.',
-                       confirmButtonText: 'Cerrar',
-                     });
-                   },
-                 });
-               }
-             });
-           });
-         }
-       }
+          const action =
+            modo === 'create'
+              ? this.departamentService.crear(result)
+              : this.departamentService.actualizar(result);
+
+          action.subscribe({
+            next: () => {
+              Swal.fire(
+                'Éxito',
+                modo === 'create'
+                  ? 'El departamento fue creado correctamente.'
+                  : 'El departamento fue actualizado correctamente.',
+                'success'
+              );
+              this.cargarDepartamentos();
+            },
+            error: (err) => {
+              console.error('Error al guardar departamento:', err);
+              Swal.fire('Error', 'No se pudo guardar el departamento.', 'error');
+            },
+          });
+        });
+      }
+    );
+  }
+
+  /** ⚙️ Acciones emitidas desde la tabla genérica */
+  handleAction(e: { action: string; element: any }) {
+    const { action, element } = e;
+    if (action === 'delete') this.eliminar(element.id || element.departamentId);
+    if (action === 'edit') this.abrirFormulario('edit', element);
+  }
+}

@@ -298,21 +298,13 @@ submitScheduleConfiguration(): void {
       sheduleId: this.scheduleId
     };
 
-    console.log('Configuración de horarios:', scheduleConfigData);
     
     // Hacer la petición para crear los horarios
     this.genericservice.crearGeneric("ScheduleHour", scheduleConfigData).subscribe({
-      next: (response: any) => {
-        console.log('Configuración de horarios creada exitosamente:', response);
-        
+      next: (response: any) => {        
         // Mostrar SweetAlert de éxito
         this.showSuccessAlert();
 
-
-
-
-        
-        
         // Opcional: resetear formularios o redirigir
         this.resetAllForms();
       },
@@ -358,7 +350,6 @@ showSuccessAlert(): void {
     if (result.isConfirmed) {
       // Redirigir o realizar otra acción
            this.dialogRef.close(true);
-      console.log('Usuario confirmó el éxito');
     }
   });
   

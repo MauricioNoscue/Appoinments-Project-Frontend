@@ -9,6 +9,7 @@ import {
   RolList,
 } from '../../../../../shared/Models/security/RolModel';
 import { FormRolComponent } from '../../../Components/forms/FormsBase/form-rol/form-rol.component';
+import { ColumnDefinition } from '../../../../../shared/Models/Tables/TableModels';
 
 @Component({
   selector: 'app-rol',
@@ -20,127 +21,85 @@ export class RolComponent implements OnInit {
   constructor(private service: RolService, private dialog: MatDialog) {}
 
   dataSource: RolList[] = [];
-  displayedColumns: string[] = [
-    'index',
-    'name',
-    'description',
-    'status',
-    'detail',
-    'actions',
+  searchTerm = '';
+
+  // 🔹 Definición de columnas reutilizables
+  columnDefs: ColumnDefinition[] = [
+    { key: 'index', label: '#', type: 'text' },
+    { key: 'name', label: 'Nombre' },
+    { key: 'description', label: 'Descripción' },
+    {
+      key: 'status',
+      label: 'Estado',
+      type: 'chip',
+      colorFn: (x) => (x.status ? 'warn' : 'primary'),
+      format: (x) => (x.status ? 'Inactivo' : 'Activo'),
+    },
+    { key: 'detail', label: 'Detalle', type: 'icon', icon: 'info', tooltip: 'Ver detalle' },
+    { key: 'actions', label: 'Acciones', type: 'actions' },
   ];
+
+  displayedColumns: string[] = this.columnDefs.map((c) => c.key);
 
   ngOnInit(): void {
     this.cargarRoles();
   }
 
+  /** 🔄 Cargar roles */
   cargarRoles(): void {
     this.service.traerTodo().subscribe({
       next: (roles) => (this.dataSource = roles),
       error: (err) => {
         console.error('Error al cargar roles:', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudieron cargar los roles.',
-          confirmButtonText: 'Cerrar',
-        });
+        Swal.fire('Error', 'No se pudieron cargar los roles.', 'error');
       },
     });
   }
 
-  abrirCrear(): void {
-    this.dialog
-      .open(FormRolComponent, {
-        width: '600px',
-        data: { modo: 'create' as const }, // el form sabe qué hacer
-      })
-      .afterClosed()
-      .subscribe((result: RolCreated | undefined) => {
-        if (!result) return;
-
-        this.service.crear(result).subscribe({
-          next: () => {
-            Swal.fire({
-              icon: 'success',
-              title: '¡Creado!',
-              text: 'El rol fue creado correctamente.',
-              confirmButtonText: 'Continuar',
-              confirmButtonColor: '#28a745',
-            });
-            this.cargarRoles();
-          },
-          error: (err) => {
-            console.error('Error al crear rol:', err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo crear el rol.',
-              confirmButtonText: 'Cerrar',
-            });
-          },
-        });
-      });
+  /** 🔍 Filtro local */
+  get filteredDataSource(): RolList[] {
+    const q = this.searchTerm.toLowerCase().trim();
+    return this.dataSource.filter(
+      (r) =>
+        r.name.toLowerCase().includes(q) ||
+        (r.description ?? '').toLowerCase().includes(q)
+    );
   }
 
+  /** 🧾 Crear o editar */
   abrirDialog(modo: 'create' | 'edit', data?: RolC): void {
     this.dialog
       .open(FormRolComponent, {
         width: '600px',
-        data: { modo, data }, // MAT_DIALOG_DATA
+        data: { modo, data },
       })
       .afterClosed()
       .subscribe((result) => {
         if (!result) return;
 
-        if (modo === 'create') {
-          this.service.crear(result).subscribe({
-            next: () => {
-              Swal.fire({
-                icon: 'success',
-                title: '¡Creado!',
-                text: 'El rol fue creado correctamente.',
-                confirmButtonText: 'Continuar',
-                confirmButtonColor: '#28a745',
-              });
-              this.cargarRoles();
-            },
-            error: (err) => {
-              console.error('Error al crear rol:', err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo crear el rol.',
-                confirmButtonText: 'Cerrar',
-              });
-            },
-          });
-        } else {
-          // editar
-          this.service.actualizar(result).subscribe({
-            next: () => {
-              Swal.fire({
-                icon: 'success',
-                title: '¡Actualizado!',
-                text: 'El rol fue actualizado correctamente.',
-                confirmButtonText: 'Continuar',
-                confirmButtonColor: '#28a745',
-              });
-              this.cargarRoles();
-            },
-            error: (err) => {
-              console.error('Error al actualizar rol:', err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo actualizar el rol.',
-                confirmButtonText: 'Cerrar',
-              });
-            },
-          });
-        }
+        const action =
+          modo === 'create'
+            ? this.service.crear(result)
+            : this.service.actualizar(result);
+
+        action.subscribe({
+          next: () => {
+            const mensaje =
+              modo === 'create'
+                ? 'El rol fue creado correctamente.'
+                : 'El rol fue actualizado correctamente.';
+            Swal.fire('Éxito', mensaje, 'success');
+            this.cargarRoles();
+          },
+          error: (err) => {
+            console.error('Error al guardar:', err);
+            Swal.fire('Error', 'No se pudo guardar el rol.', 'error');
+          },
+        });
       });
   }
 
+  /** 🗑️ Eliminar */
   eliminar(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -155,25 +114,23 @@ export class RolComponent implements OnInit {
       if (result.isConfirmed) {
         this.service.eliminar(id).subscribe({
           next: () => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Eliminado',
-              text: 'El rol fue eliminado correctamente.',
-              confirmButtonText: 'OK',
-            });
+            Swal.fire('Eliminado', 'Rol eliminado correctamente.', 'success');
             this.cargarRoles();
           },
           error: (err) => {
             console.error('Error al eliminar:', err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo eliminar el rol.',
-              confirmButtonText: 'Cerrar',
-            });
+            Swal.fire('Error', 'No se pudo eliminar el rol.', 'error');
           },
         });
       }
     });
+  }
+
+  /** ⚙️ Acciones emitidas desde la tabla genérica */
+  handleAction(e: { action: string; element: any }) {
+    const { action, element } = e;
+    if (action === 'delete') this.eliminar(element.id);
+    if (action === 'edit') this.abrirDialog('edit', element);
+    if (action === 'detail') Swal.fire('Detalle', `Rol: ${element.name}`, 'info');
   }
 }

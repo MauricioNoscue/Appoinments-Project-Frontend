@@ -228,7 +228,7 @@ export class ConsultorioComponent implements OnInit {
 
 
 
-  // consultorios.component.ts
+ 
 pageIndex = 0;
 pageSize = 12;
 

@@ -12,19 +12,15 @@ import { DepartamentComponent } from './pages/departament/departament.component'
 
 @NgModule({
   declarations: [
-    // Componentes no standalone se declaran aquí
+    BranchComponent,
+    DepartamentComponent,
+    InstitutionsComponent,
+    CityComponent
   ],
   imports: [
-    CommonModule,
     ParameterRoutingModule,
     SharedModule,
     MaterialModule,
-    ReactiveFormsModule,
-    ParameterDashboardComponent, // Importamos los componentes standalone
-    CityComponent,
-    InstitutionsComponent,
-    BranchComponent,
-    DepartamentComponent,
   ],
 })
 export class ParameterModule {}

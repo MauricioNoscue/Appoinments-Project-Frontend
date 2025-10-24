@@ -15,66 +15,75 @@ import { BranchList } from '../../../../shared/Models/parameter/Branch';
 import { BranchService } from '../../../../shared/services/branch.service';
 import { FormBranchComponent } from '../../Components/forms/FormsBase/form-branch/form-branch.component';
 import Swal from 'sweetalert2';
+import { ColumnDefinition } from '../../../../shared/Models/Tables/TableModels';
 
 @Component({
   selector: 'app-branch',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatTableModule,
-    MatChipsModule,
-    MatTooltipModule,
-  ],
+  standalone: false,
   templateUrl: './branch.component.html',
   styleUrl: './branch.component.css',
 })
 export class BranchComponent implements OnInit {
-  constructor(
-    private dialog: MatDialog,
-    private BranchService: BranchService
-  ) {}
+  constructor(private dialog: MatDialog, private branchService: BranchService) {}
 
   dataSource: BranchList[] = [];
-  displayedColumns: string[] = [
-    'index',
-    'name',
-    'email',
-    'phoneNumber',
-    'address',
-    'institutionName',
-    'registrationDate',
-    'status',
-    'actions',
-  ];
   searchTerm = '';
+
+  //  Definición de columnas reutilizables
+  columnDefs: ColumnDefinition[] = [
+    { key: 'index', label: '#', type: 'text' },
+    { key: 'name', label: 'Nombre' },
+    { key: 'email', label: 'Email' },
+    { key: 'phoneNumber', label: 'Teléfono' },
+    { key: 'address', label: 'Dirección' },
+    { key: 'institutionName', label: 'Institución' },
+    {
+      key: 'registrationDate',
+      label: 'Fecha Registro',
+      type: 'text',
+      format: (x) =>
+        x.registrationDate
+          ? new Date(x.registrationDate).toLocaleDateString('es-CO')
+          : '',
+    },
+    {
+      key: 'status',
+      label: 'Estado',
+      type: 'chip',
+      colorFn: (x) => (x.isDeleted ? 'warn' : 'primary'),
+      format: (x) => (x.isDeleted ? 'Inactivo' : 'Activo'),
+    },
+    { key: 'actions', label: 'Acciones', type: 'actions' },
+  ];
+
+  displayedColumns: string[] = this.columnDefs.map((c) => c.key);
 
   ngOnInit(): void {
     this.cargarSucursales();
   }
 
+  /** 🔄 Cargar sucursales */
   cargarSucursales(): void {
-    this.BranchService.traerTodo().subscribe({
+    this.branchService.traerTodo().subscribe({
       next: (branches) => (this.dataSource = branches),
-      error: (err) => console.error('Error al cargar sucursales:', err),
+      error: (err) => {
+        console.error('Error al cargar sucursales:', err);
+        Swal.fire('Error', 'No se pudieron cargar las sucursales.', 'error');
+      },
     });
   }
 
+  /** 🔍 Filtro local */
   get filteredDataSource(): BranchList[] {
+    const q = this.searchTerm.toLowerCase().trim();
     return this.dataSource.filter(
-      (item) =>
-        item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        item.institutionName
-          .toLowerCase()
-          .includes(this.searchTerm.toLowerCase())
+      (b) =>
+        b.name.toLowerCase().includes(q) ||
+        (b.institutionName ?? '').toLowerCase().includes(q)
     );
   }
 
+  /** 🗑️ Eliminar sucursal */
   eliminar(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -87,89 +96,63 @@ export class BranchComponent implements OnInit {
       cancelButtonColor: '#3085d6',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.BranchService.eliminar(id).subscribe({
+        this.branchService.eliminar(id).subscribe({
           next: () => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Eliminada',
-              text: 'La sucursal fue eliminada correctamente.',
-              confirmButtonText: 'OK',
-              confirmButtonColor: '#28a745',
-            });
-            this.cargarSucursales(); // Recargar la lista
+            Swal.fire('Eliminada', 'Sucursal eliminada correctamente.', 'success');
+            this.cargarSucursales();
           },
           error: (err) => {
             console.error('Error al eliminar:', err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo eliminar la sucursal.',
-              confirmButtonText: 'Cerrar',
-            });
+            Swal.fire('Error', 'No se pudo eliminar la sucursal.', 'error');
           },
         });
       }
     });
   }
 
+  /** ➕ Crear / ✏️ Editar sucursal */
   abrirFormulario(modo: 'create' | 'edit', data?: BranchList): void {
-    import(
-      '../../Components/forms/FormsBase/form-branch/form-branch.component'
-    ).then(({ FormBranchComponent }) => {
-      const dialogRef = this.dialog.open(FormBranchComponent, {
-        width: '600px',
-        data: { modo, branch: data }, // <- aquí viaja todo
-      });
+    import('../../Components/forms/FormsBase/form-branch/form-branch.component').then(
+      ({ FormBranchComponent }) => {
+        this.dialog
+          .open(FormBranchComponent, {
+            width: '600px',
+            data: { modo, branch: data },
+          })
+          .afterClosed()
+          .subscribe((result) => {
+            if (!result) return;
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (!result) return;
-        if (modo === 'create') {
-          this.BranchService.crear(result).subscribe({
-            next: (res) => {
-              // Mostrar modal de éxito
-              Swal.fire({
-                icon: 'success',
-                title: '¡Éxito!',
-                text: 'La sucursal fue creada correctamente.',
-                confirmButtonText: 'Continuar',
-                confirmButtonColor: '#28a745',
-              });
-              this.cargarSucursales();
-            },
-            error: (err) => {
-              console.error('Error al crear sucursal:', err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo crear la sucursal.',
-                confirmButtonText: 'Cerrar',
-              });
-            },
+            const action =
+              modo === 'create'
+                ? this.branchService.crear(result)
+                : this.branchService.actualizar(result);
+
+            action.subscribe({
+              next: () => {
+                Swal.fire(
+                  'Éxito',
+                  modo === 'create'
+                    ? 'La sucursal fue creada correctamente.'
+                    : 'La sucursal fue actualizada correctamente.',
+                  'success'
+                );
+                this.cargarSucursales();
+              },
+              error: (err) => {
+                console.error('Error al guardar sucursal:', err);
+                Swal.fire('Error', 'No se pudo guardar la sucursal.', 'error');
+              },
+            });
           });
-        } else {
-          this.BranchService.actualizar(result).subscribe({
-            next: (res) => {
-              Swal.fire({
-                icon: 'success',
-                title: '¡Actualizado!',
-                text: 'La sucursal fue actualizada correctamente.',
-                confirmButtonText: 'Continuar',
-                confirmButtonColor: '#28a745',
-              });
-              this.cargarSucursales();
-            },
-            error: (err) => {
-              console.error('Error al actualizar sucursal:', err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo actualizar la sucursal.',
-                confirmButtonText: 'Cerrar',
-              });
-            },
-          });
-        }
-      });
-    });
+      }
+    );
+  }
+
+  /** ⚙️ Acciones centralizadas desde la tabla */
+  handleAction(e: { action: string; element: any }) {
+    const { action, element } = e;
+    if (action === 'delete') this.eliminar(element.id || element.cityId);
+    if (action === 'edit') this.abrirFormulario('edit', element);
   }
 }

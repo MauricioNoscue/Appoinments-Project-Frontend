@@ -6,6 +6,7 @@ import { DialogContainerComponent } from '../../../../../shared/components/Modal
 import { UserCreateComponent } from '../../../Components/forms/FormsCreate/user-create/user-create.component';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { ColumnDefinition } from '../../../../../shared/Models/Tables/TableModels';
 
 @Component({
   selector: 'app-user',
@@ -15,6 +16,29 @@ import { Router } from '@angular/router';
 })
 export class UserComponent implements OnInit {
 constructor(private service: UserService ,private dialog: MatDialog,private route :Router) {}
+
+
+columnDefs: ColumnDefinition[] = [
+  { key: 'index', label: '#', type: 'text' },
+  { key: 'email', label: 'Correo' },
+  { key: 'personName', label: 'Nombre' },
+  {
+    key: 'active',
+    label: 'Activo',
+    type: 'chip',
+    colorFn: (x) => (x.active ? 'primary' : 'warn'),
+    format: (x) => (x.active ? 'Sí' : 'No'),
+  },
+  { key: 'restrictionPoint', label: 'Restricción' },
+  { key: 'actions', label: 'Acciones', type: 'actions' },
+];
+
+handleAction(e: { action: string; element: any }) {
+  const { action, element } = e;
+  if (action === 'delete') this.eliminar(element.id);
+  if (action === 'detail') this.route.navigate(['/admin/security/gestion', element.id]);
+  if (action === 'edit') this.abrirDialog('edit', element);
+}
 
 
 abrirDialog(tipo: 'create' | 'edit' | 'card', datos?: any) {
@@ -34,8 +58,8 @@ abrirDialog(tipo: 'create' | 'edit' | 'card', datos?: any) {
   });
 
   dialogRef.afterClosed().subscribe(result => {
-    if (result) { // opcional: verificar si se hizo algún cambio
-      this.cargarUsers(); // recargar datos
+    if (result) { 
+      this.cargarUsers(); 
     }
   });
 }
@@ -55,13 +79,12 @@ ngOnInit(): void {
 
 dataSource : UsuarioListado[] = [];
 displayedColumns: string[] = [
-  'index',           // para numeración
-  'email',           // correo del usuario
-  'personName',      // nombre de la persona
-  'active',          // estado activo/inactivo
-  'restrictionPoint',// puntos de restricción
-     // estado de eliminación
-  'actions'          // botones de editar/eliminar
+  'index',          
+  'email',          
+  'personName',     
+  'active',         
+  'restrictionPoint',
+  'actions'    
 ];
 
 Detalle(id:number){

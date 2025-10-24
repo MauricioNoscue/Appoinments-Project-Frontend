@@ -6,7 +6,8 @@ import {
 } from '../../../../../shared/Models/security/FormModel';
 import { FormService } from '../../../../../shared/services/form.service';
 import { FormFormComponent } from '../../../Components/forms/FormsBase/form-form/form-form.component';
-
+import Swal from 'sweetalert2';
+import { ColumnDefinition } from '../../../../../shared/Models/Tables/TableModels';
 @Component({
   selector: 'app-form',
   standalone: false,
@@ -15,19 +16,28 @@ import { FormFormComponent } from '../../../Components/forms/FormsBase/form-form
   encapsulation: ViewEncapsulation.None,
 })
 export class FormComponent implements OnInit {
-  constructor(private service: FormService, private dialog: MatDialog) {}
+ constructor(private service: FormService, private dialog: MatDialog) {}
 
   dataSource: FormList[] = [];
-  displayedColumns: string[] = [
-    'index',
-    'name',
-    'url',
-    'description',
-    'status',
-    'detail',
-    'actions',
-  ];
   searchTerm = '';
+
+  columnDefs: ColumnDefinition[] = [
+    { key: 'index', label: '#', type: 'text' },
+    { key: 'name', label: 'Nombre' },
+    { key: 'url', label: 'URL' },
+    { key: 'description', label: 'Descripción' },
+    {
+      key: 'status',
+      label: 'Estado',
+      type: 'chip',
+      colorFn: (x) => (x.status ? 'warn' : 'primary'),
+      format: (x) => (x.status ? 'Inactivo' : 'Activo'),
+    },
+    { key: 'detail', label: 'Detalle', type: 'icon', icon: 'info', tooltip: 'Ver detalle' },
+    { key: 'actions', label: 'Acciones', type: 'actions' },
+  ];
+
+  displayedColumns: string[] = this.columnDefs.map((c) => c.key);
 
   ngOnInit(): void {
     this.recargarListado();
@@ -44,10 +54,28 @@ export class FormComponent implements OnInit {
   }
 
   eliminar(id: number): void {
-    if (!confirm('¿Estás seguro de eliminar este formulario?')) return;
-    this.service.eliminar(id).subscribe({
-      next: () => this.recargarListado(),
-      error: (err) => console.error('Error al eliminar:', err),
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el formulario permanentemente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.service.eliminar(id).subscribe({
+          next: () => {
+            this.recargarListado();
+            Swal.fire('Eliminado', 'Formulario eliminado correctamente.', 'success');
+          },
+          error: (err) => {
+            console.error('Error al eliminar:', err);
+            Swal.fire('Error', 'No se pudo eliminar el formulario.', 'error');
+          },
+        });
+      }
     });
   }
 
@@ -62,7 +90,7 @@ export class FormComponent implements OnInit {
     this.dialog
       .open(FormFormComponent, {
         width: '600px',
-        data: { modo, data }, // viaja por MAT_DIALOG_DATA
+        data: { modo, data },
       })
       .afterClosed()
       .subscribe((result) => {
@@ -70,10 +98,15 @@ export class FormComponent implements OnInit {
         if (modo === 'create') {
           this.service.crear(result).subscribe(() => this.recargarListado());
         } else {
-          this.service
-            .actualizar(result)
-            .subscribe(() => this.recargarListado());
+          this.service.actualizar(result).subscribe(() => this.recargarListado());
         }
       });
+  }
+
+  handleAction(e: { action: string; element: any }) {
+    const { action, element } = e;
+    if (action === 'delete') this.eliminar(element.id);
+    if (action === 'edit') this.abrirFormulario('edit', element);
+    if (action === 'detail') Swal.fire('Detalle', `Formulario: ${element.name}`, 'info');
   }
 }

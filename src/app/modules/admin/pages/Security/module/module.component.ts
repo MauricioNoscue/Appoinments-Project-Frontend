@@ -10,8 +10,8 @@ import {
 } from '../../../../../shared/Models/security/moduleModel';
 import { ModuleService } from '../../../../../shared/services/module.service';
 
-// Abrimos el form standalone directo
 import { FormModuleComponent } from '../../../Components/forms/FormsBase/form-module/form-module.component';
+import { ColumnDefinition } from '../../../../../shared/Models/Tables/TableModels';
 
 @Component({
   selector: 'app-module',
@@ -23,14 +23,24 @@ export class ModuleComponent implements OnInit {
   constructor(private service: ModuleService, private dialog: MatDialog) {}
 
   dataSource: ModuleList[] = [];
-  displayedColumns: string[] = [
-    'index',
-    'name',
-    'description',
-    'status',
-    'detail',
-    'actions',
+  searchTerm = '';
+
+  columnDefs: ColumnDefinition[] = [
+    { key: 'index', label: '#', type: 'text' },
+    { key: 'name', label: 'Nombre' },
+    { key: 'description', label: 'Descripción' },
+    {
+      key: 'status',
+      label: 'Estado',
+      type: 'chip',
+      colorFn: (x) => (x.status ? 'warn' : 'primary'),
+      format: (x) => (x.status ? 'Inactivo' : 'Activo'),
+    },
+    { key: 'detail', label: 'Detalle', type: 'icon', icon: 'info', tooltip: 'Ver detalle' },
+    { key: 'actions', label: 'Acciones', type: 'actions' },
   ];
+
+  displayedColumns: string[] = this.columnDefs.map((c) => c.key);
 
   ngOnInit(): void {
     this.cargarModules();
@@ -51,34 +61,50 @@ export class ModuleComponent implements OnInit {
     });
   }
 
-  // ====== Crear ======
-  abrirCrear(): void {
+  get filteredDataSource(): ModuleList[] {
+    const q = this.searchTerm.toLowerCase().trim();
+    return this.dataSource.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        (m.description ?? '').toLowerCase().includes(q)
+    );
+  }
+
+  abrirDialog(modo: 'create' | 'edit', data?: ModuleC): void {
     this.dialog
       .open(FormModuleComponent, {
         width: '600px',
-        data: { modo: 'create' as const }, // el form sabe qué hacer
+        data: { modo, data },
       })
       .afterClosed()
-      .subscribe((result: ModuleCreated | undefined) => {
+      .subscribe((result) => {
         if (!result) return;
 
-        this.service.crear(result).subscribe({
+        const accion =
+          modo === 'create'
+            ? this.service.crear(result)
+            : this.service.actualizar(result as ModuleEdid);
+
+        accion.subscribe({
           next: () => {
+            const texto =
+              modo === 'create'
+                ? 'El módulo fue creado correctamente.'
+                : 'El módulo fue actualizado correctamente.';
             Swal.fire({
               icon: 'success',
-              title: '¡Creado!',
-              text: 'El módulo fue creado correctamente.',
-              confirmButtonText: 'Continuar',
+              title: 'Éxito',
+              text: texto,
               confirmButtonColor: '#28a745',
             });
             this.cargarModules();
           },
           error: (err) => {
-            console.error('Error al crear módulo:', err);
+            console.error('Error al guardar módulo:', err);
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'No se pudo crear el módulo.',
+              text: 'No se pudo guardar el módulo.',
               confirmButtonText: 'Cerrar',
             });
           },
@@ -86,66 +112,6 @@ export class ModuleComponent implements OnInit {
       });
   }
 
-  abrirDialog(modo: 'create' | 'edit', data?: ModuleC): void {
-    this.dialog
-      .open(FormModuleComponent, {
-        width: '600px',
-        data: { modo, data }, // MAT_DIALOG_DATA
-      })
-      .afterClosed()
-      .subscribe((result) => {
-        if (!result) return;
-
-        if (modo === 'create') {
-          this.service.crear(result).subscribe({
-            next: () => {
-              Swal.fire({
-                icon: 'success',
-                title: '¡Creado!',
-                text: 'El módulo fue creado correctamente.',
-                confirmButtonText: 'Continuar',
-                confirmButtonColor: '#28a745',
-              });
-              this.cargarModules();
-            },
-            error: (err) => {
-              console.error('Error al crear módulo:', err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo crear el módulo.',
-                confirmButtonText: 'Cerrar',
-              });
-            },
-          });
-        } else {
-          // edit
-          this.service.actualizar(result as ModuleEdid).subscribe({
-            next: () => {
-              Swal.fire({
-                icon: 'success',
-                title: '¡Actualizado!',
-                text: 'El módulo fue actualizado correctamente.',
-                confirmButtonText: 'Continuar',
-                confirmButtonColor: '#28a745',
-              });
-              this.cargarModules();
-            },
-            error: (err) => {
-              console.error('Error al actualizar módulo:', err);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudo actualizar el módulo.',
-                confirmButtonText: 'Cerrar',
-              });
-            },
-          });
-        }
-      });
-  }
-
-  // ====== Eliminar ======
   eliminar(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -160,25 +126,22 @@ export class ModuleComponent implements OnInit {
       if (result.isConfirmed) {
         this.service.eliminar(id).subscribe({
           next: () => {
-            Swal.fire({
-              icon: 'success',
-              title: 'Eliminado',
-              text: 'El módulo fue eliminado correctamente.',
-              confirmButtonText: 'OK',
-            });
+            Swal.fire('Eliminado', 'El módulo fue eliminado correctamente.', 'success');
             this.cargarModules();
           },
           error: (err) => {
             console.error('Error al eliminar:', err);
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'No se pudo eliminar el módulo.',
-              confirmButtonText: 'Cerrar',
-            });
+            Swal.fire('Error', 'No se pudo eliminar el módulo.', 'error');
           },
         });
       }
     });
+  }
+
+  handleAction(e: { action: string; element: any }) {
+    const { action, element } = e;
+    if (action === 'delete') this.eliminar(element.id);
+    if (action === 'edit') this.abrirDialog('edit', element);
+    if (action === 'detail') Swal.fire('Detalle', `Módulo: ${element.name}`, 'info');
   }
 }

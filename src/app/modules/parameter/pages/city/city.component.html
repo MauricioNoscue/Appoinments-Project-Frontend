@@ -1,76 +1,24 @@
-<!--botón de agregar ciudad-->
+<!-- 🧭 Encabezado -->
 <div class="form-header">
-    <button mat-button (click)="abrirFormulario('create')" class="btn-add" >
-        <mat-icon>add_location</mat-icon> Agregar ciudad
-    </button>
+  <button mat-raised-button color="primary" class="btn-add" (click)="abrirFormulario('create')">
+    <mat-icon>add_location</mat-icon> Agregar ciudad
+  </button>
 
-    <!--barra de busqueda-->
-    <div class="search-container">
-        <mat-form-field appearance="outline" class="search-bar">
-            <mat-label>Buscar</mat-label>
-            <input matInput [(ngModel)]="searchTerm" placeholder="Escriba aquí">
-            <button mat-icon-button matSuffix>
-                <mat-icon>search</mat-icon>
-            </button>
-        </mat-form-field>
-    </div>
+  <div class="search-container">
+    <mat-form-field appearance="outline" class="search-bar">
+      <mat-label>Buscar ciudad</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Buscar por nombre o departamento" />
+      <button mat-icon-button matSuffix>
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
 </div>
 
-<mat-card class="form-table-card fondo-card">
-    <mat-card-title>Listado de Ciudades</mat-card-title>
-
-    <!--tabla de ciudades-->
-    <div class="table-container tabla-diseño">
-        <table mat-table [dataSource]="filteredDataSource" class="mat-elevation-z2">
-
-            <!-- Número -->
-            <ng-container matColumnDef="index">
-                <th mat-header-cell *matHeaderCellDef><mat-icon>check_box_outline_blank</mat-icon></th>
-                <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
-            </ng-container>
-
-            <!-- Nombre -->
-            <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Nombre </th>
-                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-            </ng-container>
-
-            <!-- Departamento -->
-            <ng-container matColumnDef="departament">
-                <th mat-header-cell *matHeaderCellDef> Departamento </th>
-                <td mat-cell *matCellDef="let element"> {{element.departamentName}} </td>
-            </ng-container>
-
-            <!-- Fecha de Registro -->
-            <ng-container matColumnDef="registrationDate">
-                <th mat-header-cell *matHeaderCellDef> Fecha de Registro </th>
-                <td mat-cell *matCellDef="let element"> {{element.registrationDate | date:'dd/MM/yyyy'}} </td>
-            </ng-container>
-
-            <!-- Estado -->
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Estado </th>
-                <td mat-cell *matCellDef="let element" style="color: #708EEE;">
-                    <mat-chip color="primary" selected matTooltip="Estado">{{element.isDeleted ? 'Inactivo' : 'Activo'}}</mat-chip>
-                </td>
-            </ng-container>
-
-
-            <!-- Acciones -->
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Acciones </th>
-                <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button color="#7FC008" (click)="abrirFormulario('edit', element)">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                    <button mat-icon-button color="warn" (click)="eliminar(element.id || element.cityId)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-    </div>
-</mat-card>
+<!-- 🧱 Tabla genérica -->
+<app-generic-table
+  [dataSource]="filteredDataSource"
+  [columns]="displayedColumns"
+  [columnDefs]="columnDefs"
+  (actionClicked)="handleAction($event)">
+</app-generic-table>

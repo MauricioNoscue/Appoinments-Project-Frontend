@@ -7,13 +7,13 @@ import { DialogContainerComponent } from '../../../../shared/components/Modal/di
 import { ComponentType } from '@angular/cdk/overlay';
 
 import Swal from 'sweetalert2';
+import { PageEvent } from '@angular/material/paginator';
 
 export interface DynamicDialogData<TPayload = unknown> {
-  component: ComponentType<any>; // componente que quieres mostrar
-  payload?: TPayload;            // datos iniciales que le pasas
-}
+  component: ComponentType<any>; 
+  payload?: TPayload;            
 
-@Component({
+}@Component({
   selector: 'app-schedule',
   standalone: false,
   templateUrl: './schedule.component.html',
@@ -50,7 +50,6 @@ Delete(id: number) {
     backdrop: true,
   }).then((result) => {
     if (result.isConfirmed) {
-      // 👇 Solo eliminamos si confirma
       this.service.Delete("Shedule", id).subscribe({
         next: () => {
           Swal.fire({
@@ -64,7 +63,7 @@ Delete(id: number) {
             showClass: { popup: 'animate__animated animate__zoomIn' },
             hideClass: { popup: 'animate__animated animate__zoomOut' }
           }).then(() => {
-            this.loadShedules(); // 👈 recargar después del éxito
+            this.loadShedules(); 
           });
         },
         error: (error) => {
@@ -83,25 +82,29 @@ Delete(id: number) {
 }
 
 
-  // 👉 abrir modal para agregar horario
+pageIndex = 0;
+pageSize = 12;
+
+onPageChange(event: PageEvent): void {
+  this.pageIndex = event.pageIndex;
+  this.pageSize = event.pageSize;
+        this.loadShedules();
+
+}
+
+
   openFormShedule(): void {
     const data: DynamicDialogData = {
       component: FormSheduleComponent,
-      payload: {} // si quieres pasar datos iniciales al formulario
+      payload: {} 
     };
 
     const ref = this.dialog.open(DialogContainerComponent, {
       width: '1000px',
       data
     });
-
-    // Al cerrarse el diálogo
     ref.afterClosed().subscribe(result => {
       if (result) {
-        // comentario: aquí recibes los datos que emitió/cerró FormSheduleComponent
-        console.log('Nuevo horario:', result);
-
-        // recargar lista si se agregó uno nuevo
         this.loadShedules();
       }
     });

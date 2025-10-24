@@ -1,0 +1,17 @@
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.mat-header-cell {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.mat-cell {
+  padding: 8px 16px;
+}
+
+button[mat-icon-button] {
+  margin-right: 4px;
+}

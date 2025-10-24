@@ -14,8 +14,8 @@ export class ToolbarComponent {
   @Input() showAddButton = true;          // Mostrar/ocultar botón
   @Input() showSearch = true;             // Mostrar/ocultar buscador
 
-  @Output() onAdd = new EventEmitter<void>();        // Evento al hacer click en “Agregar”
-  @Output() onSearch = new EventEmitter<string>();   // Evento al buscar texto
+  @Output() onAdd = new EventEmitter<void>();        
+  @Output() onSearch = new EventEmitter<string>();   
 
   searchTerm = '';
 

@@ -16,3 +16,13 @@
     [route]="toRoute(t.name)">
   </app-card-type-citation>
 </div>
+
+
+ <mat-paginator
+    [length]="typeCitations.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[6, 12, 24, 48]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
