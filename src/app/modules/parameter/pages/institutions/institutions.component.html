@@ -1,23 +1,15 @@
-<!-- 🧭 Encabezado -->
-<div class="form-header">
-  <button mat-raised-button color="primary" class="btn-add" (click)="abrirFormulario('create')">
-    <mat-icon>business</mat-icon> Agregar institución
-  </button>
-
-  <div class="search-container">
-    <mat-form-field appearance="outline" class="search-bar">
-      <mat-label>Buscar institución</mat-label>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Buscar por nombre, NIT, email o ciudad" />
-      <button mat-icon-button matSuffix>
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-</div>
-
-<!-- 🧱 Tabla genérica -->
+<app-toolbar
+  title="Departamentos"
+  addLabel="Agregar"
+  addSubtitle="departamento"
+  [data]="dataSource"
+  [searchFields]="['name']"
+  (onAdd)="abrirFormulario('create')"
+  (filteredData)="dataSourceFiltered = $event"
+></app-toolbar>
+ 
 <app-generic-table
-  [dataSource]="filteredDataSource"
+  [dataSource]="dataSourceFiltered"
   [columns]="displayedColumns"
   [columnDefs]="columnDefs"
   (actionClicked)="handleAction($event)">

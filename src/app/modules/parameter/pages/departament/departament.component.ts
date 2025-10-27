@@ -15,11 +15,25 @@ import { DepartamentList } from '../../../../shared/Models/parameter/Departament
 import { DialogContainerComponent } from '../../../../shared/components/Modal/dialog-container/dialog-container.component';
 import Swal from 'sweetalert2';
 import { ColumnDefinition } from '../../../../shared/Models/Tables/TableModels';
+import { SharedModule } from "../../../../shared/shared.module";
 
 
 @Component({
   selector: 'app-departament',
-  standalone: true,
+   standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatTableModule,
+    MatChipsModule,
+    MatTooltipModule,
+    SharedModule
+],
   templateUrl: './departament.component.html',
   styleUrl: './departament.component.css',
 })
@@ -30,6 +44,7 @@ export class DepartamentComponent implements OnInit {
   ) {}
 
   dataSource: DepartamentList[] = [];
+  dataSourceFiltered: DepartamentList[] = [];
   searchTerm = '';
 
   columnDefs: ColumnDefinition[] = [
@@ -63,7 +78,11 @@ export class DepartamentComponent implements OnInit {
   /** 🔄 Cargar todos los departamentos */
   cargarDepartamentos(): void {
     this.departamentService.traerTodo().subscribe({
-      next: (departamentos) => (this.dataSource = departamentos),
+      next: (departamentos) => 
+        {
+          this.dataSource = departamentos;
+          this.dataSourceFiltered = [...this.dataSource];
+        },
       error: (err) => {
         console.error('Error al cargar departamentos:', err);
         Swal.fire('Error', 'No se pudieron cargar los departamentos.', 'error');

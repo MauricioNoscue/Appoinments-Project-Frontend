@@ -21,6 +21,7 @@ export interface DynamicDialogData<TPayload = unknown> {
 })
 export class ScheduleComponent implements OnInit {
   shedules: shedule[] = [];
+  shedulesFiltered: shedule[] = [];
 
   constructor(
     private service: GenericService,
@@ -34,6 +35,7 @@ export class ScheduleComponent implements OnInit {
   private loadShedules(): void {
     this.service.getgeneric('Shedule').subscribe(data => {
       this.shedules = data;
+      this.shedulesFiltered = [...this.shedules]; 
     });
   }
 
@@ -89,9 +91,7 @@ onPageChange(event: PageEvent): void {
   this.pageIndex = event.pageIndex;
   this.pageSize = event.pageSize;
         this.loadShedules();
-
 }
-
 
   openFormShedule(): void {
     const data: DynamicDialogData = {

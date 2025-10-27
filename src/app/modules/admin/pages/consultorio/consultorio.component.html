@@ -3,8 +3,10 @@
   title="Consultorios"
   addLabel="Agregar"
   addSubtitle="consultorio"
+  [data]="consultorios"
+  [searchFields]="['nombre', 'ubicacion', 'branchName']"
   (onAdd)="abrirDialog('create')"
-  (onSearch)="searchTerm = $event"
+  (filteredData)="consultoriosFiltrados = $event"
 ></app-toolbar>
 
 

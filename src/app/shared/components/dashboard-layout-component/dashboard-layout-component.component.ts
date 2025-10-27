@@ -17,6 +17,9 @@ export class DashboardLayoutComponentComponent implements OnInit {
   isMobile = false; // SOLO AGREGAR ESTA LÍNEA
 
   @Output() abrirPerfil = new EventEmitter<void>(); // Evento para abrir el perfil
+  @Output() onSearch = new EventEmitter<string>(); 
+
+  searchTerm = '';
 
   constructor(private router: Router,private authservice:AuthService) {}
 
@@ -25,6 +28,9 @@ export class DashboardLayoutComponentComponent implements OnInit {
     this.checkScreenSize(); // AGREGAR ESTA LÍNEA
   }
 
+    handleSearch() {
+    this.onSearch.emit(this.searchTerm.trim());
+  }
   // AGREGAR ESTOS MÉTODOS
   @HostListener('window:resize', ['$event'])
   onResize(): void {

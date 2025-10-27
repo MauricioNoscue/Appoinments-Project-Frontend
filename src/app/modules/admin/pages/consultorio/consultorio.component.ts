@@ -45,6 +45,8 @@ interface ConsultorioCardView {
 export class ConsultorioComponent implements OnInit {
   searchTerm = '';
   consultorios: ConsultorioCardView[] = [];
+  consultoriosFiltrados: ConsultorioCardView[] = [];
+  
 
   // Imagen por defecto
   private readonly DEFAULT_IMG = 'assets/images/consultorio.png';
@@ -97,6 +99,7 @@ export class ConsultorioComponent implements OnInit {
         this.consultorios = (rooms as ConsultingRoomList[]).map((x) =>
           this.mapToView(x, branchesMap)
         );
+        this.consultoriosFiltrados = [...this.consultorios]; 
       },
       error: () => {
         this.snack.open('Error cargando consultorios', 'Cerrar', {
@@ -107,16 +110,16 @@ export class ConsultorioComponent implements OnInit {
     });
   }
 
-  get consultoriosFiltrados(): ConsultorioCardView[] {
-    const q = this.searchTerm.trim().toLowerCase();
-    if (!q) return this.consultorios;
-    return this.consultorios.filter(
-      (c) =>
-        c.nombre.toLowerCase().includes(q) ||
-        c.ubicacion.toLowerCase().includes(q) ||
-        (c.branchName ?? '').toLowerCase().includes(q)
-    );
-  }
+  // get consultoriosFiltrados(): ConsultorioCardView[] {
+  //   const q = this.searchTerm.trim().toLowerCase();
+  //   if (!q) return this.consultorios;
+  //   return this.consultorios.filter(
+  //     (c) =>
+  //       c.nombre.toLowerCase().includes(q) ||
+  //       c.ubicacion.toLowerCase().includes(q) ||
+  //       (c.branchName ?? '').toLowerCase().includes(q)
+  //   );
+  // }
 
   // ── CREAR ─────────────
   abrirDialog(_tipo: 'create') {

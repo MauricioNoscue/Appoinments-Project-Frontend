@@ -1,436 +1,236 @@
-<!-- form-schedule.component.html -->
 <mat-stepper [linear]="isLinear" #stepper>
-  
-  <!-- Primera sección: Selección de Tipo de Cita -->
+
+  <!-- Paso 1: Tipo de Cita -->
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Seleccionar Tipo de Cita</ng-template>
-      
+
       <div class="step-content">
         <h3>Elige el tipo de cita que necesitas</h3>
-        
-        <!-- Grid de tipos de cita -->
-        <div class="citation-types-grid">
-          <mat-card 
-            *ngFor="let type of typeCitation" 
-            class="citation-type-card"
+
+        <div class="grid">
+          <mat-card
+            *ngFor="let type of typeCitation"
+            class="selection-card"
             [class.selected]="isSelected(type)"
             (click)="selectTypeCitation(type)"
             matRipple>
-            
-            <mat-card-content class="card-content">
-              <!-- Icono -->
-              <div class="icon-container">
-                <mat-icon class="citation-icon">{{ type.icon }}</mat-icon>
-              </div>
-              
-              <!-- Nombre -->
-              <h4 class="citation-name">{{ type.name }}</h4>
-              
-              <!-- Descripción -->
-              
-              <!-- Indicador de selección -->
-              <mat-icon *ngIf="isSelected(type)" class="selected-icon">check_circle</mat-icon>
-            </mat-card-content>
+            <mat-icon class="icon">{{ type.icon }}</mat-icon>
+            <h4>{{ type.name }}</h4>
+            <mat-icon *ngIf="isSelected(type)" class="check-icon">check_circle</mat-icon>
           </mat-card>
         </div>
 
-        <!-- Mensaje de error si no se selecciona nada -->
         <mat-error *ngIf="firstFormGroup.get('typeCitationId')?.invalid && firstFormGroup.get('typeCitationId')?.touched">
           Por favor selecciona un tipo de cita
         </mat-error>
 
-        <!-- Información del tipo seleccionado -->
-        <mat-card *ngIf="selectedTypeCitation" class="selected-info">
+        <mat-card *ngIf="selectedTypeCitation" class="info-card">
           <mat-card-content>
-            <div class="selected-details">
-              <mat-icon>{{ selectedTypeCitation.icon }}</mat-icon>
-              <div>
-                <strong>{{ selectedTypeCitation.name }}</strong>
-                <p>{{ selectedTypeCitation.description }}</p>
-              </div>
+            <mat-icon class="icon">{{ selectedTypeCitation.icon }}</mat-icon>
+            <div>
+              <strong>{{ selectedTypeCitation.name }}</strong>
+              <p>{{ selectedTypeCitation.description }}</p>
             </div>
           </mat-card-content>
         </mat-card>
       </div>
-      
+
       <div class="step-actions">
-        <button 
-          mat-raised-button 
-          color="primary" 
-          matStepperNext
-          [disabled]="firstFormGroup.invalid">
+        <button mat-raised-button color="primary" matStepperNext [disabled]="firstFormGroup.invalid">
           Siguiente
         </button>
       </div>
     </form>
   </mat-step>
 
-  <!-- Segunda sección: Dirección (mantenemos la original por ahora) -->
-<!-- Segunda sección: Selección de Doctor -->
-<mat-step [stepControl]="secondFormGroup" label="Seleccionar Doctor">
-  <form [formGroup]="secondFormGroup">
-    <ng-template matStepLabel>Seleccionar Doctor</ng-template>
-    
-    <div class="step-content">
-      <h3>Elige el doctor para tu cita</h3>
-      
-      <!-- Grid de doctores -->
-      <div class="doctors-grid">
-        <mat-card 
-          *ngFor="let doctor of doctorList" 
-          class="doctor-card-wrapper"
-          [class.selected]="isSelectedDoctor(doctor)"
-          (click)="selectDoctor(doctor)"
-          matRipple>
-          
-          <!-- Usando el componente de tarjeta de doctor existente -->
-          <div class="badge" aria-hidden="true"></div>
-          
-          <div class="hero">
-            <img *ngIf="doctor.image" [src]="doctor.image" [alt]="doctor.fullName || 'Doctor'">
-            <mat-icon *ngIf="!doctor.image" class="default-avatar">person</mat-icon>
-          </div>
-          
-          <div class="content">
-            <h3 class="name">{{ doctor.fullName || 'Sin nombre' }}</h3>
-            
-          </div>
-          
-          <!-- Indicador de selección -->
-          <mat-icon *ngIf="isSelectedDoctor(doctor)" class="selected-doctor-icon">check_circle</mat-icon>
-        </mat-card>
-      </div>
+  <!-- Paso 2: Doctor -->
+  <mat-step [stepControl]="secondFormGroup">
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Seleccionar Doctor</ng-template>
 
-      <!-- Mensaje si no hay doctores -->
-      <div *ngIf="doctorList.length === 0" class="no-doctors">
-        <mat-icon>info</mat-icon>
-        <p>No hay doctores disponibles en este momento</p>
-      </div>
+      <div class="step-content">
+        <h3>Elige el doctor para tu cita</h3>
 
-      <!-- Error si no se selecciona doctor -->
-      <mat-error *ngIf="secondFormGroup.get('doctorId')?.invalid && secondFormGroup.get('doctorId')?.touched">
-        Por favor selecciona un doctor
-      </mat-error>
+        <div class="grid">
+          <mat-card
+            *ngFor="let doctor of doctorList"
+            class="selection-card"
+            [class.selected]="isSelectedDoctor(doctor)"
+            (click)="selectDoctor(doctor)"
+            matRipple>
+            <img *ngIf="doctor.image" [src]="doctor.image" class="avatar" />
+            <mat-icon *ngIf="!doctor.image" class="avatar">person</mat-icon>
+            <h4>{{ doctor.fullName || 'Sin nombre' }}</h4>
+            <mat-icon *ngIf="isSelectedDoctor(doctor)" class="check-icon">check_circle</mat-icon>
+          </mat-card>
+        </div>
 
-      <!-- Información del doctor seleccionado -->
-      <mat-card *ngIf="selectedDoctor" class="selected-doctor-info">
-        <mat-card-content>
-          <div class="selected-doctor-details">
-            <img *ngIf="selectedDoctor.image" [src]="selectedDoctor.image" [alt]="selectedDoctor.fullName || 'Doctor'" class="selected-doctor-avatar">
-            <mat-icon *ngIf="!selectedDoctor.image" class="selected-doctor-avatar-icon">person</mat-icon>
+        <div *ngIf="doctorList.length === 0" class="empty-message">
+          <mat-icon>info</mat-icon>
+          <p>No hay doctores disponibles</p>
+        </div>
+
+        <mat-error *ngIf="secondFormGroup.get('doctorId')?.invalid && secondFormGroup.get('doctorId')?.touched">
+          Por favor selecciona un doctor
+        </mat-error>
+
+        <mat-card *ngIf="selectedDoctor" class="info-card">
+          <mat-card-content>
+            <img *ngIf="selectedDoctor.image" [src]="selectedDoctor.image" class="avatar" />
+            <mat-icon *ngIf="!selectedDoctor.image" class="avatar">person</mat-icon>
             <div>
               <strong>{{ selectedDoctor.fullName }}</strong>
               <p>{{ selectedDoctor.specialtyName }}</p>
               <small>{{ selectedDoctor.emailDoctor }}</small>
             </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    
-    <div class="step-actions">
-      <button mat-button matStepperPrevious>Atrás</button>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        matStepperNext
-        [disabled]="secondFormGroup.invalid">
-        Siguiente
-      </button>
-    </div>
-  </form>
-</mat-step>
-
-  <!-- Tercera sección: Selección de Consultorio -->
-<mat-step [stepControl]="thirdFormGroup" label="Seleccionar Consultorio">
-  <form [formGroup]="thirdFormGroup">
-    <ng-template matStepLabel>Seleccionar Consultorio</ng-template>
-    
-    <div class="step-content">
-      <h3>Elige el consultorio para tu cita</h3>
-      
-      <!-- Grid de consultorios -->
-      <div class="consulting-rooms-grid">
-        <mat-card 
-          *ngFor="let room of consultingRoomList" 
-          class="consulting-room-card"
-          [class.selected]="isSelectedRoom(room)"
-          (click)="selectRoom(room)"
-          matRipple>
-          
-          <mat-card-content class="room-content">
-            <!-- Icono del consultorio -->
-            <div class="room-icon-container">
-              <mat-icon class="room-icon">meeting_room</mat-icon>
-            </div>
-            
-            <!-- Información del consultorio -->
-            <div class="room-info">
-              <h4 class="room-name">{{ room.name }}</h4>
-              <div class="room-details">
-                <div class="room-number">
-                  <mat-icon class="detail-icon">door_front</mat-icon>
-                  <span>Sala {{ room.roomNumber }}</span>
-                </div>
-                <div class="room-floor">
-                  <mat-icon class="detail-icon">layers</mat-icon>
-                  <span>Piso {{ room.floor }}</span>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Indicador de selección -->
-            <mat-icon *ngIf="isSelectedRoom(room)" class="selected-room-icon">check_circle</mat-icon>
           </mat-card-content>
         </mat-card>
       </div>
 
-      <!-- Mensaje si no hay consultorios -->
-      <div *ngIf="consultingRoomList.length === 0" class="no-rooms">
-        <mat-icon>info</mat-icon>
-        <p>No hay consultorios disponibles en este momento</p>
+      <div class="step-actions">
+        <button mat-button matStepperPrevious>Atrás</button>
+        <button mat-raised-button color="primary" matStepperNext [disabled]="secondFormGroup.invalid">
+          Siguiente
+        </button>
       </div>
+    </form>
+  </mat-step>
 
-      <!-- Error si no se selecciona consultorio -->
-      <mat-error *ngIf="thirdFormGroup.get('consultingRoomId')?.invalid && thirdFormGroup.get('consultingRoomId')?.touched">
-        Por favor selecciona un consultorio
-      </mat-error>
+  <!-- Paso 3: Consultorio -->
+  <mat-step [stepControl]="thirdFormGroup">
+    <form [formGroup]="thirdFormGroup">
+      <ng-template matStepLabel>Seleccionar Consultorio</ng-template>
 
-      <!-- Información del consultorio seleccionado -->
-      <mat-card *ngIf="selectedRoom" class="selected-room-info">
-        <mat-card-content>
-          <div class="selected-room-details">
-            <mat-icon class="selected-room-avatar">meeting_room</mat-icon>
+      <div class="step-content">
+        <h3>Elige el consultorio</h3>
+
+        <div class="grid">
+          <mat-card
+            *ngFor="let room of consultingRoomList"
+            class="selection-card"
+            [class.selected]="isSelectedRoom(room)"
+            (click)="selectRoom(room)"
+            matRipple>
+            <mat-icon class="icon">meeting_room</mat-icon>
+            <h4>{{ room.name }}</h4>
+            <p>Sala {{ room.roomNumber }} - Piso {{ room.floor }}</p>
+            <mat-icon *ngIf="isSelectedRoom(room)" class="check-icon">check_circle</mat-icon>
+          </mat-card>
+        </div>
+
+        <div *ngIf="consultingRoomList.length === 0" class="empty-message">
+          <mat-icon>info</mat-icon>
+          <p>No hay consultorios disponibles</p>
+        </div>
+
+        <mat-error *ngIf="thirdFormGroup.get('consultingRoomId')?.invalid && thirdFormGroup.get('consultingRoomId')?.touched">
+          Por favor selecciona un consultorio
+        </mat-error>
+
+        <mat-card *ngIf="selectedRoom" class="info-card">
+          <mat-card-content>
+            <mat-icon class="icon">meeting_room</mat-icon>
             <div>
               <strong>{{ selectedRoom.name }}</strong>
               <p>Sala {{ selectedRoom.roomNumber }} - Piso {{ selectedRoom.floor }}</p>
             </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-    
-    <div class="step-actions">
-      <button mat-button matStepperPrevious>Atrás</button>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        matStepperNext
-        [disabled]="thirdFormGroup.invalid">
-        Siguiente
-      </button>
-    </div>
-  </form>
-</mat-step>
+          </mat-card-content>
+        </mat-card>
+      </div>
 
-<!-- Cuarta sección: Número de Citas y Resumen -->
-<mat-step [stepControl]="fourthFormGroup" label="Finalizar">
-  <form [formGroup]="fourthFormGroup">
-    <ng-template matStepLabel>Número de Citas</ng-template>
-    
-    <div class="step-content">
-      <h3>¿Cuántas citas necesitas?</h3>
-      
-      <!-- Selector de número de citas -->
-      <div class="citation-number-section">
+      <div class="step-actions">
+        <button mat-button matStepperPrevious>Atrás</button>
+        <button mat-raised-button color="primary" matStepperNext [disabled]="thirdFormGroup.invalid">
+          Siguiente
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <!-- Paso 4: Número de Citas -->
+  <mat-step [stepControl]="fourthFormGroup">
+    <form [formGroup]="fourthFormGroup">
+      <ng-template matStepLabel>Número de Citas</ng-template>
+
+      <div class="step-content">
+        <h3>¿Cuántas citas necesitas?</h3>
+
         <mat-form-field appearance="outline" class="number-input">
           <mat-label>Número de citas</mat-label>
-          <input 
-            matInput 
-            type="number" 
-            formControlName="numberCitation"
-            min="1" 
-            max="50"
-            placeholder="Ej: 5">
-          <mat-hint>Mínimo 1, máximo 50 citas</mat-hint>
-          <mat-error *ngIf="fourthFormGroup.get('numberCitation')?.hasError('required')">
-            El número de citas es obligatorio
-          </mat-error>
-          <mat-error *ngIf="fourthFormGroup.get('numberCitation')?.hasError('min')">
-            Debe ser al menos 1 cita
-          </mat-error>
-          <mat-error *ngIf="fourthFormGroup.get('numberCitation')?.hasError('max')">
-            Máximo 50 citas
-          </mat-error>
+          <input matInput type="number" formControlName="numberCitation" min="1" max="50" />
+          <mat-hint>Mínimo 1, máximo 50</mat-hint>
         </mat-form-field>
 
-        <!-- Botones de acceso rápido -->
-        <div class="quick-numbers">
-          <h4>Selección rápida:</h4>
-          <div class="quick-buttons">
-            <button 
-              *ngFor="let num of quickNumbers" 
-              mat-stroked-button 
-              type="button"
-              [color]="getQuickButtonColor(num)"
-              (click)="selectQuickNumber(num)">
-              {{ num }} {{ num === 1 ? 'cita' : 'citas' }}
-            </button>
+        <div class="quick-buttons">
+          <button *ngFor="let num of quickNumbers" mat-stroked-button (click)="selectQuickNumber(num)">
+            {{ num }}
+          </button>
+        </div>
+
+        <div class="confirmation" *ngIf="isFormComplete()">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <strong>¡Todo listo!</strong>
+            <p>Tu solicitud está completa y lista para enviar.</p>
           </div>
         </div>
       </div>
 
-
-
-      <!-- Mensaje de confirmación -->
-      <div class="confirmation-message" *ngIf="isFormComplete()">
-        <mat-icon class="success-icon">check_circle</mat-icon>
-        <div>
-          <h4>¡Todo listo!</h4>
-          <p>Tu solicitud está completa y lista para enviar.</p>
-        </div>
+      <div class="step-actions">
+        <button mat-button matStepperPrevious>Atrás</button>
+        <button mat-raised-button color="primary" type="button" [disabled]="!isFormComplete()" (click)="submitForm()">
+          <mat-icon>send</mat-icon> Enviar Solicitud
+        </button>
       </div>
-    </div>
-    
-    <div class="step-actions">
-      <button mat-button matStepperPrevious>Atrás</button>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="button"
-        [disabled]="!isFormComplete()"
-        (click)="submitForm()">
-        <mat-icon>send</mat-icon>
-        Enviar Solicitud
-      </button>
-    </div>
-  </form>
-</mat-step>
+    </form>
+  </mat-step>
 
+  <!-- Paso 5: Configurar Horarios -->
+  <mat-step [stepControl]="fifthFormGroup">
+    <form [formGroup]="fifthFormGroup">
+      <ng-template matStepLabel>Configurar Horarios</ng-template>
 
+      <div class="step-content">
+        <h3>Configura los horarios de las citas</h3>
 
-
-<!-- Quinta sección: Configuración de Horarios -->
-<mat-step [stepControl]="fifthFormGroup" label="Configurar Horarios">
-  <form [formGroup]="fifthFormGroup">
-    <ng-template matStepLabel>Configurar Horarios</ng-template>
-    
-    <div class="step-content">
-      <h3>Configura los horarios de las citas</h3>
-      <p class="section-description">Define el horario de trabajo y los descansos para las {{ fourthFormGroup.get('numberCitation')?.value }} citas programadas</p>
-      
-      <!-- Configuración de horarios -->
-      <div class="schedule-config">
-        
-        <!-- Horario de trabajo -->
-        <mat-card class="schedule-card">
-          <mat-card-header>
-            <mat-card-title>
-              <mat-icon class="section-icon">access_time</mat-icon>
-              Horario de Trabajo
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="time-inputs-row">
-              <mat-form-field appearance="outline" class="time-field">
-                <mat-label>Hora de Inicio</mat-label>
-                <input 
-                  matInput 
-                  type="time" 
-                  formControlName="startTime"
-                  placeholder="08:00">
-                <mat-icon matSuffix>schedule</mat-icon>
-                <mat-error *ngIf="fifthFormGroup.get('startTime')?.hasError('required')">
-                  La hora de inicio es obligatoria
-                </mat-error>
-              </mat-form-field>
-
-              <mat-icon class="time-separator">arrow_forward</mat-icon>
-
-              <mat-form-field appearance="outline" class="time-field">
-                <mat-label>Hora de Fin</mat-label>
-                <input 
-                  matInput 
-                  type="time" 
-                  formControlName="endTime"
-                  placeholder="17:00">
-                <mat-icon matSuffix>schedule</mat-icon>
-                <mat-error *ngIf="fifthFormGroup.get('endTime')?.hasError('required')">
-                  La hora de fin es obligatoria
-                </mat-error>
-                <mat-error *ngIf="fifthFormGroup.get('endTime')?.hasError('timeRange')">
-                  La hora de fin debe ser posterior a la de inicio
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </mat-card-content>
+        <mat-card class="time-card">
+          <mat-card-title><mat-icon>access_time</mat-icon> Horario de Trabajo</mat-card-title>
+          <div class="time-row">
+            <mat-form-field>
+              <mat-label>Inicio</mat-label>
+              <input matInput type="time" formControlName="startTime" />
+            </mat-form-field>
+            <mat-icon>arrow_forward</mat-icon>
+            <mat-form-field>
+              <mat-label>Fin</mat-label>
+              <input matInput type="time" formControlName="endTime" />
+            </mat-form-field>
+          </div>
         </mat-card>
 
-        <!-- Horario de descanso -->
-        <mat-card class="schedule-card">
-          <mat-card-header>
-            <mat-card-title>
-              <mat-icon class="section-icon">coffee</mat-icon>
-              Horario de Descanso
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="break-toggle">
-              
-            </div>
-
-            <div class="time-inputs-row break-times">
-              <mat-form-field appearance="outline" class="time-field">
-                <mat-label>Inicio del Descanso</mat-label>
-                <input 
-                  matInput 
-                  type="time" 
-                  formControlName="breakStartTime"
-                  placeholder="12:00">
-                <mat-icon matSuffix>free_breakfast</mat-icon>
-                <mat-error *ngIf="fifthFormGroup.get('breakStartTime')?.hasError('required') && fifthFormGroup.get('hasBreak')?.value">
-                  La hora de inicio del descanso es obligatoria
-                </mat-error>
-              </mat-form-field>
-
-              <mat-icon class="time-separator">arrow_forward</mat-icon>
-
-              <mat-form-field appearance="outline" class="time-field">
-                <mat-label>Fin del Descanso</mat-label>
-                <input 
-                  matInput 
-                  type="time" 
-                  formControlName="breakEndTime"
-                  placeholder="13:00">
-                <mat-icon matSuffix>free_breakfast</mat-icon>
-                <mat-error *ngIf="fifthFormGroup.get('breakEndTime')?.hasError('required') && fifthFormGroup.get('hasBreak')?.value">
-                  La hora de fin del descanso es obligatoria
-                </mat-error>
-                <mat-error *ngIf="fifthFormGroup.get('breakEndTime')?.hasError('breakTimeRange')">
-                  La hora de fin del descanso debe ser posterior a la de inicio
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </mat-card-content>
+        <mat-card class="time-card">
+          <mat-card-title><mat-icon>coffee</mat-icon> Descanso</mat-card-title>
+          <div class="time-row">
+            <mat-form-field>
+              <mat-label>Inicio</mat-label>
+              <input matInput type="time" formControlName="breakStartTime" />
+            </mat-form-field>
+            <mat-icon>arrow_forward</mat-icon>
+            <mat-form-field>
+              <mat-label>Fin</mat-label>
+              <input matInput type="time" formControlName="breakEndTime" />
+            </mat-form-field>
+          </div>
         </mat-card>
-
-     
       </div>
 
-    
-  
-    </div>
-    
-    <div class="step-actions">
-      <button mat-button matStepperPrevious>Atrás</button>
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="button"
-        [disabled]="!isAllFormsComplete()"
-        (click)="submitScheduleConfiguration()"
-        class="submit-button">
-        <mat-icon>schedule_send</mat-icon>
-        Crear Horarios de Citas
-      </button>
-    </div>
-  </form>
-</mat-step>
-
-
-
-
-
-  
+      <div class="step-actions">
+        <button mat-button matStepperPrevious>Atrás</button>
+        <button mat-raised-button color="primary" type="button" [disabled]="!isAllFormsComplete()" (click)="submitScheduleConfiguration()" class="submit-button">
+          <mat-icon>schedule_send</mat-icon> Crear Horarios
+        </button>
+      </div>
+    </form>
+  </mat-step>
 </mat-stepper>

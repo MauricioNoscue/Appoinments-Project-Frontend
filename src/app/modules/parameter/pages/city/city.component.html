@@ -1,23 +1,15 @@
-<!-- 🧭 Encabezado -->
-<div class="form-header">
-  <button mat-raised-button color="primary" class="btn-add" (click)="abrirFormulario('create')">
-    <mat-icon>add_location</mat-icon> Agregar ciudad
-  </button>
+<app-toolbar
+  title="Ciudades"
+  addLabel="Agregar"
+  addSubtitle="ciudad"
+  [data]="dataSource"
+  [searchFields]="['name']"
+  (onAdd)="abrirFormulario('create')"
+  (filteredData)="datasourceFiltered = $event"
+></app-toolbar>
 
-  <div class="search-container">
-    <mat-form-field appearance="outline" class="search-bar">
-      <mat-label>Buscar ciudad</mat-label>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Buscar por nombre o departamento" />
-      <button mat-icon-button matSuffix>
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-</div>
-
-<!-- 🧱 Tabla genérica -->
 <app-generic-table
-  [dataSource]="filteredDataSource"
+  [dataSource]="datasourceFiltered"
   [columns]="displayedColumns"
   [columnDefs]="columnDefs"
   (actionClicked)="handleAction($event)">

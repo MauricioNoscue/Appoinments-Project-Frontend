@@ -10,10 +10,9 @@
     </button>
     <div class="top-bar">
       <h1 class="header-title">Panel de {{ tipoUsuario | titlecase }}</h1>
-      <div class="search-container">
-         <input type="text" placeholder="Buscar">
-         <button title="Buscar"><i class="fas fa-search"></i></button>
-      </div>
+      
+     <app-global-search></app-global-search>
+  
       <div class="icon-container">
         <i class="fas fa-bell" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample"></i>
         <i class="fas fa-user-circle" (click)="onClickPerfil()" style="cursor:pointer" aria-label="Ir a perfil"></i>
@@ -23,7 +22,6 @@
       </li>
       </div>
     </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </header>
 
   <!-- Tu drawer container original -->

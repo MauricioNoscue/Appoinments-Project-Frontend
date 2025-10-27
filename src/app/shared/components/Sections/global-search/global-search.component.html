@@ -1,0 +1,23 @@
+<div class="global-search-wrapper">
+  <div class="global-search">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+      placeholder="Buscar..."
+    />
+    <button title="Buscar" (click)="onSearch()">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+
+  <div class="search-results" *ngIf="showResults">
+    <div
+      class="result-item"
+      *ngFor="let r of results"
+      (click)="selectResult(r)">
+      <i class="fas fa-link icon"></i>
+      <span>{{ r.title }}</span>
+    </div>
+  </div>
+</div>

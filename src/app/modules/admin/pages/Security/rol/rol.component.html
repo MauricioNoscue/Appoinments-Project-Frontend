@@ -1,23 +1,17 @@
-<!-- 🔹 Encabezado -->
-<div class="form-header">
-  <button mat-raised-button color="primary" class="btn-add" (click)="abrirDialog('create')">
-    <mat-icon>assignment_add</mat-icon> Agregar rol
-  </button>
+<app-toolbar
+  title="Permisos"
+  addLabel="Agregar"
+  addSubtitle="permiso"
+  [data]="dataSource"
+  [searchFields]="['name']"
+  (onAdd)="abrirDialog('create')"
+  (filteredData)="dataSourceFiltered = $event"
+></app-toolbar>
 
-  <div class="search-container">
-    <mat-form-field appearance="outline" class="search-bar">
-      <mat-label>Buscar rol</mat-label>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Buscar por nombre o descripción" />
-      <button mat-icon-button matSuffix>
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-</div>
 
 <!-- 🔹 Tabla genérica reutilizable -->
 <app-generic-table
-  [dataSource]="filteredDataSource"
+  [dataSource]="dataSourceFiltered"
   [columns]="displayedColumns"
   [columnDefs]="columnDefs"
   (actionClicked)="handleAction($event)">

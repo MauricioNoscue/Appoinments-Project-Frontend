@@ -20,6 +20,7 @@ export class PermissionComponent implements OnInit {
   constructor(private service: PermissionService, private dialog: MatDialog) {}
 
   dataSource: PermissionList[] = [];
+  dataSourceFiltered: PermissionList[] = [];
   searchTerm = '';
 
   /* PALETA: colores elegidos para los círculos.
@@ -51,6 +52,7 @@ export class PermissionComponent implements OnInit {
     this.service.traerTodo().subscribe({
       next: (permisos) => {
         this.dataSource = permisos || [];
+        this.dataSourceFiltered = [...this.dataSource];
         // No es necesario mapear colores aquí si usamos colorFromString() al render,
         // pero si quieres preparar algo extra lo puedes hacer.
       },

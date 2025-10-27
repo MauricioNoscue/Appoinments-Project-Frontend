@@ -1,22 +1,16 @@
-<!-- 🧭 Encabezado -->
-<div class="form-header">
-  <button mat-raised-button color="primary" class="btn-add" (click)="abrirFormulario('create')">
-    <mat-icon>add_location</mat-icon> Agregar sucursal
-  </button>
 
-  <div class="search-container">
-    <mat-form-field appearance="outline" class="search-bar">
-      <mat-label>Buscar sucursal</mat-label>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Buscar por nombre o institución" />
-      <button mat-icon-button matSuffix>
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-</div>
+<app-toolbar
+  title="Sucursales"
+  addLabel="Agregar"
+  addSubtitle="sucursal"
+  [data]="dataSource"
+  [searchFields]="['name']"
+  (onAdd)="abrirFormulario('create')"
+  (filteredData)="dataSourceFiltered = $event"
+></app-toolbar>
 
 <app-generic-table
-  [dataSource]="filteredDataSource"
+  [dataSource]="dataSourceFiltered"
   [columns]="displayedColumns"
   [columnDefs]="columnDefs"
   (actionClicked)="handleAction($event)">

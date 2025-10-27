@@ -1,31 +1,17 @@
-<!-- Botón de agregar formulario y buscador -->
-<div class="form-header">
-  <button
-    mat-raised-button
-    color="primary"
-    class="btn-add"
-    (click)="abrirDialog('create')"
-  >
-    <mat-icon>assignment_add</mat-icon>
-    Agregar permiso
-  </button>
+<app-toolbar
+  title="Permisos"
+  addLabel="Agregar"
+  addSubtitle="permiso"
+  [data]="dataSource"
+  [searchFields]="['name']"
+  (onAdd)="abrirDialog('create')"
+  (filteredData)="dataSourceFiltered = $event"
+></app-toolbar>
 
-  <div class="search-container">
-    <form class="d-flex barra" role="search">
-      <input
-        class="form-control me-2 barra"
-        type="search"
-        placeholder="Buscar"
-        aria-label="Buscar"
-        [(ngModel)]="searchTerm"
-      />
-    </form>
-  </div>
-</div>
 
 <!-- Contenedor de tarjetas -->
 <div class="cards-container">
-  <div class="card" *ngFor="let element of filteredDataSource">
+  <div class="card" *ngFor="let element of dataSourceFiltered">
     <div class="card-body">
       <div class="card-content">
         <!-- Encabezado -->

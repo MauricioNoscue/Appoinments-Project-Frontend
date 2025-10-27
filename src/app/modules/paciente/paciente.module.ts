@@ -13,7 +13,7 @@ import { FormRelacionPersonaComponent } from './Components/Form/form-relacion-pe
 import { ReservationComponent } from './pages/reservation/reservation.component';
 
 @NgModule({
-  declarations: [PerfilComponent, EditProfileSectionDialogComponent,ReservationComponent], // NO declares DashboardComponent (es standalone)
+  declarations: [PerfilComponent, EditProfileSectionDialogComponent,ReservationComponent], 
   imports: [
     CommonModule,
     PacienteRoutingModule,

@@ -21,6 +21,7 @@ export class RolComponent implements OnInit {
   constructor(private service: RolService, private dialog: MatDialog) {}
 
   dataSource: RolList[] = [];
+  dataSourceFiltered: RolList[] = [];
   searchTerm = '';
 
   // 🔹 Definición de columnas reutilizables
@@ -48,7 +49,11 @@ export class RolComponent implements OnInit {
   /** 🔄 Cargar roles */
   cargarRoles(): void {
     this.service.traerTodo().subscribe({
-      next: (roles) => (this.dataSource = roles),
+      next: (roles) => 
+        {
+          this.dataSource = roles;
+          this.dataSourceFiltered = [...this.dataSource];
+        },
       error: (err) => {
         console.error('Error al cargar roles:', err);
         Swal.fire('Error', 'No se pudieron cargar los roles.', 'error');

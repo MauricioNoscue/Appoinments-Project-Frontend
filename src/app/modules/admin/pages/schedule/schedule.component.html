@@ -1,42 +1,27 @@
-<div class="form-header">
-  <button
-    mat-raised-button
-    color="primary"
-    class="btn-add"
-    (click)="openFormShedule()">
-    <mat-icon>assignment_add</mat-icon>
-    Agregar horario
-  </button>
-
-  <div class="search-container">
-    <form class="d-flex barra" role="search">
-      <input
-        class="form-control me-2 barra"
-        type="search"
-        placeholder="Search"
-        aria-label="Search"/>
-    </form>
-  </div>
-</div>
+<app-toolbar
+  title="Horarios"
+  addLabel="Agregar"
+  addSubtitle="Horario"
+  [data]="shedules"
+  [searchFields]="['typeCitationName', 'consultingRoomName', 'nameDoctor']"
+  (onAdd)="openFormShedule()"
+  (filteredData)="shedulesFiltered = $event"
+></app-toolbar>
 
 <div class="schedules-container">
   <app-shedule-card
-    *ngFor="let shedule of shedules"
+    *ngFor="let shedule of shedulesFiltered"
     [schedule]="shedule"
-     (action)="Delete(shedule.id)"
-    
-    >
+    (action)="Delete(shedule.id)"
+  >
   </app-shedule-card>
-
-  
- 
 </div>
 
- <mat-paginator
-    [length]="shedules.length"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[6, 12, 24, 48]"
-    (page)="onPageChange($event)"
-    showFirstLastButtons
-  >
-  </mat-paginator>
+<mat-paginator
+  [length]="shedules.length"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[6, 12, 24, 48]"
+  (page)="onPageChange($event)"
+  showFirstLastButtons
+>
+</mat-paginator>

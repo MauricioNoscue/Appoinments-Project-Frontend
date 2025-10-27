@@ -4,6 +4,7 @@ import { MenuItem } from '../../Models/ManuItemModel';
 
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { MenuService } from '../../services/Menu/menu.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -20,7 +21,7 @@ export class SidebarComponent implements OnInit {
   expandedItems: Set<string> = new Set();
   isMobile: boolean = false;
 
-  constructor(private router: Router, private service:UserService,private authService :AuthService ) {
+  constructor(private router: Router, private service:UserService,private authService :AuthService,private menuService :MenuService) {
     this.checkScreenSize();
   }
 
@@ -31,7 +32,10 @@ export class SidebarComponent implements OnInit {
   if (roleIds.length > 0) {
    
     this.service.getMenu(roleIds[0]).subscribe({
-      next: (menu) => this.menuItems = menu,
+      next: (menu) => {
+        this.menuItems = menu
+         this.menuService.setMenuItems(menu);
+      },
       error: (err) => {
         console.error('Error cargando menú', err);
         this.menuItems = [];

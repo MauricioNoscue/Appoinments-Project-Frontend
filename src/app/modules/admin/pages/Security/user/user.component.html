@@ -1,20 +1,15 @@
-
-<!--botón de agregar formulario-->
-<div class="form-header">
-
-    <button mat-raised-button color="primary" class="btn-add"  (click)="abrirDialog('create')">
-        <mat-icon>assignment_add</mat-icon> Agregar Usuario
-    </button>
-
-    <div class="search-container">
-       <form class="d-flex barra" role="search">
-        <input class="form-control me-2 barra" type="search" placeholder="Search" aria-label="Search"/>
-      </form>
-    </div>
-</div>
+<app-toolbar
+  title="Usuarios"
+  addLabel="Agregar"
+  addSubtitle="permiso"
+  [data]="dataSource"
+  [searchFields]="['personName']"
+  (onAdd)="abrirDialog('create')"
+  (filteredData)="dataSorceFiltered = $event"
+></app-toolbar>
 
 <app-generic-table
-  [dataSource]="dataSource"
+  [dataSource]="dataSorceFiltered"
   [columns]="displayedColumns"
   [columnDefs]="columnDefs"
   (actionClicked)="handleAction($event)">

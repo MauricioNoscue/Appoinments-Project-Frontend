@@ -46,6 +46,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { ConsultorioComponent } from './pages/consultorio/consultorio.component';
 import { PerfilComponent } from '../doctor/pages/perfil/perfil.component';
 import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.component';
+import { CityComponent } from '../parameter/pages/city/city.component';
 
 
 @NgModule({

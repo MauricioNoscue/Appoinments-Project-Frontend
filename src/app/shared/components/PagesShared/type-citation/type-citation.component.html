@@ -1,22 +1,24 @@
+
+
 <app-toolbar
-  title="Tipos de Citas "
-
+  title="Tipos de Cita"
+  addLabel="Agregar"
+  addSubtitle="Cita"
+  [data]="typeCitations"
+  [searchFields]="['name', 'description']"
+  (onAdd)="crear()"
+  (filteredData)="typeCitationsFiltered = $event"
 ></app-toolbar>
-
-  <!-- addLabel="Agregar"
-  addSubtitle="tipo de Cita"  -->
-
 
 <div class="cards-container">
   <app-card-type-citation
-    *ngFor="let t of typeCitations; trackBy: trackById"
+    *ngFor="let t of typeCitationsFiltered | slice:(pageIndex * pageSize):((pageIndex + 1) * pageSize); trackBy: trackById"
     [id]="t.id"
     [title]="t.name"
     [imageName]="t.icon"
     [route]="toRoute(t.name)">
   </app-card-type-citation>
 </div>
-
 
  <mat-paginator
     [length]="typeCitations.length"

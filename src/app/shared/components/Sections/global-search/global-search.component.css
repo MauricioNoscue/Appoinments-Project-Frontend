@@ -1,0 +1,94 @@
+/* 🔍 Contenedor general */
+.global-search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  flex-shrink: 0;
+}
+
+/* 🔍 Caja del input y botón */
+.global-search {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 30px;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: visible; /* 👈 IMPORTANTE: deja pasar los eventos */
+}
+
+/* Input */
+.global-search input {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #333;
+  border-radius: 30px 0 0 30px;
+}
+
+.global-search input::placeholder {
+  color: #999;
+}
+
+/* Botón */
+.global-search button {
+  background-color: #6c8ef5;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 0 30px 30px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.global-search button:hover {
+  background-color: #5a7ee0;
+}
+
+.global-search button i {
+  color: white;
+  font-size: 15px;
+}
+
+/* Resultados */
+.search-results {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.result-item:hover {
+  background-color: #f0f0f0;
+}
+
+.icon {
+  color: #6c8ef5;
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

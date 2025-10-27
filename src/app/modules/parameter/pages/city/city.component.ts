@@ -16,17 +16,32 @@ import { DialogContainerComponent } from '../../../../shared/components/Modal/di
 import { CityList, City } from '../../../../shared/Models/parameter/CityModel';
 import { CityService } from '../../../../shared/services/city.service';
 import { ColumnDefinition } from '../../../../shared/Models/Tables/TableModels';
+import { SharedModule } from "../../../../shared/shared.module";
 
 @Component({
-  selector: 'app-city',
- standalone: true,
+selector: 'app-city',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatTableModule,
+    MatChipsModule,
+    MatTooltipModule,
+    SharedModule
+],
   templateUrl: './city.component.html',
-  styleUrl: './city.component.css',
+  styleUrls: ['./city.component.css'],
 })
 export class CityComponent implements OnInit {
   constructor(private dialog: MatDialog, private cityService: CityService) {}
 
   dataSource: CityList[] = [];
+  datasourceFiltered: CityList[] = [];
   searchTerm = '';
 
   // 🔹 Definición de columnas genéricas
@@ -62,7 +77,11 @@ export class CityComponent implements OnInit {
   /** 🔄 Cargar listado */
   cargarCiudades(): void {
     this.cityService.traerTodo().subscribe({
-      next: (cities) => (this.dataSource = cities),
+      next: (cities) => 
+        {
+          this.dataSource = cities;
+          this.datasourceFiltered = [...this.dataSource];
+        },
       error: (err) => {
         console.error('Error al cargar ciudades:', err);
         Swal.fire('Error', 'No se pudieron cargar las ciudades.', 'error');

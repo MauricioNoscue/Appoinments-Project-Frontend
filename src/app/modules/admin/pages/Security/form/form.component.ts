@@ -19,6 +19,7 @@ export class FormComponent implements OnInit {
  constructor(private service: FormService, private dialog: MatDialog) {}
 
   dataSource: FormList[] = [];
+  dataSourceFiltered: FormList[] = [];
   searchTerm = '';
 
   columnDefs: ColumnDefinition[] = [
@@ -81,7 +82,11 @@ export class FormComponent implements OnInit {
 
   recargarListado(): void {
     this.service.traerTodo().subscribe({
-      next: (formularios) => (this.dataSource = formularios),
+      next: (formularios) => 
+        {
+          this.dataSource = formularios;
+          this.dataSourceFiltered = [...this.dataSource];
+        },
       error: (err) => console.error('Error al cargar formularios:', err),
     });
   }

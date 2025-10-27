@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 
 
@@ -17,9 +17,14 @@ export interface TypeCitation {
   styleUrl: './type-citation.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TypeCitationComponent {
+export class TypeCitationComponent implements OnChanges {
 
    @Input()  typeCitations: TypeCitation[] = []
+   typeCitationsFiltered: TypeCitation[] = []
+
+   ngOnChanges(): void {
+    this.typeCitationsFiltered = [...this.typeCitations];
+  }
 
   toRoute(name: string): string {
     return '/' + name
@@ -42,4 +47,7 @@ onPageChange(event: PageEvent): void {
 
 }
 
+crear(): void {
+  alert('Crear nuevo tipo de cita');
+}
 }

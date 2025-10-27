@@ -68,6 +68,7 @@ abrirDialog(tipo: 'create' | 'edit' | 'card', datos?: any) {
 cargarUsers() {
   this.service.traerTodo().subscribe(users => {
     this.dataSource = users;
+    this.dataSorceFiltered = [...this.dataSource];
   });
 }
 
@@ -78,6 +79,7 @@ ngOnInit(): void {
 }
 
 dataSource : UsuarioListado[] = [];
+dataSorceFiltered : UsuarioListado[] = [];
 displayedColumns: string[] = [
   'index',          
   'email',          

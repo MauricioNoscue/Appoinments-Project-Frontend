@@ -23,6 +23,7 @@ export class ModuleComponent implements OnInit {
   constructor(private service: ModuleService, private dialog: MatDialog) {}
 
   dataSource: ModuleList[] = [];
+  dataSourceFiltered: ModuleList[] = [];  
   searchTerm = '';
 
   columnDefs: ColumnDefinition[] = [
@@ -48,7 +49,11 @@ export class ModuleComponent implements OnInit {
 
   cargarModules(): void {
     this.service.traerTodo().subscribe({
-      next: (modules) => (this.dataSource = modules),
+      next: (modules) => 
+        {
+          this.dataSource = modules;
+          this.dataSourceFiltered = [...this.dataSource];
+        },
       error: (err) => {
         console.error('Error al cargar módulos:', err);
         Swal.fire({

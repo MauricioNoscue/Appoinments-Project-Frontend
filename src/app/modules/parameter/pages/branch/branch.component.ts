@@ -27,6 +27,7 @@ export class BranchComponent implements OnInit {
   constructor(private dialog: MatDialog, private branchService: BranchService) {}
 
   dataSource: BranchList[] = [];
+  dataSourceFiltered: BranchList[] = [];
   searchTerm = '';
 
   //  Definición de columnas reutilizables
@@ -65,7 +66,10 @@ export class BranchComponent implements OnInit {
   /** 🔄 Cargar sucursales */
   cargarSucursales(): void {
     this.branchService.traerTodo().subscribe({
-      next: (branches) => (this.dataSource = branches),
+      next: (branches) => {
+        this.dataSource = branches;
+         this.dataSourceFiltered = [...this.dataSource]; 
+      },
       error: (err) => {
         console.error('Error al cargar sucursales:', err);
         Swal.fire('Error', 'No se pudieron cargar las sucursales.', 'error');

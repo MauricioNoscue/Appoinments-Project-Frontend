@@ -6,17 +6,42 @@ import { Component, EventEmitter, input, Input, Output } from '@angular/core';
   templateUrl: './toolbar.component.html',
   styleUrl: './toolbar.component.css'
 })
-export class ToolbarComponent {
+export class ToolbarComponent<T> {
+  @Input() title = 'Título';
+  @Input() addLabel?: string;
+  @Input() addSubtitle?: string;
+  @Input() showAddButton = true;
+  @Input() showSearch = true;
 
-  @Input() title = 'Título';              // Texto principal
-  @Input() addLabel?: string;             // Línea superior del botón
-  @Input() addSubtitle?: string;          // Línea inferior del botón
-  @Input() showAddButton = true;          // Mostrar/ocultar botón
-  @Input() showSearch = true;             // Mostrar/ocultar buscador
+  // 🔹 Lista original que viene del padre
+  @Input() data: T[] = [];
 
-  @Output() onAdd = new EventEmitter<void>();        
-  @Output() onSearch = new EventEmitter<string>();   
+  // 🔹 Campos a buscar dentro de cada elemento
+  @Input() searchFields: (keyof T)[] = [];
+
+  // 🔹 Emitirá la lista filtrada automáticamente
+  @Output() filteredData = new EventEmitter<T[]>();
+
+  @Output() onAdd = new EventEmitter<void>();
 
   searchTerm = '';
 
+  // 🔍 Filtra y emite resultados automáticamente
+  onSearchChange(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+
+    if (!term) {
+      this.filteredData.emit(this.data);
+      return;
+    }
+
+    const filtered = this.data.filter((item) =>
+      this.searchFields.some((field) => {
+        const value = (item[field] ?? '').toString().toLowerCase();
+        return value.includes(term);
+      })
+    );
+
+    this.filteredData.emit(filtered);
+  }
 }

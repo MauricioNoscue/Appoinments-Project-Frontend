@@ -15,10 +15,24 @@ import { InstitutionList, Institution } from "../../../../shared/Models/paramete
 import { InstitutionService } from "../../../../shared/services/institution.service";
 import Swal from "sweetalert2";
 import { ColumnDefinition } from "../../../../shared/Models/Tables/TableModels";
+import { SharedModule } from "../../../../shared/shared.module";
 
 @Component({
   selector: 'app-institutions',
   standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatTableModule,
+    MatChipsModule,
+    MatTooltipModule,
+    SharedModule
+],
 
   templateUrl: './institutions.component.html',
   styleUrls: ['./institutions.component.css'],
@@ -31,6 +45,7 @@ export class InstitutionsComponent implements OnInit {
   ) {}
 
   dataSource: InstitutionList[] = [];
+  dataSourceFiltered: InstitutionList[] = [];
   searchTerm = '';
 
   columnDefs: ColumnDefinition[] = [
@@ -67,7 +82,10 @@ export class InstitutionsComponent implements OnInit {
   /** 🔄 Cargar todas las instituciones */
   cargarInstituciones(): void {
     this.institutionService.traerTodo().subscribe({
-      next: (institutions) => (this.dataSource = institutions),
+      next: (institutions) =>{
+        this.dataSource = institutions;
+        this.dataSourceFiltered = [...this.dataSource];
+      },
       error: (err) => {
         console.error('Error al cargar instituciones:', err);
         Swal.fire('Error', 'No se pudieron cargar las instituciones.', 'error');

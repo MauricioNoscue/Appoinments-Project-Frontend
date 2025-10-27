@@ -25,6 +25,7 @@ import { ReservationViewComponent } from './components/PagesShared/reservation-v
 import { PerfilComponent } from '../modules/paciente/pages/perfil/perfil.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { GenericTableComponent } from './components/Table/generic-table/generic-table.component';
+import { GlobalSearchComponent } from './components/Sections/global-search/global-search.component';
 
 
 const sharedComponents =[
@@ -43,7 +44,8 @@ const sharedComponents =[
   FormSheduleComponent,
   ReservationViewComponent,
   ToolbarComponent,
-  GenericTableComponent
+  GenericTableComponent,
+  GlobalSearchComponent
   
  
 

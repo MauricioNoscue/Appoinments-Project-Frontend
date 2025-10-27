@@ -1,5 +1,4 @@
 <div class="toolbar">
-  <!-- Título -->
   <h2>{{ title }}</h2>
 
   <div class="actions">
@@ -15,8 +14,9 @@
         <strong>{{ addLabel || 'Agregar' }}</strong><br />
         {{ addSubtitle || 'registro' }}
       </span>
-    </button> 
+    </button>
 
+    <!-- Buscador -->
     <form class="search-form" role="search" *ngIf="showSearch">
       <input
         class="search-input"
@@ -25,7 +25,7 @@
         aria-label="Buscar"
         [(ngModel)]="searchTerm"
         name="searchTerm"
-        (ngModelChange)="onSearch.emit(searchTerm)"
+        (ngModelChange)="onSearchChange()"
       />
     </form>
   </div>
