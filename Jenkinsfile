@@ -28,23 +28,33 @@ pipeline {
         }
 
         // ============================================================
-        // 2️⃣ DETECTAR ENTORNO DESDE .ENV RAÍZ
+        // 2️⃣ DETECTAR ENTORNO DESDE .ENV RAÍZ (versión robusta)
         // ============================================================
         stage('Detectar entorno') {
             steps {
                 script {
                     def envFileRoot = '.env'
-                    if (fileExists(envFileRoot)) {
-                        def envLines = readFile(envFileRoot).split("\n")
-                        for (line in envLines) {
-                            if (line.trim().startsWith("ENVIRONMENT=")) {
-                                env.ENVIRONMENT = line.replace("ENVIRONMENT=", "").trim()
-                                break
-                            }
+                    if (!fileExists(envFileRoot)) {
+                        error "❌ No existe el archivo .env raíz en el proyecto."
+                    }
+
+                    // Leer contenido limpiando BOM, saltos y retornos de carro (\r\n)
+                    def envLines = readFile(envFileRoot)
+                        .replaceAll('\uFEFF', '')     // elimina BOM si existe
+                        .replaceAll('\r', '')         // elimina retorno de carro Windows
+                        .trim()                       // quita espacios/saltos al inicio y fin
+                        .split("\n")
+
+                    // Buscar la variable ENVIRONMENT sin importar formato
+                    for (line in envLines) {
+                        if (line.trim().startsWith("ENVIRONMENT=")) {
+                            env.ENVIRONMENT = line.replace("ENVIRONMENT=", "").trim()
+                            break
                         }
                     }
+
                     if (!env.ENVIRONMENT?.trim()) {
-                        error "❌ No se encontró ENVIRONMENT en el archivo .env raíz"
+                        error "❌ No se encontró ENVIRONMENT en el archivo .env raíz (asegúrate de tener 'ENVIRONMENT=staging')"
                     }
 
                     env.ENV_DIR = "devops/${env.ENVIRONMENT}"
