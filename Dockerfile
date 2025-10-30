@@ -2,21 +2,21 @@
 FROM node:20 AS build
 WORKDIR /app
 
-# Instalar dependencias
+# Copiar dependencias e instalarlas
 COPY package*.json ./
 RUN npm ci
 
-# Copiar el código y compilar Angular
+# Copiar código fuente y compilar Angular
 COPY . .
 RUN npm run build -- --configuration production
 
 # ---------- runtime stage ----------
 FROM nginx:1.25
 
-# Copiar la build exacta de Angular (ojo con el nombre)
+# ✅ Copiar la build correcta de Angular (según tu angular.json)
 COPY --from=build /app/dist/appoinments-project-frontedn /usr/share/nginx/html
 
-# Reemplazar configuración por una compatible con Angular Router
+# ✅ Copiar configuración de Nginx compatible con Angular Router
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
