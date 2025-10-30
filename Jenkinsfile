@@ -8,11 +8,6 @@ pipeline {
 
     environment {
         DOTNET_NOLOGO = '1'
-        ENVIRONMENT = ''         // Se llenará dinámicamente
-        ENV_DIR = ''
-        ENV_FILE = ''
-        COMPOSE_FILE = ''
-        IMAGE_NAME = ''
     }
 
     stages {
@@ -28,7 +23,7 @@ pipeline {
         }
 
         // ============================================================
-        // 2️⃣ DETECTAR ENTORNO DESDE .ENV RAÍZ (seguro y serializable)
+        // 2️⃣ DETECTAR ENTORNO DESDE .ENV RAÍZ
         // ============================================================
         stage('Detectar entorno') {
             steps {
@@ -48,7 +43,6 @@ pipeline {
 
                     echo "📄 Contenido del .env:\n${raw}"
 
-                    // Buscar la línea ENVIRONMENT= sin usar Matcher (evita error NotSerializableException)
                     def environmentLine = raw.readLines()
                         .find { it.trim().startsWith("ENVIRONMENT=") }
 
@@ -56,19 +50,16 @@ pipeline {
                         error "❌ No se encontró ENVIRONMENT en el archivo .env raíz (asegúrate de tener 'ENVIRONMENT=staging')"
                     }
 
-                    env.ENVIRONMENT = environmentLine.split("=")[1].trim()
-
-                    echo "✅ ENVIRONMENT encontrado: '${env.ENVIRONMENT}'"
-
-                    // Definir rutas derivadas del entorno
-                    env.ENV_DIR = "devops/${env.ENVIRONMENT}"
-                    env.ENV_FILE = "${env.ENV_DIR}/.env"
-                    env.COMPOSE_FILE = "${env.ENV_DIR}/docker-compose.yml"
-                    env.IMAGE_NAME = "appointments-front-${env.ENVIRONMENT}"
+                    // ✅ Usa env."VAR" para asegurar persistencia real en Jenkins
+                    env."ENVIRONMENT" = environmentLine.split("=")[1].trim()
+                    env."ENV_DIR" = "devops/${env.ENVIRONMENT}"
+                    env."ENV_FILE" = "${env.ENV_DIR}/.env"
+                    env."COMPOSE_FILE" = "${env.ENV_DIR}/docker-compose.yml"
+                    env."IMAGE_NAME" = "appointments-front-${env.ENVIRONMENT}"
 
                     echo """
-                    ✅ Configuración del entorno:
-                    🎯 Entorno: ${env.ENVIRONMENT}
+                    ✅ Configuración detectada:
+                    🌍 Entorno: ${env.ENVIRONMENT}
                     📁 Directorio: ${env.ENV_DIR}
                     📄 Archivo env: ${env.ENV_FILE}
                     🐳 Compose: ${env.COMPOSE_FILE}
@@ -86,8 +77,14 @@ pipeline {
                 script {
                     sh '''
                         echo "🧱 Construyendo imagen Angular (${ENVIRONMENT})..."
+                        if [ ! -f "${ENV_FILE}" ]; then
+                            echo "❌ No se encontró el archivo de entorno: ${ENV_FILE}"
+                            exit 1
+                        fi
+
                         API_BASE_URL=$(grep API_BASE_URL ${ENV_FILE} | cut -d "=" -f2)
                         echo "🌐 API_BASE_URL=${API_BASE_URL}"
+
                         docker build -t ${IMAGE_NAME}:latest \
                             --build-arg NODE_ENV=${ENVIRONMENT} \
                             --build-arg API_BASE_URL=${API_BASE_URL} \
