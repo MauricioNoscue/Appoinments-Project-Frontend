@@ -1,9 +1,14 @@
+/// <summary>
+/// Jenkinsfile genérico y robusto para despliegue automático del frontend Angular.
+/// Detecta el entorno desde el archivo `.env` raíz (ENVIRONMENT=staging|qa|prod|develop)
+/// y usa los archivos dentro de devops/{entorno}/
+/// </summary>
 pipeline {
     agent any
 
     environment {
         DOTNET_NOLOGO = '1'
-        ENVIRONMENT = ''
+        ENVIRONMENT = ''         // Se llenará dinámicamente
         ENV_DIR = ''
         ENV_FILE = ''
         COMPOSE_FILE = ''
@@ -12,6 +17,9 @@ pipeline {
 
     stages {
 
+        // ============================================================
+        // 1️⃣ CHECKOUT
+        // ============================================================
         stage('Checkout código fuente') {
             steps {
                 echo "📥 Clonando repositorio del frontend..."
@@ -19,46 +27,40 @@ pipeline {
             }
         }
 
+        // ============================================================
+        // 2️⃣ DETECTAR ENTORNO DESDE .ENV RAÍZ (seguro y serializable)
+        // ============================================================
         stage('Detectar entorno') {
             steps {
                 script {
-                    def envFileRoot = '.env'
-                    
                     echo "🔍 Verificando existencia del archivo .env raíz..."
+                    def envFileRoot = '.env'
+
                     if (!fileExists(envFileRoot)) {
                         error "❌ No existe el archivo .env raíz en el proyecto."
                     }
 
                     echo "📖 Leyendo archivo .env..."
-                    def rawContent = readFile(envFileRoot)
-                    echo "📄 Contenido del .env:\n${rawContent}"
-                    
-                    // Limpiar contenido
-                    def cleanContent = rawContent
-                        .replaceAll('\uFEFF', '')
-                        .replaceAll('\r', '')
+                    def raw = readFile(envFileRoot)
+                        .replaceAll('\uFEFF', '')   // elimina BOM
+                        .replaceAll('\r', '')       // elimina retorno de carro
                         .trim()
 
-                    echo "🧹 Contenido limpio:\n${cleanContent}"
+                    echo "📄 Contenido del .env:\n${raw}"
 
-                    // Buscar ENVIRONMENT
-                    def matcher = cleanContent =~ /(?m)^\s*ENVIRONMENT\s*=\s*([^\s#]+)/
-                    
-                    if (matcher.find()) {
-                        def detectedEnv = matcher.group(1).trim()
-                        echo "✅ ENVIRONMENT encontrado: '${detectedEnv}'"
-                        
-                        // Validar que sea un entorno válido
-                        if (detectedEnv in ['staging', 'qa', 'prod', 'develop']) {
-                            env.ENVIRONMENT = detectedEnv
-                        } else {
-                            error "❌ ENVIRONMENT='${detectedEnv}' no es válido. Use: staging, qa, prod o develop"
-                        }
-                    } else {
-                        error "❌ No se encontró ENVIRONMENT en .env. Formato esperado: ENVIRONMENT=staging"
+                    // Buscar la línea ENVIRONMENT= sin usar Matcher (evita error NotSerializableException)
+                    def environmentLine = raw.readLines()
+                        .find { it.trim().startsWith("ENVIRONMENT=") }
+
+                    if (!environmentLine) {
+                        error "❌ No se encontró ENVIRONMENT en el archivo .env raíz (asegúrate de tener 'ENVIRONMENT=staging')"
                     }
 
-                    // Configurar rutas
+                    env.ENVIRONMENT = environmentLine.split("=")[1].trim()
+
+                    echo "✅ ENVIRONMENT encontrado: '${env.ENVIRONMENT}'"
+
+                    // Definir rutas derivadas del entorno
                     env.ENV_DIR = "devops/${env.ENVIRONMENT}"
                     env.ENV_FILE = "${env.ENV_DIR}/.env"
                     env.COMPOSE_FILE = "${env.ENV_DIR}/docker-compose.yml"
@@ -72,69 +74,48 @@ pipeline {
                     🐳 Compose: ${env.COMPOSE_FILE}
                     🧱 Imagen: ${env.IMAGE_NAME}
                     """
-
-                    // Verificar que existan los archivos del entorno
-                    if (!fileExists(env.ENV_FILE)) {
-                        error "❌ No existe ${env.ENV_FILE}"
-                    }
-                    if (!fileExists(env.COMPOSE_FILE)) {
-                        error "❌ No existe ${env.COMPOSE_FILE}"
-                    }
                 }
             }
         }
 
+        // ============================================================
+        // 3️⃣ BUILD ANGULAR
+        // ============================================================
         stage('Construir imagen Angular') {
             steps {
                 script {
-                    echo "🧱 Construyendo imagen Angular (${env.ENVIRONMENT})..."
-                    
-                    sh """
-                        set -e
-                        echo "📋 Verificando archivo ${ENV_FILE}..."
-                        cat ${ENV_FILE}
-                        
-                        echo "🔍 Extrayendo API_BASE_URL..."
-                        API_BASE_URL=\$(grep '^API_BASE_URL' ${ENV_FILE} | cut -d '=' -f2 | tr -d ' "')
-                        
-                        if [ -z "\$API_BASE_URL" ]; then
-                            echo "⚠️  API_BASE_URL vacío, usando valor por defecto"
-                            API_BASE_URL="http://localhost:8080"
-                        fi
-                        
-                        echo "🌐 API_BASE_URL=\$API_BASE_URL"
-                        echo "🧱 Imagen: ${IMAGE_NAME}:latest"
-                        
+                    sh '''
+                        echo "🧱 Construyendo imagen Angular (${ENVIRONMENT})..."
+                        API_BASE_URL=$(grep API_BASE_URL ${ENV_FILE} | cut -d "=" -f2)
+                        echo "🌐 API_BASE_URL=${API_BASE_URL}"
                         docker build -t ${IMAGE_NAME}:latest \
                             --build-arg NODE_ENV=${ENVIRONMENT} \
-                            --build-arg API_BASE_URL=\$API_BASE_URL \
+                            --build-arg API_BASE_URL=${API_BASE_URL} \
                             -f Dockerfile .
-                    """
+                    '''
                 }
             }
         }
 
+        // ============================================================
+        // 4️⃣ DEPLOY ANGULAR
+        // ============================================================
         stage('Desplegar contenedor Angular') {
             steps {
                 dir("${env.ENV_DIR}") {
-                    sh """
-                        set -e
+                    sh '''
                         echo "🚀 Desplegando entorno ${ENVIRONMENT}..."
-                        echo "📂 Directorio actual: \$(pwd)"
-                        echo "📄 Archivos disponibles:"
-                        ls -la
-                        
                         docker compose --env-file .env down || true
                         docker compose --env-file .env up -d --build
-                        
-                        echo "✅ Contenedores desplegados:"
-                        docker compose --env-file .env ps
-                    """
+                    '''
                 }
             }
         }
     }
 
+    // ============================================================
+    // 5️⃣ POST ACTIONS
+    // ============================================================
     post {
         success {
             echo "✅ Despliegue completado correctamente (${env.ENVIRONMENT})"
