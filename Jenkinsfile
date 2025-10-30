@@ -1,5 +1,5 @@
 /// <summary>
-/// Jenkinsfile genérico para despliegue automático del frontend Angular.
+/// Jenkinsfile genérico y robusto para despliegue automático del frontend Angular.
 /// Detecta el entorno desde el archivo `.env` raíz (ENVIRONMENT=staging|qa|prod|develop)
 /// y usa los archivos dentro de devops/{entorno}/
 /// </summary>
@@ -28,7 +28,7 @@ pipeline {
         }
 
         // ============================================================
-        // 2️⃣ DETECTAR ENTORNO DESDE .ENV RAÍZ (versión robusta)
+        // 2️⃣ DETECTAR ENTORNO DESDE .ENV RAÍZ (blindado)
         // ============================================================
         stage('Detectar entorno') {
             steps {
@@ -38,22 +38,17 @@ pipeline {
                         error "❌ No existe el archivo .env raíz en el proyecto."
                     }
 
-                    // Leer contenido limpiando BOM, saltos y retornos de carro (\r\n)
-                    def envLines = readFile(envFileRoot)
-                        .replaceAll('\uFEFF', '')     // elimina BOM si existe
-                        .replaceAll('\r', '')         // elimina retorno de carro Windows
-                        .trim()                       // quita espacios/saltos al inicio y fin
-                        .split("\n")
+                    // Leer contenido limpiando caracteres invisibles
+                    def raw = readFile(envFileRoot)
+                        .replaceAll('\uFEFF', '')   // elimina BOM
+                        .replaceAll('\r', '')       // elimina retorno de carro
+                        .trim()
 
-                    // Buscar la variable ENVIRONMENT sin importar formato
-                    for (line in envLines) {
-                        if (line.trim().startsWith("ENVIRONMENT=")) {
-                            env.ENVIRONMENT = line.replace("ENVIRONMENT=", "").trim()
-                            break
-                        }
-                    }
-
-                    if (!env.ENVIRONMENT?.trim()) {
+                    // Buscar ENVIRONMENT (tolerante a espacios)
+                    def matcher = raw =~ /(?m)^\s*ENVIRONMENT\s*=\s*(.+)\s*$/
+                    if (matcher.find()) {
+                        env.ENVIRONMENT = matcher.group(1).trim()
+                    } else {
                         error "❌ No se encontró ENVIRONMENT en el archivo .env raíz (asegúrate de tener 'ENVIRONMENT=staging')"
                     }
 
