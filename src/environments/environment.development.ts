@@ -1,11 +1,7 @@
 export const environment = {
-  //apiURL: 'http://localhost:5150',
-  apiURL: 'https://localhost:7186',
-  // apiURL: 'http://localhost:8080',
-
-  // defaultPersonId: 2, //  solo para pruebas sin login
-
-   hubs: {
+  production: true,
+  apiURL: (window as any)['env']?.API_BASE_URL || 'http://appointments-api-staging:8080',
+  hubs: {
     appointments: '/hubs/appointments'
   }
 };
