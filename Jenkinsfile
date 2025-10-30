@@ -37,8 +37,8 @@ pipeline {
                     if (fileExists(envFileRoot)) {
                         def envLines = readFile(envFileRoot).split("\n")
                         for (line in envLines) {
-                            if (line.startsWith("ENVIRONMENT=")) {
-                                env.ENVIRONMENT = line.split("=")[1].trim()
+                            if (line.trim().startsWith("ENVIRONMENT=")) {
+                                env.ENVIRONMENT = line.replace("ENVIRONMENT=", "").trim()
                                 break
                             }
                         }
