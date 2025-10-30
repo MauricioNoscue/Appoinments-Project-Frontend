@@ -1,7 +1,7 @@
 /// <summary>
 /// Jenkinsfile unificado para el frontend Angular.
 /// Detecta automáticamente el entorno según la rama (develop, qa, staging, prod)
-/// y despliega usando los archivos dentro de devops/{entorno}.
+/// o desde el archivo .env raíz, y despliega usando los archivos dentro de devops/{entorno}.
 /// </summary>
 
 pipeline {
@@ -14,6 +14,7 @@ pipeline {
         ENV_DIR = ''
         ENV_FILE = ''
         COMPOSE_FILE = ''
+        ENVIRONMENT = ''
     }
 
     stages {
@@ -34,21 +35,26 @@ pipeline {
         stage('Detectar entorno') {
             steps {
                 script {
-                    switch (env.BRANCH_NAME) {
-                        case 'main':
-                            env.ENVIRONMENT = 'prod'
-                            break
-                        case 'staging':
-                            env.ENVIRONMENT = 'staging'
-                            break
-                        case 'qa':
-                            env.ENVIRONMENT = 'qa'
-                            break
-                        default:
-                            env.ENVIRONMENT = 'develop'
-                            break
+                    // 🔹 Intentar leer archivo .env raíz (si existe)
+                    def envFileRoot = '.env'
+                    if (fileExists(envFileRoot)) {
+                        def envVars = readProperties file: envFileRoot
+                        if (envVars['ENVIRONMENT']) {
+                            env.ENVIRONMENT = envVars['ENVIRONMENT']
+                        }
                     }
 
+                    // 🔹 Si no hay ENVIRONMENT definido, usar la rama
+                    if (!env.ENVIRONMENT?.trim()) {
+                        switch (env.BRANCH_NAME) {
+                            case 'main':    env.ENVIRONMENT = 'prod'; break
+                            case 'staging': env.ENVIRONMENT = 'staging'; break
+                            case 'qa':      env.ENVIRONMENT = 'qa'; break
+                            default:        env.ENVIRONMENT = 'develop'; break
+                        }
+                    }
+
+                    // 🔹 Variables derivadas
                     env.ENV_DIR = "devops/${env.ENVIRONMENT}"
                     env.ENV_FILE = "${env.ENV_DIR}/.env"
                     env.COMPOSE_FILE = "${env.ENV_DIR}/docker-compose.yml"
@@ -66,13 +72,16 @@ pipeline {
         }
 
         // =======================================================
-        // 3️⃣ COMPILAR ANGULAR (modo build)
+        // 3️⃣ CONSTRUIR IMAGEN ANGULAR
         // =======================================================
         stage('Construir imagen Angular') {
             steps {
                 sh """
                     echo "🧱 Construyendo imagen Angular (${env.ENVIRONMENT})..."
-                    docker build -t ${env.IMAGE_NAME}:latest -f Dockerfile .
+                    docker build -t ${env.IMAGE_NAME}:latest \
+                        --build-arg NODE_ENV=${env.ENVIRONMENT} \
+                        --build-arg API_BASE_URL=$(grep API_BASE_URL ${env.ENV_FILE} | cut -d '=' -f2) \
+                        -f Dockerfile .
                 """
             }
         }
@@ -85,8 +94,8 @@ pipeline {
                 dir("${env.ENV_DIR}") {
                     sh """
                         echo "🚀 Desplegando entorno ${env.ENVIRONMENT}..."
-                        docker compose down || true
-                        docker compose up -d --build
+                        docker compose --env-file ${env.ENV_FILE} down || true
+                        docker compose --env-file ${env.ENV_FILE} up -d --build
                     """
                 }
             }
