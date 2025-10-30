@@ -13,10 +13,10 @@ RUN npm run build -- --configuration production
 # ---------- runtime stage ----------
 FROM nginx:1.25
 
-# ✅ Copiar la build correcta de Angular (según tu angular.json)
-COPY --from=build /app/dist/appoinments-project-frontedn /usr/share/nginx/html
+# ✅ Copiar la build real de Angular (carpeta /browser)
+COPY --from=build /app/dist/appoinments-project-frontedn/browser /usr/share/nginx/html
 
-# ✅ Copiar configuración de Nginx compatible con Angular Router
+# ✅ Configuración de Nginx para Angular Router
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
