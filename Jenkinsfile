@@ -95,16 +95,24 @@ pipeline {
         }
 
         // ============================================================
-        // 4️⃣ DEPLOY ANGULAR
+        // 4️⃣ DEPLOY ANGULAR (corregido: sin rutas duplicadas)
         // ============================================================
         stage('Desplegar contenedor Angular') {
             steps {
-                dir("${env.ENV_DIR}") {
-                    sh '''
-                        echo "🚀 Desplegando entorno ${ENVIRONMENT}..."
-                        docker compose --env-file .env down || true
-                        docker compose --env-file .env up -d --build
-                    '''
+                script {
+                    echo "🚀 Desplegando entorno ${env.ENVIRONMENT}..."
+
+                    sh """
+                        docker compose \
+                            --file ${env.COMPOSE_FILE} \
+                            --env-file ${env.ENV_FILE} \
+                            down || true
+
+                        docker compose \
+                            --file ${env.COMPOSE_FILE} \
+                            --env-file ${env.ENV_FILE} \
+                            up -d --build
+                    """
                 }
             }
         }
