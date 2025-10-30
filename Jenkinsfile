@@ -1,9 +1,3 @@
-/// <summary>
-/// Jenkinsfile unificado para el frontend Angular.
-/// Detecta automáticamente el entorno según la rama (develop, qa, staging, prod)
-/// o desde el archivo .env raíz, y despliega usando los archivos dentro de devops/{entorno}.
-/// </summary>
-
 pipeline {
     agent any
 
@@ -18,9 +12,6 @@ pipeline {
 
     stages {
 
-        // =======================================================
-        // 1️⃣ CHECKOUT
-        // =======================================================
         stage('Checkout código fuente') {
             steps {
                 echo "📥 Clonando repositorio del frontend..."
@@ -28,39 +19,39 @@ pipeline {
             }
         }
 
-        // =======================================================
-        // 2️⃣ DETECTAR ENTORNO
-        // =======================================================
         stage('Detectar entorno') {
             steps {
                 script {
-                    // 🔹 Intentar leer archivo .env raíz (si existe)
+                    // ✅ 1. Intentar leer el .env raíz si existe
                     def envFileRoot = '.env'
                     if (fileExists(envFileRoot)) {
-                        def envVars = readProperties file: envFileRoot
-                        if (envVars['ENVIRONMENT']) {
-                            env.ENVIRONMENT = envVars['ENVIRONMENT']
+                        def envContent = readFile(envFileRoot).trim()
+                        for (line in envContent.split('\n')) {
+                            if (line.startsWith('ENVIRONMENT=')) {
+                                env.ENVIRONMENT = line.replace('ENVIRONMENT=', '').trim()
+                            }
                         }
                     }
 
-                    // 🔹 Si no hay ENVIRONMENT definido, usar la rama
+                    // ✅ 2. Si sigue vacío, usar rama o fallback
                     if (!env.ENVIRONMENT?.trim()) {
-                        switch (env.BRANCH_NAME) {
+                        def branch = env.BRANCH_NAME ?: 'staging'
+                        switch (branch) {
                             case 'main':    env.ENVIRONMENT = 'prod'; break
-                            case 'staging': env.ENVIRONMENT = 'staging'; break
                             case 'qa':      env.ENVIRONMENT = 'qa'; break
+                            case 'staging': env.ENVIRONMENT = 'staging'; break
                             default:        env.ENVIRONMENT = 'develop'; break
                         }
                     }
 
-                    // 🔹 Variables derivadas
+                    // ✅ 3. Variables derivadas
                     env.ENV_DIR = "devops/${env.ENVIRONMENT}"
                     env.ENV_FILE = "${env.ENV_DIR}/.env"
                     env.COMPOSE_FILE = "${env.ENV_DIR}/docker-compose.yml"
                     env.IMAGE_NAME = "appointments-front-${env.ENVIRONMENT}"
 
                     echo """
-                    ✅ Rama detectada: ${env.BRANCH_NAME}
+                    ✅ Rama detectada: ${env.BRANCH_NAME ?: 'null'}
                     🌍 Entorno asignado: ${env.ENVIRONMENT}
                     📄 Archivo compose: ${env.COMPOSE_FILE}
                     📁 Archivo env: ${env.ENV_FILE}
@@ -70,9 +61,6 @@ pipeline {
             }
         }
 
-        // =======================================================
-        // 3️⃣ CONSTRUIR IMAGEN ANGULAR
-        // =======================================================
         stage('Construir imagen Angular') {
             steps {
                 script {
@@ -88,9 +76,6 @@ pipeline {
             }
         }
 
-        // =======================================================
-        // 4️⃣ DESPLEGAR CONTENEDOR ANGULAR
-        // =======================================================
         stage('Desplegar contenedor Angular') {
             steps {
                 dir("${env.ENV_DIR}") {
