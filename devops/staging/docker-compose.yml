@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   appointments-front-staging:
@@ -7,13 +7,13 @@ services:
       context: ../../
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=staging
-        - API_BASE_URL=${API_BASE_URL}
+        NODE_ENV: staging
+        API_BASE_URL: ${API_BASE_URL}
     ports:
       - "4200:80"
     environment:
-      - NODE_ENV=staging
-      - API_BASE_URL=${API_BASE_URL}
+      NODE_ENV: staging
+      API_BASE_URL: ${API_BASE_URL}
     restart: always
     networks:
       - network_staging

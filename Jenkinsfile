@@ -1,13 +1,16 @@
+/// <summary>
+/// Jenkinsfile para despliegue automático del frontend Angular.
+/// Usa entorno "staging" por defecto (sin depender de rama ni .env raíz)
+/// </summary>
 pipeline {
     agent any
 
     environment {
-        NODE_ENV = ''
-        IMAGE_NAME = ''
-        ENV_DIR = ''
-        ENV_FILE = ''
-        COMPOSE_FILE = ''
-        ENVIRONMENT = ''
+        ENVIRONMENT = 'staging'              // 🔹 Forzamos staging
+        ENV_DIR = "devops/staging"
+        ENV_FILE = "devops/staging/.env"
+        COMPOSE_FILE = "devops/staging/docker-compose.yml"
+        IMAGE_NAME = "appointments-front-staging"
     }
 
     stages {
@@ -19,49 +22,14 @@ pipeline {
             }
         }
 
-        stage('Detectar entorno') {
+        stage('Mostrar configuración detectada') {
             steps {
-                script {
-                    // 1️⃣ Intentar leer el .env raíz
-                    def envFileRoot = '.env'
-                    if (fileExists(envFileRoot)) {
-                        try {
-                            def envContent = readFile(envFileRoot).trim()
-                            for (line in envContent.split('\n')) {
-                                if (line.startsWith('ENVIRONMENT=')) {
-                                    env.ENVIRONMENT = line.replace('ENVIRONMENT=', '').trim()
-                                }
-                            }
-                        } catch (err) {
-                            echo "⚠️ No se pudo leer el .env raíz: ${err}"
-                        }
-                    }
-
-                    // 2️⃣ Si sigue vacío, usar nombre de rama o fallback “staging”
-                    if (!env.ENVIRONMENT?.trim()) {
-                        def branch = env.BRANCH_NAME ?: 'staging'
-                        switch (branch) {
-                            case 'main':    env.ENVIRONMENT = 'prod'; break
-                            case 'qa':      env.ENVIRONMENT = 'qa'; break
-                            case 'staging': env.ENVIRONMENT = 'staging'; break
-                            default:        env.ENVIRONMENT = 'develop'; break
-                        }
-                    }
-
-                    // 3️⃣ Construir variables derivadas
-                    env.ENV_DIR = "devops/${env.ENVIRONMENT}"
-                    env.ENV_FILE = "${env.ENV_DIR}/.env"
-                    env.COMPOSE_FILE = "${env.ENV_DIR}/docker-compose.yml"
-                    env.IMAGE_NAME = "appointments-front-${env.ENVIRONMENT}"
-
-                    echo """
-                    ✅ Rama detectada: ${env.BRANCH_NAME ?: 'null'}
-                    🌍 Entorno asignado: ${env.ENVIRONMENT}
-                    📄 Archivo compose: ${env.COMPOSE_FILE}
-                    📁 Archivo env: ${env.ENV_FILE}
-                    🧱 Imagen: ${env.IMAGE_NAME}
-                    """
-                }
+                echo """
+                🌍 Entorno: ${ENVIRONMENT}
+                📁 Archivo env: ${ENV_FILE}
+                📄 Archivo compose: ${COMPOSE_FILE}
+                🧱 Imagen: ${IMAGE_NAME}
+                """
             }
         }
 
@@ -71,6 +39,7 @@ pipeline {
                     sh '''
                         echo "🧱 Construyendo imagen Angular (${ENVIRONMENT})..."
                         API_BASE_URL=$(grep API_BASE_URL ${ENV_FILE} | cut -d "=" -f2)
+                        echo "🌐 API_BASE_URL=${API_BASE_URL}"
                         docker build -t ${IMAGE_NAME}:latest \
                             --build-arg NODE_ENV=${ENVIRONMENT} \
                             --build-arg API_BASE_URL=${API_BASE_URL} \
