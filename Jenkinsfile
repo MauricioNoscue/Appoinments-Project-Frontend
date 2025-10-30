@@ -22,18 +22,22 @@ pipeline {
         stage('Detectar entorno') {
             steps {
                 script {
-                    // ✅ 1. Intentar leer el .env raíz si existe
+                    // 1️⃣ Intentar leer el .env raíz
                     def envFileRoot = '.env'
                     if (fileExists(envFileRoot)) {
-                        def envContent = readFile(envFileRoot).trim()
-                        for (line in envContent.split('\n')) {
-                            if (line.startsWith('ENVIRONMENT=')) {
-                                env.ENVIRONMENT = line.replace('ENVIRONMENT=', '').trim()
+                        try {
+                            def envContent = readFile(envFileRoot).trim()
+                            for (line in envContent.split('\n')) {
+                                if (line.startsWith('ENVIRONMENT=')) {
+                                    env.ENVIRONMENT = line.replace('ENVIRONMENT=', '').trim()
+                                }
                             }
+                        } catch (err) {
+                            echo "⚠️ No se pudo leer el .env raíz: ${err}"
                         }
                     }
 
-                    // ✅ 2. Si sigue vacío, usar rama o fallback
+                    // 2️⃣ Si sigue vacío, usar nombre de rama o fallback “staging”
                     if (!env.ENVIRONMENT?.trim()) {
                         def branch = env.BRANCH_NAME ?: 'staging'
                         switch (branch) {
@@ -44,7 +48,7 @@ pipeline {
                         }
                     }
 
-                    // ✅ 3. Variables derivadas
+                    // 3️⃣ Construir variables derivadas
                     env.ENV_DIR = "devops/${env.ENVIRONMENT}"
                     env.ENV_FILE = "${env.ENV_DIR}/.env"
                     env.COMPOSE_FILE = "${env.ENV_DIR}/docker-compose.yml"
