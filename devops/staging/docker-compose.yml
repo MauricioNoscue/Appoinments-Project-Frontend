@@ -10,7 +10,7 @@ services:
         NODE_ENV: staging
         API_BASE_URL: ${API_BASE_URL}
     ports:
-      - "4200:80"
+      - "4600:80"
     environment:
       NODE_ENV: staging
       API_BASE_URL: ${API_BASE_URL}
