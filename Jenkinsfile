@@ -8,7 +8,6 @@ pipeline {
     agent any
 
     environment {
-        DOTNET_NOLOGO = '1'
         NODE_ENV = ''
         IMAGE_NAME = ''
         ENV_DIR = ''
@@ -76,27 +75,30 @@ pipeline {
         // =======================================================
         stage('Construir imagen Angular') {
             steps {
-                sh """
-                    echo "🧱 Construyendo imagen Angular (${env.ENVIRONMENT})..."
-                    docker build -t ${env.IMAGE_NAME}:latest \
-                        --build-arg NODE_ENV=${env.ENVIRONMENT} \
-                        --build-arg API_BASE_URL=$(grep API_BASE_URL ${env.ENV_FILE} | cut -d '=' -f2) \
-                        -f Dockerfile .
-                """
+                script {
+                    sh '''
+                        echo "🧱 Construyendo imagen Angular (${ENVIRONMENT})..."
+                        API_BASE_URL=$(grep API_BASE_URL ${ENV_FILE} | cut -d "=" -f2)
+                        docker build -t ${IMAGE_NAME}:latest \
+                            --build-arg NODE_ENV=${ENVIRONMENT} \
+                            --build-arg API_BASE_URL=${API_BASE_URL} \
+                            -f Dockerfile .
+                    '''
+                }
             }
         }
 
         // =======================================================
-        // 4️⃣ DESPLEGAR CONTENEDOR
+        // 4️⃣ DESPLEGAR CONTENEDOR ANGULAR
         // =======================================================
         stage('Desplegar contenedor Angular') {
             steps {
                 dir("${env.ENV_DIR}") {
-                    sh """
-                        echo "🚀 Desplegando entorno ${env.ENVIRONMENT}..."
-                        docker compose --env-file ${env.ENV_FILE} down || true
-                        docker compose --env-file ${env.ENV_FILE} up -d --build
-                    """
+                    sh '''
+                        echo "🚀 Desplegando entorno ${ENVIRONMENT}..."
+                        docker compose --env-file ${ENV_FILE} down || true
+                        docker compose --env-file ${ENV_FILE} up -d --build
+                    '''
                 }
             }
         }
