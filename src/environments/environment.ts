@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiURL: (window as any)['env']?.API_BASE_URL || 'API_BASE_URL=http://localhost:5100',
+  apiURL: 'http://localhost:5100',  // URL directa sin window['env']
   hubs: {
     appointments: '/hubs/appointments'
   }

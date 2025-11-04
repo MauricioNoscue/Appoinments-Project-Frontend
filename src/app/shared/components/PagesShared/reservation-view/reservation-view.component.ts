@@ -145,7 +145,7 @@ async seleccionarHorario(h: Horario) {
         showConfirmButton: false
       });
     } else {
-      debugger;
+
       await Swal.fire({
         icon: 'error',
         title: 'No se pudo agendar',
