@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  appointments-front-dev:
+    container_name: appointments-front-dev
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: dev
+        API_BASE_URL: ${API_BASE_URL}
+    ports:
+      - "4300:80"
+    environment:
+      NODE_ENV: dev
+      API_BASE_URL: ${API_BASE_URL}
+    restart: always
+    networks:
+      - network_dev
+
+networks:
+  network_dev:
+    external: true
