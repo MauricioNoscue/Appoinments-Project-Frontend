@@ -20,4 +20,4 @@ services:
 
 networks:
   network_qa:
-    external: true
+    
