@@ -20,4 +20,4 @@ services:
 
 networks:
   network_dev:
-    external: true
+    
