@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  appointments-front-prod:
+    container_name: appointments-front-prod
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: prod
+        API_BASE_URL: ${API_BASE_URL}
+    ports:
+      - "4500:80"
+    environment:
+      NODE_ENV: prod
+      API_BASE_URL: ${API_BASE_URL}
+    restart: always
+    networks:
+      - network_prod
+
+networks:
+  network_prod:
+    
