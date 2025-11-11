@@ -17,7 +17,7 @@ export class UserService extends ServiceBaseService<UsuarioListado ,UsuarioCreac
 
 private ur = environment.apiURL
 
-  private readonly baseUrl = 'https://localhost:7186/api/security/menu';
+  private readonly baseUrl = 'https://localhost:5200/api/security/menu';
   // private readonly baseUrl = 'http://localhost:7186/api/security/menu';
 
 
