@@ -77,9 +77,9 @@ unlock(time: string): Promise<SlotUnlockResponse> {
   return this.connection!.invoke<SlotUnlockResponse>('UnlockSlot', req); // ← Quita el ", null"
 }
 
-confirm(time: string): Promise<{ success: boolean; citationId?: number; reason?: string }> {
+confirm(time: string,relatedPersonId?: number): Promise<{ success: boolean; citationId?: number; reason?: string }> {
   const slot: SlotKey = { scheduleHourId: this.scheduleHourId, date: this.dateISO, timeBlock: time };
-  return this.connection!.invoke<{ success: boolean; citationId?: number; reason?: string }>('ConfirmSlot', slot); // ← Quita el ", null"
+  return this.connection!.invoke<{ success: boolean; citationId?: number; reason?: string }>('ConfirmSlot', slot, relatedPersonId ?? null); // ← Quita el ", null"
 }
 
   // --- handlers de eventos ---
