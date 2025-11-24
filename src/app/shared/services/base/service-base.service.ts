@@ -5,9 +5,7 @@ import { Observable } from 'rxjs';
 
 
 export class ServiceBaseService<TList, TCreate, TUpdate> {
-  getAll() {
-    throw new Error("Method not implemented.");
-  }
+
 
   protected http = inject(HttpClient);
   protected urlBase: string;
@@ -37,6 +35,14 @@ export class ServiceBaseService<TList, TCreate, TUpdate> {
     return this.http.delete<void>(`${this.urlBase}/${id}`);
   }
 
+
+public updateStatus(entity: string, id: number, value: number): Observable<any> {
+  return this.http.patch<any>(`${this.urlBase}/update-status`, {
+    entity,
+    id,
+    value
+  });
+}
 
 
 }

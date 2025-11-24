@@ -8,13 +8,15 @@ import { RegisterComponent } from './Pages/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
+import { Verify2FAComponent } from './Pages/verify2-fa/verify2-fa.component';
+import { MaterialModule } from '../../shared/material.module';
 
 
 @NgModule({
-  declarations: [ContainerComponent,LoginComponent,RegisterComponent,ForgotPasswordComponent,ResetPasswordComponent],
+  declarations: [ContainerComponent,LoginComponent,RegisterComponent,ForgotPasswordComponent,ResetPasswordComponent,Verify2FAComponent],
   imports: [
     CommonModule,
-    AuthRoutingModule,ReactiveFormsModule,CommonModule
+    AuthRoutingModule,ReactiveFormsModule,CommonModule,MaterialModule
   ]
 })
 export class AuthModule { }
