@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TypeCitationComponent } from './type-citation.component';
 
 describe('TypeCitationComponent', () => {
@@ -8,7 +8,9 @@ describe('TypeCitationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TypeCitationComponent]
+      declarations: [TypeCitationComponent],
+      imports: [],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

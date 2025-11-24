@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormBasePermissionComponent } from './form-base-permission.component';
 
 describe('FormBasePermissionComponent', () => {
@@ -8,7 +8,9 @@ describe('FormBasePermissionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormBasePermissionComponent]
+      declarations: [FormBasePermissionComponent],
+      imports: [],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

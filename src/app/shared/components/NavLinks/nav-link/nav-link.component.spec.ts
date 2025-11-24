@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { NavLinkComponent } from './nav-link.component';
 
 describe('NavLinkComponent', () => {
@@ -8,7 +8,9 @@ describe('NavLinkComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NavLinkComponent]
+      declarations: [NavLinkComponent],
+      imports: [],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

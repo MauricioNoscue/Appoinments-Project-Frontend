@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ModalPerfilComponent } from './modal-perfil.component';
 
 describe('ModalPerfilComponent', () => {
@@ -8,9 +8,10 @@ describe('ModalPerfilComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ModalPerfilComponent]
-    })
-    .compileComponents();
+      imports: [ModalPerfilComponent], // ✅ CORRECCIÓN: Es standalone, va aquí
+      declarations: [], // Se quita de aquí
+      schemas: [NO_ERRORS_SCHEMA],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ModalPerfilComponent);
     component = fixture.componentInstance;

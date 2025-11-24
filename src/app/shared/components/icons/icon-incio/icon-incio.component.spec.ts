@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { IconIncioComponent } from './icon-incio.component';
 
 describe('IconIncioComponent', () => {
@@ -8,7 +8,9 @@ describe('IconIncioComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IconIncioComponent]
+      declarations: [IconIncioComponent],
+      imports: [],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

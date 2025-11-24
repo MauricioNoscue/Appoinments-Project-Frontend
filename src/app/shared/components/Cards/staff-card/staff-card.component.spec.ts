@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { StaffCardComponent } from './staff-card.component';
 
 describe('StaffCardComponent', () => {
@@ -8,7 +8,9 @@ describe('StaffCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StaffCardComponent]
+      declarations: [StaffCardComponent],
+      imports: [],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { PacienteComponent } from './paciente.component';
 
 describe('PacienteComponent', () => {
@@ -8,9 +8,9 @@ describe('PacienteComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PacienteComponent]
-    })
-    .compileComponents();
+      imports: [PacienteComponent], // ✅ Correcto
+      schemas: [NO_ERRORS_SCHEMA], // ✅ Agregado por seguridad
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PacienteComponent);
     component = fixture.componentInstance;

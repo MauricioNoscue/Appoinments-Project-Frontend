@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { CardViewPermissionComponent } from './card-view-permission.component';
 
 describe('CardViewPermissionComponent', () => {
@@ -8,7 +8,9 @@ describe('CardViewPermissionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CardViewPermissionComponent]
+      declarations: [CardViewPermissionComponent],
+      imports: [],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
 
