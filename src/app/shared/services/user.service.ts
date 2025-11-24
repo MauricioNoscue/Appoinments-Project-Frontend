@@ -17,8 +17,6 @@ export class UserService extends ServiceBaseService<UsuarioListado ,UsuarioCreac
 
 private ur = environment.apiURL
 
-  private readonly baseUrl = 'http://localhost:5200/api/security/menu';
-  // private readonly baseUrl = 'http://localhost:7186/api/security/menu';
 
 
     public login(data:LoginModel ) {
@@ -65,5 +63,10 @@ private ur = environment.apiURL
  getMenu(roleId: number): Observable<MenuItem[]> {
     return this.http.get<MenuItem[]>(`${this.ur}/api/security/menu?roleId=${roleId}`);
   }
+
+  verify2FA(payload: { userId: number; code: string }) {
+  return this.http.post<any>(`${this.ur}/api/auth/verify-2fa`, payload);
+}
+
 
 }

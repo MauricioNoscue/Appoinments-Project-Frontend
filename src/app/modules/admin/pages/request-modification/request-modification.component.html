@@ -1,0 +1,15 @@
+<app-toolbar
+  title="Solicitudes de Modificación"
+  addLabel=" "
+  addSubtitle=""
+  [data]="dataSource"
+  [searchFields]="['reason', 'statusTypeName']"
+  (filteredData)="dataSourceFiltered = $event">
+</app-toolbar>
+
+<app-generic-table
+  [dataSource]="dataSourceFiltered"
+  [columns]="displayedColumns"
+  [columnDefs]="columnDefs"
+  (actionClicked)="handleAction($event)">
+</app-generic-table>

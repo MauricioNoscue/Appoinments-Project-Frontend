@@ -47,6 +47,9 @@ import { ConsultorioComponent } from './pages/consultorio/consultorio.component'
 import { PerfilComponent } from '../doctor/pages/perfil/perfil.component';
 import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.component';
 import { CityComponent } from '../parameter/pages/city/city.component';
+import { RequestModificationComponent } from './pages/request-modification/request-modification.component';
+import { RequestModificationDetailComponent } from './pages/request-modification/request-modification-detail/request-modification-detail.component';
+import { TypeRequestPipe } from "../../shared/pipes/type-request.pipe";
 
 
 @NgModule({
@@ -82,7 +85,8 @@ import { CityComponent } from '../parameter/pages/city/city.component';
     TypeCitationManagementComponent,
     ViewCitationAvailableComponent,
     DoctorCreatedDialogComponent,
-    EditDoctorDialogComponent
+    EditDoctorDialogComponent,RequestModificationComponent,RequestModificationDetailComponent
+    
   ],
   imports: [
     CommonModule,
@@ -97,7 +101,8 @@ import { CityComponent } from '../parameter/pages/city/city.component';
     MatDialogContent,
     FormsModule,
     DatePipe,
-    DecimalPipe
-  ],
+    DecimalPipe,
+    TypeRequestPipe
+],
 })
 export class AdminModule {}

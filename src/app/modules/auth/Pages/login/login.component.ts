@@ -23,34 +23,40 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    console.log('hola');
     if (this.loginForm.valid) {
       const loginData: LoginModel = this.loginForm.value;
       this.service.login(loginData).subscribe({
-        next: (data) => {
-          // 👈 guarda el accessToken en localStorage
-          localStorage.setItem('jwt', data.accessToken);
+      next: (data) => {
+  if (data.requiresTwoFactor) {
+    // Redirigir a la vista de 2FA con el userId
+    this.router.navigate(['/auth/verify-2fa'], {
+      queryParams: { userId: data.userId }
+    });
 
-          // 👈 si quieres guardar la expiración también
-          localStorage.setItem('jwt_expires', data.expiresAtUtc);
+    Swal.fire({
+      icon: 'info',
+      title: 'Verificación requerida',
+      text: 'Revisa tu correo para ingresar el código.'
+    });
 
-          // 👈 si planeas usar refresh token
-          localStorage.setItem('jwt_refresh', data.refreshToken);
+    return;
+  }
 
-          Swal.fire({
-            icon: 'success',
-            title: '¡Login exitoso!',
-            text: 'Redirigiendo al panel principal...',
-            timer: 2000,
-            showConfirmButton: false,
-          });
+  // SI NO requiere 2FA → login normal
+  localStorage.setItem('jwt', data.accessToken);
+  localStorage.setItem('jwt_expires', data.expiresAtUtc);
+  localStorage.setItem('jwt_refresh', data.refreshToken);
 
-
+  Swal.fire({
+    icon: 'success',
+    title: '¡Login exitoso!',
+    timer: 1500,
+    showConfirmButton: false
+  });
 
   this.redirectByRole();
-
-
 }
+
 ,
         error: (err) => {
           console.error('Error de login:', err);

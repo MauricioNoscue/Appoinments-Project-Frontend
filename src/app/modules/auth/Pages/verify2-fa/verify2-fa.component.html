@@ -1,0 +1,27 @@
+<div class="verify-container">
+
+  <mat-card class="verify-card">
+
+    <h2 class="title">Verificación en dos pasos</h2>
+    <p class="subtitle">Ingresa el código que enviamos a tu correo.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Código 2FA</mat-label>
+        <input matInput formControlName="code" maxlength="6" autocomplete="off">
+      </mat-form-field>
+
+      <button 
+        mat-raised-button 
+        color="primary" 
+        class="btn-verify"
+        [disabled]="form.invalid">
+        Verificar código
+      </button>
+
+    </form>
+
+  </mat-card>
+
+</div>

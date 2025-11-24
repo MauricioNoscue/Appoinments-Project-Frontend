@@ -5,6 +5,7 @@ import { LoginComponent } from './Pages/login/login.component';
 import { RegisterComponent } from './Pages/register/register.component';
 import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
+import { Verify2FAComponent } from './Pages/verify2-fa/verify2-fa.component';
 
 const routes: Routes = [
     {
@@ -15,7 +16,12 @@ const routes: Routes = [
         { path: 'login', component: LoginComponent },
         {path:'register',component: RegisterComponent},
         {path:'reset-password',component: ResetPasswordComponent},
-        {path:'forgot-password',component: ForgotPasswordComponent}
+        {path:'forgot-password',component: ForgotPasswordComponent},
+        {
+  path: 'verify-2fa',
+  component: Verify2FAComponent
+}
+
       ],
     },
 ];
