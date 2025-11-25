@@ -27,37 +27,7 @@
 <section class="grid">
   <!-- Columna izquierda: Calendario + Novedades -->
   <div class="left-col">
-    <mat-card class="calendar-card">
-      <div class="cal-header">
-        <div class="toggle"><span class="dot on"></span></div>
-        <div class="title">{{ monthName() | titlecase }}</div>
-        <div class="nav">
-          <button mat-icon-button (click)="prevMonth()">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-          <button mat-icon-button (click)="nextMonth()">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </div>
-      </div>
 
-      <div class="week">
-        <div class="wd" *ngFor="let d of weekDays">{{ d }}</div>
-      </div>
-
-      <div class="days">
-        <button
-          class="cell"
-          *ngFor="let d of monthMatrix"
-          [class.empty]="!d"
-          [class.today]="isToday(d)"
-          [class.selected]="isSelected(d)"
-          (click)="pick(d)"
-        >
-          <span *ngIf="d">{{ d.getDate() | number: '2.0-0' }}</span>
-        </button>
-      </div>
-    </mat-card>
 
     <!-- Panel de novedades -->
     <mat-card class="news-card">

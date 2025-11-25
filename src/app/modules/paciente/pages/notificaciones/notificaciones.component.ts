@@ -1,17 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { forkJoin } from 'rxjs';
-
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { NotificationList } from '../../../../shared/Models/Notification/Notification';
 
-type Estado =
-  | 'Confirmada'
-  | 'Programada'
-  | 'Cancelada'
-  | 'Reagendada'
-  | 'Realizada';
+type Estado = 'Enviada' | 'Leída';
 type Tab = 'todas' | 'no-leidas' | 'leidas';
 
 interface NotificacionUI {
@@ -21,7 +14,7 @@ interface NotificacionUI {
   tipo: string;
   estado: Estado;
   icono: string;
-  leida: boolean; // derivado de stateNotification
+  leida: boolean;
 }
 
 @Component({
@@ -31,122 +24,82 @@ interface NotificacionUI {
   styleUrls: ['./notificaciones.component.css'],
   imports: [CommonModule, MatIconModule],
 })
-export class NotificacionesComponent implements OnInit, OnDestroy {
+export class NotificacionesComponent implements OnInit {
+
+   @Input() realTimeNotification: any | null = null;
   tab: Tab = 'todas';
   notificaciones: NotificacionUI[] = [];
   cargando = false;
   accionando = new Set<number>();
 
-  /** Flag para evitar ejecutar el marcado múltiple más de una vez simultánea */
-  private marcandoSalida = false;
-
   constructor(private api: NotificationService) {}
 
-  // ========= Ciclo de vida =========
   ngOnInit(): void {
     this.cargar();
   }
 
-  /** Si el usuario abandona el componente estando en "no-leídas", también marcamos al salir */
-  ngOnDestroy(): void {
-    if (this.tab === 'no-leidas') {
-      this.marcarTodasNoLeidasComoLeidas();
+   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['realTimeNotification'] && this.realTimeNotification) {
+      const n = this.mapToUI(this.realTimeNotification);
+
+      // Agregar la notificación arriba en tiempo real
+      this.notificaciones.unshift(n);
     }
   }
-
+  // ===========================
+  // CARGAR DATOS
+  // ===========================
   private cargar(): void {
     this.cargando = true;
-    this.api.traerTodo().subscribe({
+
+    this.api.GetAllUser().subscribe({
       next: (data: NotificationList[]) => {
+        // Mapeo + MÍMICA
         this.notificaciones = data.map((n) => this.mapToUI(n));
         this.cargando = false;
       },
-      error: () => {
-        this.cargando = false;
-      },
+      error: () => (this.cargando = false),
     });
   }
 
-  // ========= Tabs =========
-  setTab(t: Tab) {
-    // Si estamos en "no-leídas" y vamos a otra pestaña, primero marcamos todas como leídas
-    if (this.tab === 'no-leidas' && t !== 'no-leidas') {
-      this.marcarTodasNoLeidasComoLeidas(() => {
-        this.tab = t;
-      });
-    } else {
-      this.tab = t;
-    }
+  // ===========================
+  // CAMBIAR TAB
+  // ===========================
+  setTab(t: Tab): void {
+    this.tab = t;
   }
 
-  // ========= Marcado al salir de "no-leídas" =========
-  /** Marca en backend todas las no leídas (UI optimista + forkJoin para paraleo) */
-  private marcarTodasNoLeidasComoLeidas(onDone?: () => void): void {
-    if (this.marcandoSalida) {
-      onDone?.();
-      return;
-    }
-
-    const Programadas = this.notificaciones.filter((n) => !n.leida);
-    if (!Programadas.length) {
-      onDone?.();
-      return;
-    }
-
-    this.marcandoSalida = true;
-
-    const ids = Programadas.map((n) => n.id);
-
-    // (1) UI optimista
-    this.notificaciones = this.notificaciones.map((n) =>
-      ids.includes(n.id) ? { ...n, leida: true, estado: 'Realizada' } : n
-    );
-
-    // (2) PATCH en paralelo (usa tu NotificationService.markAsRead(id))
-    const reqs = ids.map((id) => this.api.markAsRead(id));
-    forkJoin(reqs).subscribe({
-      next: () => {},
-      error: () => {
-        // (3) Rollback si falla algo
-        this.notificaciones = this.notificaciones.map((n) =>
-          ids.includes(n.id) ? { ...n, leida: false, estado: 'Programada' } : n
-        );
-      },
-      complete: () => {
-        this.marcandoSalida = false;
-        onDone?.();
-      },
-    });
-  }
-
-  // ========= Mapeo y helpers =========
+  // ===========================
+  // MAPEAR A UI
+  // ===========================
   private mapToUI(n: NotificationList): NotificacionUI {
-    const leida = !!n.stateNotification;
-    const fecha = n.createdAt ? new Date(n.createdAt).toLocaleString() : '—';
+    // ESTADO REAL
+    const estado: Estado = n.statustypesId === 6 ? 'Leída' : 'Enviada';
 
-    const icono =
-      n.typeNotification === 'ALERT'
-        ? 'warning'
-        : n.typeNotification === 'WARNING'
-        ? 'priority_high'
-        : n.typeNotification === 'SYSTEM'
-        ? 'settings'
-        : 'notifications';
-
-    const estado: Estado = leida ? 'Realizada' : 'Programada';
+    // LEÍDA (solo si status = 6)
+    const leida = estado === 'Leída';
 
     return {
       id: n.id,
       mensaje: n.message,
-      fecha,
-      tipo: n.typeCitationName || n.citation || 'Cita',
+      fecha: n.RegistrationDate ? new Date(n.RegistrationDate).toLocaleString() : '—',
+      tipo:  'Notificación',
       estado,
-      icono,
+      icono:
+        n.typeNotification === 1
+          ? 'settings'
+          : n.typeNotification === 2
+          ? 'alarm'
+          : n.typeNotification === 3
+          ? 'warning'
+          : 'info',
       leida,
     };
   }
 
-  // ========= Filtros y contadores (para tu template) =========
+  // ===========================
+  // FILTROS
+  // ===========================
   get filtered(): NotificacionUI[] {
     if (this.tab === 'no-leidas')
       return this.notificaciones.filter((n) => !n.leida);
@@ -158,36 +111,20 @@ export class NotificacionesComponent implements OnInit, OnDestroy {
   get unreadCount(): number {
     return this.notificaciones.filter((n) => !n.leida).length;
   }
+
   get readCount(): number {
     return this.notificaciones.filter((n) => n.leida).length;
   }
 
-  // ========= Acciones individuales (opcional) =========
-  marcarLeida(n: NotificacionUI, valor: boolean): void {
-    if (this.accionando.has(n.id)) return;
-    this.accionando.add(n.id);
-
-    const prev = n.leida;
-    n.leida = valor;
-    n.estado = valor ? 'Realizada' : 'Programada';
-
-    const req = valor ? this.api.markAsRead(n.id) : this.api.markAsUnread(n.id);
-    req.subscribe({
-      next: () => {},
-      error: () => {
-        n.leida = prev;
-        n.estado = prev ? 'Realizada' : 'Programada';
-      },
-      complete: () => this.accionando.delete(n.id),
-    });
-  }
-
+  // ===========================
+  // ELIMINAR
+  // ===========================
   eliminarNotificacion(id: number): void {
-    if (!confirm('¿Estás seguro de eliminar esta notificación?')) return;
+    if (!confirm('¿Eliminar notificación?')) return;
+
     this.api.eliminar(id).subscribe({
       next: () => this.cargar(),
-      error: (err: unknown) =>
-        console.error('Error al eliminar notificación:', err),
+      error: () => {},
     });
   }
 }

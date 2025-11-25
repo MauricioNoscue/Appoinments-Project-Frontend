@@ -1,5 +1,9 @@
 <!-- reservation.component.html -->
-<div class="schedule-layout">
+
+<app-loader *ngIf="loadingBlocks" height="300px"></app-loader>
+
+
+<div class="schedule-layout" *ngIf="!loadingBlocks">
   <!-- Columna 1: Calendario -->
   <div class="calendar-column">
     <app-calendar
@@ -89,3 +93,27 @@
 <div class="no-appointments" *ngIf="blocks.length === 0 && selectedDate">
   <p>No hay horarios disponibles para la fecha seleccionada.</p>
 </div>
+
+
+<ng-template #relacionadosModal let-data>
+  <h2 mat-dialog-title>Selecciona para quién es la cita</h2>
+
+  <mat-dialog-content class="dialog-scroll">
+    <button mat-stroked-button class="option-btn"
+            (click)="confirmarCitaParaMi()">
+      Para mí
+    </button>
+
+    <div class="related-title">Personas relacionadas</div>
+
+    <button mat-flat-button class="option-btn"
+            *ngFor="let r of relacionados"
+            (click)="confirmarCitaRelacionada(r.id)">
+      {{ r.fullName }}
+    </button>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancelar</button>
+  </mat-dialog-actions>
+</ng-template>

@@ -1,21 +1,22 @@
 <div class="notificaciones-container">
 
-  <!-- Filtros -->
   <div class="filtros">
-    <button (click)="setTab('todas')" [class.active]="tab==='todas'">Todas</button>
+    <button (click)="setTab('todas')" [class.active]="tab==='todas'">
+      Todas
+    </button>
+
     <button (click)="setTab('no-leidas')" [class.active]="tab==='no-leidas'">
       No leídas <span class="badge">{{ unreadCount }}</span>
     </button>
+
     <button (click)="setTab('leidas')" [class.active]="tab==='leidas'">
       Leídas <span class="badge">{{ readCount }}</span>
     </button>
-
-   
   </div>
 
-  <!-- Lista -->
   <div class="lista-notificaciones">
     <div *ngFor="let n of filtered" class="notificacion">
+
       <div class="icono">
         <mat-icon>{{ n.icono }}</mat-icon>
       </div>
@@ -25,16 +26,19 @@
         <p class="detalle">{{ n.fecha }} · {{ n.tipo }}</p>
       </div>
 
-      <div class="estado" [ngClass]="n.estado.toLowerCase()">{{ n.estado }}</div>
+      <div class="estado" [ngClass]="n.estado.toLowerCase()">
+        {{ n.estado }}
+      </div>
 
-
-
-      <button class="eliminar"
-              (click)="eliminarNotificacion(n.id)"
-              [disabled]="accionando.has(n.id)"
-              title="Eliminar">
+      <button
+        class="eliminar"
+        (click)="eliminarNotificacion(n.id)"
+        [disabled]="accionando.has(n.id)"
+        title="Eliminar"
+      >
         <mat-icon>delete</mat-icon>
       </button>
+
     </div>
   </div>
 </div>

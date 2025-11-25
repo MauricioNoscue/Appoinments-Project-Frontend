@@ -9,6 +9,7 @@
       >
         Programadas
       </button>
+
       <button
         class="tab"
         [class.active]="tab() === 'canceladas'"
@@ -16,6 +17,7 @@
       >
         Canceladas
       </button>
+
       <button
         class="tab"
         [class.active]="tab() === 'asistidas'"
@@ -27,10 +29,9 @@
 
     <div class="search">
       <span class="icon">🔎</span>
-      <!-- signals: binding dividido -->
       <input
         type="search"
-        placeholder="Buscar notificación"
+        placeholder="Buscar cita"
         [ngModel]="q()"
         (ngModelChange)="q.set($event)"
       />
@@ -43,31 +44,36 @@
       *ngFor="let c of filtered()"
       class="card"
       [ngClass]="{
-        'card-programada': c.state === 'Programada',
-        'card-cancelada': c.state === 'Cancelada',
-        'card-asistida': c.state === 'Asistida'
+        'card-programada': c.statustypesId === 1,
+        'card-cancelada': c.statustypesId === 2,
+        'card-asistida': c.statustypesId === 4
       }"
     >
       <div class="card-header">
-        <div class="type"><div class="pill">Consulta externa</div></div>
+        <div class="type">
+          <div class="pill">Consulta externa</div>
+        </div>
+
         <div class="when">
           <div class="when-item">
             <span class="emoji">📅</span>
-            <span class="text">{{
-              c.appointmentDate | date : "MM/dd/yyyy"
-            }}</span>
+            <span class="text">
+              {{ c.appointmentDate | date : "MM/dd/yyyy" }}
+            </span>
           </div>
+
           <div class="when-item">
             <span class="emoji">🕘</span>
-            <span class="text">{{
-              c.timeBlock ? (c.timeBlock | slice : 0 : 5) : "—"
-            }}</span>
+            <span class="text">
+              {{ c.timeBlock ? (c.timeBlock | slice : 0 : 5) : "—" }}
+            </span>
           </div>
         </div>
       </div>
 
       <div class="card-body">
         <div class="avatar">👨‍⚕️</div>
+
         <div class="info-grid">
           <div class="info-col">
             <div class="label">Doctor</div>
@@ -76,23 +82,21 @@
 
           <div class="info-col">
             <div class="label">Consultorio</div>
-            <div class="value">{{ c.roomNumber || "—" }}</div>
+            <div class="value">{{ c.consultingRoomName || "—" }}</div>
           </div>
 
           <div class="info-col">
             <div class="label">Estado</div>
-            <div class="value">{{ c.state }}</div>
+            <div class="value">{{ c.statustypesName }}</div>
           </div>
 
           <div class="info-col note-col">
             <div class="label">Nota</div>
 
-            <!-- wrapper que contiene texto truncado -->
             <div class="note-row">
               <div class="value note-value">{{ c.note }}</div>
 
-              <!-- tooltip custom (hidden por defecto) -->
-              <div class="note-tooltip" role="tooltip" aria-hidden="true">
+              <div class="note-tooltip" role="tooltip">
                 {{ c.note }}
               </div>
             </div>
@@ -100,13 +104,15 @@
 
           <div class="info-col action-col">
             <button
-              *ngIf="tab() === 'programadas' && c.state === 'Programada'"
+              *ngIf="tab() === 'programadas' && c.statustypesId === 1"
               class="btn-cancel"
               (click)="cancelar(c)"
               [disabled]="cancelandoIds().has(c.id)"
             >
               {{
-                cancelandoIds().has(c.id) ? "Cancelando..." : "Cancelar cita"
+                cancelandoIds().has(c.id)
+                  ? "Cancelando..."
+                  : "Cancelar cita"
               }}
             </button>
           </div>
