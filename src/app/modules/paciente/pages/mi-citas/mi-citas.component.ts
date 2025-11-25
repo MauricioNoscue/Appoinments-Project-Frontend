@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 
 import { CitationService } from '../../../../shared/services/citation.service';
 import { CitationList } from '../../../../shared/Models/hospital/CitationModel';
+import { CitationStatus } from './enum';
 
 type TabKey = 'programadas' | 'canceladas' | 'asistidas';
 
@@ -13,44 +14,46 @@ type TabKey = 'programadas' | 'canceladas' | 'asistidas';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './mi-citas.component.html',
-  styleUrls: ['./mi-citas.component.css'], // corregido
+  styleUrls: ['./mi-citas.component.css'],
 })
 export class MiCitasComponent implements OnInit {
   private citaSrv = inject(CitationService);
 
-  // estado UI
+  // ===== UI state =====
   tab = signal<TabKey>('programadas');
   q = signal<string>('');
   cancelandoIds = signal<Set<number>>(new Set<number>());
 
-  // datos
+  // ===== Data =====
   citas = signal<CitationList[]>([]);
   cargando = signal<boolean>(true);
 
-  // mapeo de tabs -> estados (ajústalo a tus valores reales)
-  private stateMap: Record<TabKey, string[]> = {
-    programadas: ['Programada'],
-    canceladas: ['Cancelada'],
-    asistidas: ['Asistida'],
+  // ===== Mapeo según tus nuevos IDs =====
+  private stateMap: Record<TabKey, number[]> = {
+    programadas: [CitationStatus.Programada],
+    canceladas: [CitationStatus.Cancelada],
+    asistidas: [CitationStatus.Atendida],
   };
 
+  // ===== FILTRO PRINCIPAL =====
   filtered = computed(() => {
     const t = this.tab();
     const term = this.q().trim().toLowerCase();
     const estados = this.stateMap[t] ?? [];
+
     return this.citas()
-      .filter((c) => estados.length === 0 || estados.includes(c.state))
-      .filter(
-        (c) =>
-          !term ||
-          c.nameDoctor?.toLowerCase().includes(term) ||
-          c.consultingRoomName?.toLowerCase().includes(term) ||
-          c.state?.toLowerCase().includes(term)
+      .filter(c => estados.includes(c.statustypesId))
+      .filter(c =>
+        !term ||
+        c.nameDoctor?.toLowerCase().includes(term) ||
+        c.consultingRoomName?.toLowerCase().includes(term) ||
+        c.statustypesName?.toLowerCase().includes(term)
       )
       .sort((a, b) => {
         const aDate = new Date(a.appointmentDate).getTime();
         const bDate = new Date(b.appointmentDate).getTime();
         if (aDate !== bDate) return aDate - bDate;
+
         const aTB = a.timeBlock ?? '';
         const bTB = b.timeBlock ?? '';
         return aTB.localeCompare(bTB);
@@ -58,7 +61,7 @@ export class MiCitasComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.citaSrv.traerListado().subscribe({
+    this.citaSrv.GetAllUser().subscribe({
       next: (r) => {
         this.citas.set(r);
         this.cargando.set(false);
@@ -79,9 +82,9 @@ export class MiCitasComponent implements OnInit {
     this.tab.set(t);
   }
 
-  // ⬇️ método para cancelar (con SweetAlert2 y modal de carga)
+  // ===== CANCELAR CITA =====
   cancelar(c: CitationList) {
-    if (c.state !== 'Programada') return;
+    if (c.statustypesId !== CitationStatus.Programada) return;
 
     const fechaStr = new Date(c.appointmentDate).toLocaleDateString();
     const horaStr = c.timeBlock ? ` ${c.timeBlock}` : '';
@@ -98,12 +101,10 @@ export class MiCitasComponent implements OnInit {
     }).then((choice) => {
       if (!choice.isConfirmed) return;
 
-      // marcar como "cancelando" para bloquear UI (spinner en botón, etc.)
       const set = new Set(this.cancelandoIds());
       set.add(c.id);
       this.cancelandoIds.set(set);
 
-      // mostrar modal de carga
       Swal.fire({
         title: 'Cancelando...',
         allowOutsideClick: false,
@@ -113,21 +114,23 @@ export class MiCitasComponent implements OnInit {
       });
 
       this.citaSrv
-        .actualizar({ id: c.id, state: 'Cancelada', note: c.note } as any)
+        .actualizar({
+          id: c.id,
+          statusTypesId: CitationStatus.Cancelada,
+          note: c.note
+        } as any)
         .subscribe({
           next: () => {
-            // actualizar estado local
             const arr = this.citas().map((x) =>
-              x.id === c.id ? { ...x, state: 'Cancelada' } : x
+              x.id === c.id ? { ...x, statusTypesId: CitationStatus.Cancelada, stateName: 'Cancelada' } : x
             );
             this.citas.set(arr);
 
-            // quitar del set de cancelando
             const s2 = new Set(this.cancelandoIds());
             s2.delete(c.id);
             this.cancelandoIds.set(s2);
 
-            Swal.close(); // cerrar loading
+            Swal.close();
             Swal.fire({
               icon: 'success',
               title: 'Cancelada',
@@ -136,12 +139,11 @@ export class MiCitasComponent implements OnInit {
             });
           },
           error: () => {
-            // quitar del set de cancelando
             const s2 = new Set(this.cancelandoIds());
             s2.delete(c.id);
             this.cancelandoIds.set(s2);
 
-            Swal.close(); // cerrar loading
+            Swal.close();
             Swal.fire({
               icon: 'error',
               title: 'Error',

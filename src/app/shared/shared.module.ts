@@ -26,6 +26,7 @@ import { PerfilComponent } from '../modules/paciente/pages/perfil/perfil.compone
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { GenericTableComponent } from './components/Table/generic-table/generic-table.component';
 import { GlobalSearchComponent } from './components/Sections/global-search/global-search.component';
+import { LoaderComponent } from './components/Loaders/loader/loader.component';
 
 
 const sharedComponents =[
@@ -45,7 +46,8 @@ const sharedComponents =[
   ReservationViewComponent,
   ToolbarComponent,
   GenericTableComponent,
-  GlobalSearchComponent
+  GlobalSearchComponent,
+  LoaderComponent
   
  
 

@@ -17,66 +17,13 @@ import { NotificationService } from '../../../../shared/services/notification.se
 import { RelatedPersonService } from '../../../../shared/services/related-person.service';
 import { TypeCitationService } from '../../../../shared/services/Hospital/type-citation.service';
 import { environment } from '../../../../../environments/environment.development';
+import { Stat, TipoCita, NewsItem, norm, TIPO_CITA_MAP } from './modelsDashboard';
+import { CitationList } from '../../../../shared/Models/hospital/CitationModel';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
 
 declare var bootstrap: any;
 
-type Stat = {
-  icon: string;
-  label: 'Mis citas' | 'Familia' | 'Novedades';
-  value: number;
-  color?: string;
-};
 
-type NewsItem = {
-  title: string;
-  date: string;
-  text: string;
-  status: 'pendiente' | 'confirmada';
-};
-
-type TipoCita = {
-  id: number;
-  label: string;
-  color: string;
-  icon?: string; // respaldo si no hay imagen
-  img?: string; // ruta a /assets/... cuando venga imageName o catálogo
-};
-
-// ====================
-// Catálogo nombres → imagen
-// ====================
-function norm(s: string): string {
-  return (s ?? '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // quita acentos
-    .toLowerCase()
-    .trim();
-}
-
-const TIPO_CITA_CATALOGO: Array<{ name: string; img: string }> = [
-  {
-    name: 'consulta General',
-    img: '/assets/icons/IconsTypeCitation/CExterna.png',
-  },
-  {
-    name: 'odontologia',
-    img: '/assets/icons/IconsTypeCitation/odontologia.png',
-  },
-
-  { name: 'pediatria', img: '/assets/icons/IconsTypeCitation/pediatria.png' },
-  { name: 'consulta externa', img: '/assets/icons/IconsTypeCitation/psicologia.png' },
-  { name: 'vacunacion', img: '/assets/icons/IconsTypeCitation/vacunacion.svg' },
-  { name: 'psicologia', img: '/assets/icons/IconsTypeCitation/psicologia.svg' },
-  {
-    name: 'fisioterapia',
-    img: '/assets/icons/IconsTypeCitation/fisioterapia.svg',
-  },
-  { name: 'optometria', img: '/assets/icons/IconsTypeCitation/optometria.svg' },
-];
-
-const TIPO_CITA_MAP = new Map(
-  TIPO_CITA_CATALOGO.map((x) => [norm(x.name), x.img])
-);
 
 @Component({
   selector: 'app-dashboard',
@@ -94,208 +41,193 @@ const TIPO_CITA_MAP = new Map(
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
+// ============================
+// REFACCIÓN COMPLETA — LIMPIO
+// ============================
+
 export class DashboardComponent implements OnInit {
-  // ===== Inyección de servicios
+
+  // ====== Servicios ======
   private router = inject(Router);
   private citaSrv = inject(CitationService);
   private notifSrv = inject(NotificationService);
   private relSrv = inject(RelatedPersonService);
   private typeSrv = inject(TypeCitationService);
+  private authservice = inject(AuthService);
 
-  // ===== Topbar
+  // ====== UI ======
   query = '';
 
-  // ===== Stats
+  // ====== Stats ======
   stats = signal<Stat[]>([
     { icon: 'event', label: 'Mis citas', value: 0, color: '#ff6b6b' },
     { icon: 'groups', label: 'Familia', value: 0, color: '#7c4dff' },
     { icon: 'notifications', label: 'Novedades', value: 0, color: '#ffb300' },
   ]);
 
-  // Contadores
   citasProgramadasCnt = signal(0);
   noLeidasCnt = signal(0);
   familiaCnt = signal(0);
 
-  // ===== Tipos de cita (ARRAY normal)
+  // ====== Tipos ======
   tipos: TipoCita[] = [];
 
-  // ===== Novedades
+  // ====== Novedades ======
   novedades = signal<NewsItem[]>([]);
 
-  // ===== Calendario
+  // ====== Calendario (igual) ======
   today = new Date();
   currentYear = signal(this.today.getFullYear());
   currentMonth = signal(this.today.getMonth());
-  selected = signal(
-    new Date(
-      this.today.getFullYear(),
-      this.today.getMonth(),
-      this.today.getDate()
-    )
-  );
+  selected = signal(new Date());
+
   monthName = computed(() =>
     new Date(this.currentYear(), this.currentMonth(), 1).toLocaleDateString(
       'es-CO',
-      {
-        month: 'long',
-        year: 'numeric',
-      }
+      { month: 'long', year: 'numeric' }
     )
   );
+
   weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
-  get monthMatrix(): (Date | null)[] {
-    const y = this.currentYear();
-    const m = this.currentMonth();
-    const first = new Date(y, m, 1);
-    const startIndex = first.getDay();
-    const daysInMonth = new Date(y, m + 1, 0).getDate();
-    const cells: (Date | null)[] = [];
-    for (let i = 0; i < startIndex; i++) cells.push(null);
-    for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(y, m, d));
-    while (cells.length % 7 !== 0) cells.push(null);
-    return cells;
-  }
-  prevMonth() {
-    const m = this.currentMonth(),
-      y = this.currentYear();
-    m === 0
-      ? (this.currentMonth.set(11), this.currentYear.set(y - 1))
-      : this.currentMonth.set(m - 1);
-  }
-  nextMonth() {
-    const m = this.currentMonth(),
-      y = this.currentYear();
-    m === 11
-      ? (this.currentMonth.set(0), this.currentYear.set(y + 1))
-      : this.currentMonth.set(m + 1);
-  }
-  isToday(d?: Date | null) {
-    if (!d) return false;
-    const t = this.today;
-    return (
-      d.getFullYear() === t.getFullYear() &&
-      d.getMonth() === t.getMonth() &&
-      d.getDate() === t.getDate()
-    );
-  }
-  isSelected(d?: Date | null) {
-    if (!d) return false;
-    const s = this.selected();
-    return (
-      d.getFullYear() === s.getFullYear() &&
-      d.getMonth() === s.getMonth() &&
-      d.getDate() === s.getDate()
-    );
-  }
-  pick(d?: Date | null) {
-    if (d) this.selected.set(d);
-  }
-
-  // ===== Carga de datos
+  // =====================================================
+  //                 NG ON INIT
+  // =====================================================
   ngOnInit(): void {
-    // 0) Tipos de cita desde API
-    this.typeSrv.traerTodo().subscribe({
+    this.initData();
+  }
+
+  // =====================================================
+  //              ORQUESTADOR / FACHADA
+  // =====================================================
+  private initData(): void {
+    this.loadTiposCita();
+    this.loadCitasProgramadas();
+    this.loadNotificaciones();
+    this.loadFamilia();
+  }
+
+  // =====================================================
+  //                  CARGA DE DATOS
+  // =====================================================
+
+  private loadTiposCita(): void {
+  this.typeSrv.traerTodo().subscribe({
+    next: (list: any[]) => {
+
+      // 🔥 Filtrar SOLO los que tienen horarios
+      const filtered = list.filter(x => x.hasShedule === true);
+
+      this.tipos = filtered.map((x: any) => {
+        const rawName = x.name ?? x.title ?? 'Tipo';
+        const key = norm(rawName);
+        const imgFromCatalog = TIPO_CITA_MAP.get(key);
+
+        return {
+          id: x.id,
+          label: rawName,
+          color: x.color ?? '#e2e8f0',
+          img: x.imageName
+            ? `/assets/icons/IconsTypeCitation/${x.imageName}`
+            : imgFromCatalog,
+          icon: x.imageName || imgFromCatalog ? undefined : 'event'
+        };
+      });
+    }
+  });
+}
+
+
+  private loadCitasProgramadas(): void {
+  this.citaSrv.GetAllUser().subscribe({
+    next: (arr: CitationList[]) => {
+      // Solo citas con estado "Programada" = id 1
+
+      const programadas = arr.filter(c => c?.statustypesId === 1).length;
+
+      this.citasProgramadasCnt.set(programadas);
+      this.updateStat('Mis citas', programadas);
+    }
+  });
+}
+
+
+  private loadNotificaciones(): void {
+    this.notifSrv.GetAllUser().subscribe({
       next: (list: any[]) => {
-        this.tipos = list.map((x: any) => {
-          const rawName = x.name ?? x.title ?? 'Tipo';
-          const key = norm(rawName);
-
-          const imgFromCatalog = TIPO_CITA_MAP.get(key);
-
-          return {
-            id: x.id,
-            label: rawName,
-            color: x.color ?? '#e2e8f0',
-            img: x.imageName
-              ? `/assets/icons/IconsTypeCitation/${x.imageName}`
-              : imgFromCatalog,
-            icon: x.imageName || imgFromCatalog ? undefined : 'event',
-          } as TipoCita;
-        });
-      },
-    });
-
-    // 1) Citas programadas
-    this.citaSrv.traerListado().subscribe({
-      next: (arr: any[]) => {
-        const programadas = arr.filter((c) => c?.state === 'Programada').length;
-        this.citasProgramadasCnt.set(programadas);
-        this.updateStat('Mis citas', programadas);
-      },
-    });
-
-    // 2) Notificaciones
-    this.notifSrv.traerTodo().subscribe({
-      next: (list: any[]) => {
-        const noLeidas = list.filter((n) => !n?.stateNotification);
+        const noLeidas = list.filter(n => !n?.stateNotification);
+        
         this.noLeidasCnt.set(noLeidas.length);
         this.updateStat('Novedades', noLeidas.length);
 
         const top3 = [...noLeidas]
-          .sort(
-            (a, b) =>
-              new Date(b?.createdAt || 0).getTime() -
-              new Date(a?.createdAt || 0).getTime()
-          )
-          .slice(0, 3)
-          .map((n) => ({
-            title: n?.typeCitationName || 'Notificación',
-            date: n?.createdAt ? new Date(n.createdAt).toLocaleString() : '—',
-            text: n?.message || '',
-            status: 'pendiente' as const,
-          }));
-        this.novedades.set(top3);
-      },
+  .sort(
+    (a, b) =>
+      new Date(b?.createdAt || 0).getTime() -
+      new Date(a?.createdAt || 0).getTime()
+  )
+  .slice(0, 3)
+  .map((n): NewsItem => ({
+    title: n.typeCitationName || 'Notificación',
+    date: n.createdAt ? new Date(n.createdAt).toLocaleString() : '—',
+    text: n.message || '',
+    status: 'pendiente' as const
+  }));
+
+this.novedades.set(top3);
+
+      }
     });
-
-    // 3) Familia
-    const personId = (environment as any).defaultPersonId as number | undefined;
-    if (personId && personId > 0) {
-      this.relSrv.getByPerson(personId).subscribe({
-        next: (list: any[]) => {
-          this.familiaCnt.set(list.length);
-          this.updateStat('Familia', list.length);
-        },
-      });
-    }
   }
 
-  // ===== Navegación desde los stats
-  goTo(label: Stat['label']) {
-    switch (label) {
-      case 'Mis citas': {
-        const el = document.getElementById('offcanvasExample2');
-        if (el) bootstrap.Offcanvas.getOrCreateInstance(el).show();
-        break;
+  private loadFamilia(): void {
+    const personId = this.authservice.getPersonId();
+    if (!personId || personId <= 0) return;
+
+    this.relSrv.getByPerson(personId).subscribe({
+      next: (list: any[]) => {
+        this.familiaCnt.set(list.length);
+        this.updateStat('Familia', list.length);
       }
-      case 'Familia':
-        this.router.navigate(['/paciente/relacion']);
-        break;
-      case 'Novedades': {
-        const el = document.getElementById('offcanvasExample');
-        if (el) bootstrap.Offcanvas.getOrCreateInstance(el).show();
-        break;
-      }
-    }
+    });
   }
 
-  // ===== Util
-  private updateStat(label: Stat['label'], value: number) {
-    this.stats.update((arr) =>
-      arr.map((s) => (s.label === label ? { ...s, value } : s))
+  // =====================================================
+  //                   LÓGICA DE STATS
+  // =====================================================
+  
+  private updateStat(label: Stat['label'], value: number): void {
+    this.stats.update(arr =>
+      arr.map(s => s.label === label ? { ...s, value } : s)
     );
   }
 
-  // ===== Acciones UI
+  // =====================================================
+  //                     UI ACTIONS
+  // =====================================================
+
+  goTo(label: Stat['label']) {
+    switch (label) {
+      case 'Mis citas':
+        return this.openOffcanvas('offcanvasExample2');
+      case 'Familia':
+        return this.router.navigate(['/paciente/relacion']);
+      case 'Novedades':
+        return this.openOffcanvas('offcanvasExample');
+    }
+  }
+
+  private openOffcanvas(id: string) {
+    const el = document.getElementById(id);
+    if (el) bootstrap.Offcanvas.getOrCreateInstance(el).show();
+  }
+
   doSearch() {
     console.log('Buscar:', this.query);
   }
 
   openTipo(t: TipoCita) {
-    if (t?.id) this.router.navigate([`admin/CitationAviable/${t.id}`]);
-    else console.log('Elegido tipo:', t.label);
+    if (t?.id) this.router.navigate([`paciente/CitationAviable/${t.id}`]);
   }
 
   verTodo() {

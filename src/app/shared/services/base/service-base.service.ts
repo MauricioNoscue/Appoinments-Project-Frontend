@@ -45,4 +45,14 @@ public updateStatus(entity: string, id: number, value: number): Observable<any> 
 }
 
 
+public GetAllUser(): Observable<TList[]> {
+    return this.http.get<TList[]>(`${this.urlBase}/all`);
+  }
+
+
+
+
+
+
+
 }

@@ -4,15 +4,25 @@ export type NotificationType = 'INFO' | 'WARNING' | 'ALERT' | 'SYSTEM';
 // DTO para listar notificaciones (basado en NotificationListDto del backend)
 export interface NotificationList {
   id: number;
-  citationId: number;
+  title: string;
+  citationId: number | null;
   message: string;
-  stateNotification: boolean; // <-- bool, true = leído, false = no leído
-  typeNotification?: NotificationType; // puede venir null/undefined
-  // Campos adicionales que puede mandar tu backend:
-  citation?: string;
-  typeCitationName?: string;
-  createdAt?: string; // formato ISO
+
+  statustypesId: number;
+  statustypesName: string;
+
+  typeNotification: number; // enum en backend
+
+  timeBlock: string | null; // viene como "HH:mm:ss"
+  appointmentDate: string; // ISO string
+  reltedPersonId: number | null;
+
+  redirectUrl?: string | null;
+  userId: number;
+
+  RegistrationDate?: string; // si BaseModel manda fecha de creación
 }
+
 
 // DTO para crear notificación (basado en NotificationCreateDto del backend)
 export interface NotificationCreate {

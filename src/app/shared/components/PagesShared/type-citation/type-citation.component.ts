@@ -7,6 +7,7 @@ export interface TypeCitation {
   name: string;
   description: string;
   icon: string;
+  hasShedule: boolean;
 }
 
 

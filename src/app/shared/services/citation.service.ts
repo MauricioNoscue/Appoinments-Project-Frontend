@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class CitationService extends ServiceBaseService<Citation, any, any> {
+export class CitationService extends ServiceBaseService<CitationList, any, any> {
   constructor() {
     super('citation');
   }
@@ -18,6 +18,11 @@ export class CitationService extends ServiceBaseService<Citation, any, any> {
   traerListado(): Observable<CitationList[]> {
     return this.http.get<CitationList[]>(`${this.urlBase}`);
   }
+
+
+
+
+
 
   /**
    * Endpoint para los bloques usados (tu método GetUsedTimeBlocksByScheduleHourIdAndDateAsync).
