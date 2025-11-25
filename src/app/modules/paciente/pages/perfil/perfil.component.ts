@@ -6,6 +6,8 @@ import { EditProfileSectionDialogComponent } from '../perfil/edit-profile-sectio
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../../../shared/material.module';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { UserService } from '../../../../shared/services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-perfil',
@@ -18,15 +20,16 @@ export class PerfilComponent implements OnInit, OnDestroy {
   loading = true;
   private destroy$ = new Subject<void>();
   private auhtser = inject(AuthService);
+  private serviceU = inject(UserService)
 
   constructor(private profile: ProfileService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
 
-    const personId = this.auhtser.getPersonId();
-if (personId == null) {
-  return; // o puedes redirigir o mostrar error
-}
+  const personId = this.auhtser.getPersonId();
+  if (personId == null) {
+    return; // o puedes redirigir o mostrar error
+  }
     this.profile
       .loadById(personId)
       .pipe(takeUntil(this.destroy$))
@@ -111,4 +114,28 @@ if (personId == null) {
       }
     });
   }
+
+
+  onToggleRescheduling(state: boolean) {
+  this.serviceU.Rescheduling().subscribe({
+    next: () => {
+      this.user.rescheduling = state;
+      Swal.fire({
+        icon: 'success',
+        title: 'Actualizado',
+        text: 'Tu preferencia de reprogramación ha sido guardada.',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    },
+    error: () => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo actualizar la configuración.'
+      });
+    }
+  });
+}
+
 }

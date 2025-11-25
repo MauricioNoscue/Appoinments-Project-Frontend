@@ -27,6 +27,7 @@ export interface UserProfile {
   avatarBase64?: string | null; // opcional
   toleranceLevel: 0 | 1 | 2 | 3;
   yearStats: ProfileStatsItem[];
+  rescheduling: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -98,7 +99,9 @@ export class ProfileService {
       email: user.email,
       avatarBase64: null,
       toleranceLevel: 1, // hardcodeado
-      yearStats: [] // se carga después
+      yearStats: [] ,// se carga después
+      rescheduling: user.rescheduling ?? false
+
     };
   }
 
@@ -116,6 +119,8 @@ export class ProfileService {
       email: 'mauronoscue@gmail.com',
       avatarBase64: null,
       toleranceLevel: 1,
+      rescheduling: false ,// hardcodeado
+
       yearStats: [
         { label: 'Enero', value: 12, color: '#22c55e' },
         { label: 'Febrero', value: 22, color: '#3b82f6' },

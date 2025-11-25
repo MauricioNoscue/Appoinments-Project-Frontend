@@ -27,6 +27,7 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { GenericTableComponent } from './components/Table/generic-table/generic-table.component';
 import { GlobalSearchComponent } from './components/Sections/global-search/global-search.component';
 import { LoaderComponent } from './components/Loaders/loader/loader.component';
+import { DoctorReviewComponent } from './components/PagesShared/doctor-review/doctor-review.component';
 
 
 const sharedComponents =[
@@ -47,7 +48,7 @@ const sharedComponents =[
   ToolbarComponent,
   GenericTableComponent,
   GlobalSearchComponent,
-  LoaderComponent
+  LoaderComponent,DoctorReviewComponent
   
  
 

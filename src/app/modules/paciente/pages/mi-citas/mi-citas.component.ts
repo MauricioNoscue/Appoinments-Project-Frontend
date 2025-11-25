@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { CitationService } from '../../../../shared/services/citation.service';
 import { CitationList } from '../../../../shared/Models/hospital/CitationModel';
 import { CitationStatus } from './enum';
+import { Router } from '@angular/router';
 
 type TabKey = 'programadas' | 'canceladas' | 'asistidas';
 
@@ -18,6 +19,9 @@ type TabKey = 'programadas' | 'canceladas' | 'asistidas';
 })
 export class MiCitasComponent implements OnInit {
   private citaSrv = inject(CitationService);
+
+  private router = inject(Router);
+CitationStatus = CitationStatus;
 
   // ===== UI state =====
   tab = signal<TabKey>('programadas');
@@ -81,6 +85,16 @@ export class MiCitasComponent implements OnInit {
   setTab(t: TabKey) {
     this.tab.set(t);
   }
+
+  resenar(doctorId: number) {
+
+    this.router.navigate(['paciente/doctor-review', doctorId]);
+    //this.router.navigate(['paciente/doctor-review', 2]);
+
+
+  }
+
+
 
   // ===== CANCELAR CITA =====
   cancelar(c: CitationList) {

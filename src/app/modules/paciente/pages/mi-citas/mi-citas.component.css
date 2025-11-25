@@ -428,6 +428,18 @@
 
 
 
+.review-icon {
+  font-size: 22px;
+  color: #fbbf24; /* amarillo suave */
+  cursor: pointer;
+  margin-left: 10px;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.review-icon:hover {
+  transform: scale(1.2);
+  color: #f59e0b; /* más oscuro en hover */
+}
 
 
 
