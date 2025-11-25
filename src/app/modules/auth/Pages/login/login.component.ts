@@ -23,61 +23,53 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.loginForm.valid) {
-      const loginData: LoginModel = this.loginForm.value;
-      this.service.login(loginData).subscribe({
+  if (this.loginForm.valid) {
+    const loginData: LoginModel = this.loginForm.value;
+
+    this.service.login(loginData).subscribe({
       next: (data) => {
-  if (data.requiresTwoFactor) {
-    // Redirigir a la vista de 2FA con el userId
-    this.router.navigate(['/auth/verify-2fa'], {
-      queryParams: { userId: data.userId }
-    });
 
-    Swal.fire({
-      icon: 'info',
-      title: 'Verificación requerida',
-      text: 'Revisa tu correo para ingresar el código.'
-    });
-
-    return;
-  }
-
-  // SI NO requiere 2FA → login normal
-  localStorage.setItem('jwt', data.accessToken);
-  localStorage.setItem('jwt_expires', data.expiresAtUtc);
-  localStorage.setItem('jwt_refresh', data.refreshToken);
-
-  Swal.fire({
-    icon: 'success',
-    title: '¡Login exitoso!',
-    timer: 1500,
-    showConfirmButton: false
-  });
-
-  this.redirectByRole();
-}
-
-,
-        error: (err) => {
-          console.error('Error de login:', err);
+        // 🔥 1️⃣ Si está bloqueado
+        if (data.isBlocked) {
+          this.router.navigate(['/auth/unlock-request'], {
+            queryParams: { userId: data.userId }
+          });
 
           Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Hubo un problema al intentar iniciar sesión. Intenta nuevamente.',
+            title: 'Cuenta bloqueada',
+            text: 'Debes enviar una solicitud para desbloquear tu cuenta.'
           });
-        },
-      });
-    } else {
-      console.log('Formulario inválido');
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario inválido',
-        text: 'Por favor, revisa los campos y asegúrate de que sean correctos.',
-      });
-    }
+          return;
+        }
+
+        // 🔥 2️⃣ Si requiere 2FA
+        if (data.requiresTwoFactor) {
+          this.router.navigate(['/auth/verify-2fa'], {
+            queryParams: { userId: data.userId }
+          });
+
+          Swal.fire({
+            icon: 'info',
+            title: 'Verificación requerida',
+            text: 'Revisa tu correo para ingresar el código.'
+          });
+
+          return;
+        }
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Email o contraseña incorrectos.'
+        });
+      }
+    });
   }
+}
+
 
 
 

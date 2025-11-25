@@ -19,7 +19,7 @@ export interface CitationList {
   appointmentDate: Date;
   timeBlock: string | null; // en C# es TimeSpan?, en TS lo manejas como string o null
   scheduleHourId: number;
-
+  doctorId: number;
   nameDoctor: string;
   consultingRoomName: string;
   roomNumber: number;

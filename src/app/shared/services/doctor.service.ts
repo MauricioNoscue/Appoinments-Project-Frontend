@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpParams } from '@angular/common/http';
 import { ConsultingRoom } from '../Models/hospital/shedule';
+import { environment } from '../../../environments/environment.development';
 
 export interface DoctorUpdateDto {
   id: number;
@@ -58,12 +59,12 @@ export class DoctorService extends ServiceBaseService<DoctorList, any, DoctorUpd
     return this.http.get<DoctorCitation[]>(`${this.urlBase}/${doctorId}/citas`);
   }
 
-  private readonly baseUrl = 'http://localhost:5200/api/ConsultingRoom';
+  // private readonly baseUrl = 'http://localhost:5200/api/ConsultingRoom';
   // private readonly baseUrl = 'http://localhost:8080/api/ConsultingRoom';
 
 
   getConsultingRooms(): Observable<ConsultingRoom[]> {
-    return this.http.get<ConsultingRoom[]>(`${this.baseUrl}`);
+    return this.http.get<ConsultingRoom[]>(`${environment.apiURL}/api/ConsultingRoom`);
   }
 
   public actualizarDoctor(dto: DoctorUpdateDto): Observable<boolean> {

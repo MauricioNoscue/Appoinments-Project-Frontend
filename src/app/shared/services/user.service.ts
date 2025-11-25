@@ -69,4 +69,11 @@ private ur = environment.apiURL
 }
 
 
+Rescheduling() {
+  // no envia body porque el backend NO lo recibe
+  return this.http.patch<any>(`${this.ur}/api/user/Rescheduling`, {});
+}
+
+
+
 }

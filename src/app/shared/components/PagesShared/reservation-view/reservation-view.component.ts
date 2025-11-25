@@ -64,6 +64,12 @@ personId!: number;
 
   if(idParam == "2"){ this.especialidad = "Odontología"; }
   if(idParam == "4"){ this.especialidad = "Consulta externa"; }
+
+
+   this.loadingBlocks = true;  
+  setTimeout(() => {
+    this.loadingBlocks = false;
+  }, 2000);
 }
 
 
@@ -72,9 +78,12 @@ personId!: number;
     this.subs.forEach(s => s.unsubscribe());
   }
 
- async onDateChange(date: string) {
-  this.selectedDate = date;
-  this.loadingBlocks = true; // ⬅️ iniciar loader
+async onDateChange(date: string) {
+
+  // ⬅️ Evita ExpressionChangedAfterItHasBeenCheckedError
+  Promise.resolve().then(() => {
+    this.selectedDate = date;
+  });
 
   this.service.getAvailableBlocks(this.idTypeCitation, date, true)
     .subscribe(async (list) => {
@@ -91,15 +100,12 @@ personId!: number;
           this.separarHorarios();
         })
       );
-
-      this.loadingBlocks = false; // ⬅️ quitar loader
     },
     error => {
       console.error(error);
-      this.loadingBlocks = false; // ⬅️ quitar loader
-   
     });
 }
+
 
 
   onBlocksLoaded(data: Horario[]) {

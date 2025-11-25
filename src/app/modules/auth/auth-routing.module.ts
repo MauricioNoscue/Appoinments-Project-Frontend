@@ -6,6 +6,7 @@ import { RegisterComponent } from './Pages/register/register.component';
 import { ResetPasswordComponent } from './Pages/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './Pages/forgot-password/forgot-password.component';
 import { Verify2FAComponent } from './Pages/verify2-fa/verify2-fa.component';
+import { UnlockRequestComponent } from './Pages/unlock-request/unlock-request.component';
 
 const routes: Routes = [
     {
@@ -20,7 +21,12 @@ const routes: Routes = [
         {
   path: 'verify-2fa',
   component: Verify2FAComponent
+},
+   {
+  path: 'unlock-request',
+  component: UnlockRequestComponent
 }
+
 
       ],
     },

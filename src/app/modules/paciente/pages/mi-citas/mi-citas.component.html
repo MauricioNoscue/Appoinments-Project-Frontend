@@ -52,6 +52,17 @@
       <div class="card-header">
         <div class="type">
           <div class="pill">Consulta externa</div>
+
+        <!-- Mostrar icono solo si la cita está asistida -->
+    <i 
+      class="fa-solid fa-star-half-stroke review-icon"
+      *ngIf="c.statustypesId === CitationStatus.Atendida"
+      (click)="resenar(c.doctorId)"
+      title="Escribir reseña"
+    ></i>
+
+
+
         </div>
 
         <div class="when">
