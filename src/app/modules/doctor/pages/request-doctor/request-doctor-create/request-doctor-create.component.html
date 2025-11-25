@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Nueva Solicitud</h2>
+
+<div mat-dialog-content>
+  <form [formGroup]="form" class="form">
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Motivo</mat-label>
+      <textarea matInput formControlName="reason"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Tipo de solicitud</mat-label>
+      <mat-select formControlName="typeRequest">
+        <mat-option [value]="0">Desbloqueo de cuenta</mat-option>
+        <mat-option [value]="1">Falta</mat-option>
+        <mat-option [value]="2">Otro</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha inicio</mat-label>
+        <input matInput type="date" formControlName="startDate">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha fin</mat-label>
+        <input matInput type="date" formControlName="endDate">
+      </mat-form-field>
+    </div>
+
+    <!-- statustypesId oculto -->
+    <input type="hidden" formControlName="statustypesId">
+    <input type="hidden" formControlName="userId">
+
+  </form>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="close()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid">
+    Guardar
+  </button>
+</div>

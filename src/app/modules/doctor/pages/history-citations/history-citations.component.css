@@ -169,3 +169,24 @@
         gap: 6px;
     }
 }
+
+.pagination {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px; /* separación entre botones y texto */
+}
+
+.page-btn {
+    min-width: 110px;
+    height: 36px;
+    font-size: 14px;
+    text-transform: none;
+}
+
+.page-indicator {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}

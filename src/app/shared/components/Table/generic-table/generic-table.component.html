@@ -50,6 +50,7 @@
           </button>
 
           <button
+           *ngIf="!col.hideEdit"
             mat-icon-button
             color="warn"
             matTooltip="Eliminar"

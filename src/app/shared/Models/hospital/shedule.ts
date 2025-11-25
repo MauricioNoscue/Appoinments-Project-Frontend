@@ -19,3 +19,18 @@ export interface ConsultingRoom {
   isDeleted: boolean;
   registrationDate: Date;
 }
+
+// Información de una cita para listados
+// Información del horario del doctor
+export interface SheduleList {
+  id: number;
+  isDeleted: boolean;
+  registrationDate: string | null;
+
+  typeCitationName: string;
+  nameDoctor: string;
+  consultingRoomName: string;
+
+  numberCitation: number;
+  roomNumber: number;
+}

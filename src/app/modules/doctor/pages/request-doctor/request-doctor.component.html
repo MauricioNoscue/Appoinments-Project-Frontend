@@ -2,10 +2,11 @@
   title="Solicitudes de Modificación"
   addLabel=" "
   addSubtitle=""
-    [showAddButton]="false" 
   [data]="dataSource"
   [searchFields]="['reason', 'statusTypeName']"
-  (filteredData)="dataSourceFiltered = $event">
+  (filteredData)="dataSourceFiltered = $event"
+   (onAdd)="crearSolicitud()">
+  
 </app-toolbar>
 
 <app-generic-table

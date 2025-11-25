@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Citation, CitationList } from '../Models/hospital/CitationModel';
+import { Citation, CitationEdit, CitationList } from '../Models/hospital/CitationModel';
 import { ServiceBaseService } from './base/service-base.service';
 import { HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class CitationService extends ServiceBaseService<CitationList, any, any> {
+export class CitationService extends ServiceBaseService<CitationList, any, CitationEdit > {
   constructor() {
     super('citation');
   }

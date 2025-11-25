@@ -51,7 +51,8 @@
                                 <div class="bar-value">{{ vm.weeklyBars.values[i] }}</div>
                                 <div class="bar-visual">
                                     <div class="bar-fill"
-                                         [style.height]="toPct(vm.weeklyBars.values[i], maxWeekly())"
+                                        [style.height]="toPct(vm.weeklyBars.values[i])"
+
                                          [class.peak]="isPeakDay(i)">
                                     </div>
                                 </div>

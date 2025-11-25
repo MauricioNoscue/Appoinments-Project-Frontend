@@ -23,4 +23,15 @@ export interface CitationList {
   nameDoctor: string;
   consultingRoomName: string;
   roomNumber: number;
+  statutypesId: number;
+
+}
+
+
+
+export interface CitationEdit {
+  id: number;                 // Id de la cita
+  statustypesId: number;       // Estado de la cita
+  note: string | null;        // Nota opcional
+  reltedPersonId: number | null; // Persona relacionada opcional
 }

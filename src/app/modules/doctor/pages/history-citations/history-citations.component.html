@@ -16,15 +16,15 @@
     </header>
 
     <!-- Loader / error / empty -->
-    <div class="state" *ngIf="loading || errorMsg || (!loading && items.length===0)">
+    <div class="state" *ngIf="loading || errorMsg || (!loading && pagedItems.length===0)">
         <ng-container *ngIf="loading">Cargando historial…</ng-container>
         <ng-container *ngIf="!loading && errorMsg">{{ errorMsg }}</ng-container>
-        <ng-container *ngIf="!loading && !errorMsg && items.length===0">Sin registros de citas.</ng-container>
+        <ng-container *ngIf="!loading && !errorMsg && pagedItems.length===0">Sin registros de citas.</ng-container>
     </div>
 
     <!-- Lista -->
-    <div class="cards" *ngIf="!loading && !errorMsg && items.length">
-        <mat-card class="card" *ngFor="let c of items">
+    <div class="cards" *ngIf="!loading && !errorMsg && pagedItems.length">
+        <mat-card class="card" *ngFor="let c of pagedItems">
             <div class="card__top">
                 <span [class]="stateClass(c)">{{ stateLabel(c) }}</span>
 
@@ -59,4 +59,32 @@
             </div>
         </mat-card>
     </div>
+
+    <!-- PAGINACIÓN -->
+   <!-- PAGINACIÓN -->
+<div class="pagination" *ngIf="totalPages() > 1">
+
+  <button mat-stroked-button 
+          color="primary"
+          class="page-btn"
+          (click)="setPage(page - 1)"
+          [disabled]="page === 1">
+    Anterior
+  </button>
+
+  <span class="page-indicator">
+    Página {{ page }} de {{ totalPages() }}
+  </span>
+
+  <button mat-stroked-button 
+          color="primary"
+          class="page-btn"
+          (click)="setPage(page + 1)"
+          [disabled]="page === totalPages()">
+    Siguiente
+  </button>
+
+</div>
+
+
 </section>

@@ -73,3 +73,35 @@ export interface DashboardDto {
   kpis: KpisDashboard;
 }
 
+
+
+
+export interface DoctorDashboardVMv2 {
+  kpis: KpiVM;
+  weeklyBars: WeeklyBarsVM;
+  donut: DonutVM;
+  next: NextCitationVM | null;
+  pendingCount: number;
+}
+
+export interface KpiVM {
+  attendedToday: number;
+  presentToday: number;
+  absentToday: number;
+}
+
+export interface WeeklyBarsVM {
+  labels: string[];
+  values: number[];
+}
+
+export interface DonutVM {
+  attended: number;
+  notAttended: number;
+}
+
+export interface NextCitationVM {
+  date: string;
+  timeLabel: string;
+  note: string | null;
+}
