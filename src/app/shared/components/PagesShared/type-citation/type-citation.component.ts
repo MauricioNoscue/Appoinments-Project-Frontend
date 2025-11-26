@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
+import { TypeCitationModalComponent } from './type-citation-modal/type-citation-modal.component';
 
 
 export interface TypeCitation {
@@ -10,6 +12,13 @@ export interface TypeCitation {
   hasShedule: boolean;
 }
 
+ export interface TypeCitationCreateDto{
+      name: string;
+      description: string;
+      icon: string;
+ }
+
+
 
 @Component({
   selector: 'app-type-citation',
@@ -19,6 +28,9 @@ export interface TypeCitation {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TypeCitationComponent implements OnChanges {
+
+  
+constructor(private dialog: MatDialog) {}
 
    @Input()  typeCitations: TypeCitation[] = []
    typeCitationsFiltered: TypeCitation[] = []
@@ -48,7 +60,19 @@ onPageChange(event: PageEvent): void {
 
 }
 
+
 crear(): void {
-  alert('Crear nuevo tipo de cita');
+  const ref = this.dialog.open(TypeCitationModalComponent, {
+    width: '450px',
+    disableClose: true
+  });
+
+  // 👉 Si quieres refrescar después de crear:
+  ref.afterClosed().subscribe(created => {
+    if (created) {
+      // recargar tipos de cita si quieres
+      console.log('SE CREÓ, RECARGA LISTA');
+    }
+  });
 }
 }

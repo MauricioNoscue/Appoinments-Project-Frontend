@@ -32,6 +32,7 @@ reviewForm!: FormGroup;
   ) {}
 
   ngOnInit(): void {
+      const userId = this.auhteservice.getUserId();
 
      this.reviewForm = this.fb.group({
     rating: [5, Validators.required],
