@@ -2,6 +2,7 @@
 export interface Horario {
   hora: string;             // "HH:mm:ss"
   estaDisponible: boolean;
+    scheduleHourId: number;
   // runtime (UI)
   lockedBy?: string | null;
   lockedUntil?: string | null;

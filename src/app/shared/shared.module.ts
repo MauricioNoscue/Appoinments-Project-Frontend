@@ -28,6 +28,7 @@ import { GenericTableComponent } from './components/Table/generic-table/generic-
 import { GlobalSearchComponent } from './components/Sections/global-search/global-search.component';
 import { LoaderComponent } from './components/Loaders/loader/loader.component';
 import { DoctorReviewComponent } from './components/PagesShared/doctor-review/doctor-review.component';
+import { TypeCitationModalComponent } from './components/PagesShared/type-citation/type-citation-modal/type-citation-modal.component';
 
 
 const sharedComponents =[
@@ -48,7 +49,7 @@ const sharedComponents =[
   ToolbarComponent,
   GenericTableComponent,
   GlobalSearchComponent,
-  LoaderComponent,DoctorReviewComponent
+  LoaderComponent,DoctorReviewComponent,TypeCitationModalComponent
   
  
 
@@ -63,7 +64,7 @@ const sharedComponents =[
     RouterModule,
     ReactiveFormsModule,
     NotificacionesComponent,
-    MiCitasComponent,
+    MiCitasComponent
 
   ],
   exports: [sharedComponents, DashboardLayoutComponentComponent],

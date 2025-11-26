@@ -19,7 +19,7 @@ export class ReservationViewComponent implements OnInit, OnDestroy {
   todos = true;
 
   selectedDate: string | null = null;
-  scheduleHourId = 1;
+  scheduleHourId = 0;
 
   blocks: Horario[] = [];
   horariosManana: Horario[] = [];
@@ -88,11 +88,18 @@ async onDateChange(date: string) {
   this.service.getAvailableBlocks(this.idTypeCitation, date, true)
     .subscribe(async (list) => {
       
-      this.blocks = list;
-      this.separarHorarios();
+    this.blocks = list;
+this.separarHorarios();
 
-      this.realtime.setBlocks(list);
-      await this.realtime.joinDay(this.scheduleHourId, date);
+// 🔥 ASIGNAR EL SCHEDULEHOUR REAL
+if (list.length > 0) {
+  this.scheduleHourId = list[0].scheduleHourId;
+}
+
+this.realtime.setBlocks(list);
+
+// 🔥 USAR EL ID REAL (NO 0)
+await this.realtime.joinDay(this.scheduleHourId, date);
 
       this.subs.push(
         this.realtime.blocksChanges$.subscribe(b => {
@@ -140,6 +147,7 @@ async seleccionarHorario(h: Horario) {
   if (!this.selectedDate || !h.estaDisponible) return;
 
   try {
+     this.scheduleHourId = h.scheduleHourId;
     const lock = await this.realtime.lock(h.hora);
     if (!lock.locked) {
       await Swal.fire({ icon: 'error', title: 'Horario ocupado', text: 'Ya está en uso.' });
