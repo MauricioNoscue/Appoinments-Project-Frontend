@@ -89,7 +89,7 @@ export class RelacionPersonaComponent {
 
     if (!this._resolvedId || this._resolvedId <= 0) {
       // const devId = (environment as any).defaultPersonId as number | undefined;
-      const devId = this.userService.getUserId()
+      const devId = this.userService.getPersonId()
 
       if (devId && devId > 0) {
         console.warn('[DEV] Usando defaultPersonId:', devId);
