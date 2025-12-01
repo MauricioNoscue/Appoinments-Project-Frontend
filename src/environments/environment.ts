@@ -1,6 +1,7 @@
 export const environment = {
  production: true,
-   apiURL: 'https://98.95.54.163',
+     apiURL: 'http://localhost:5104',
+
 
   hubs: {
     notification: '/hubs/noti', 
