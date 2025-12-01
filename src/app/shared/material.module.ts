@@ -27,6 +27,8 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 // Agrega más según necesites
 
 const materialModules = [
@@ -53,7 +55,7 @@ const materialModules = [
   ReactiveFormsModule,MatSelectModule 
   ,MatProgressSpinnerModule,MatProgressBarModule,MatTabsModule,
   MatFormFieldModule,MatStepperModule,MatDatepickerModule,
-  MatNativeDateModule,MatButtonToggleModule,MatPaginatorModule 
+  MatNativeDateModule,MatButtonToggleModule,MatPaginatorModule ,MatSlideToggleModule 
 
 ];
 

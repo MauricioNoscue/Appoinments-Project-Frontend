@@ -19,9 +19,11 @@ export class ReservationComponent  implements OnInit{
     constructor(private service: TypeCitationService) { }
   
   
-    ngOnInit(): void {
-     this.service.traerTodo().subscribe(data =>{
-      this.typeCitation = data;
-     })
-    }
+   ngOnInit(): void {
+  this.service.traerTodo().subscribe(data => {
+    // nos quedamos solo con las que tienen horarios
+    this.typeCitation = data.filter(tc => tc.hasShedule === true);
+  });
+}
+
 }

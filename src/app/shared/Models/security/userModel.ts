@@ -25,6 +25,8 @@ export interface UsuarioListado {
   restrictionPoint: number;
   isDeleted: boolean;
   registrationDate: string; 
+  rescheduling: boolean;
+
 }
   export interface LoginModel{
 

@@ -1,10 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ViewChild, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CoreCitationService } from '../../../services/Hospital/core-citation.service';
 import { Subscription } from 'rxjs';
 import { SocketService } from '../../../services/Socket/socket.service';
 import { Horario } from '../../../Models/socket/models.socket';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../../services/auth/auth.service';
+import { RelatedPersonService } from '../../../services/related-person.service';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-reservation-view',
   standalone: false,
@@ -16,13 +19,25 @@ export class ReservationViewComponent implements OnInit, OnDestroy {
   todos = true;
 
   selectedDate: string | null = null;
-  scheduleHourId = 1;
+  scheduleHourId = 0;
 
   blocks: Horario[] = [];
   horariosManana: Horario[] = [];
   horariosTarde: Horario[] = [];
   vistaColumnas = false;
   esp!:string
+  private auhtser = inject(AuthService);
+  horarioSeleccionado!: Horario; // ← aquí la declaras
+
+loadingBlocks = false; // ← loader para consultas pesadas
+
+  private relSrv = inject(RelatedPersonService);
+
+relacionados: any[] = [];
+personId!: number;
+
+@ViewChild('relacionadosModal') relacionadosModal!: TemplateRef<any>;
+
 
   especialidad ="";
   nombreDoctor = 'Dr. Ortis Acosta Jhoyner Duvan';
@@ -32,51 +47,73 @@ export class ReservationViewComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private service: CoreCitationService,
-    private realtime: SocketService
+    private realtime: SocketService,
+      private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    this.idTypeCitation = idParam ? +idParam : 0;
+  const idParam = this.route.snapshot.paramMap.get('id');
+  this.idTypeCitation = idParam ? +idParam : 0;
 
-    if(idParam == "2"){
-      this.especialidad = "Odontología"
-    }
+  this.personId = this.auhtser.getPersonId() ?? 0;
 
-    
-    if(idParam == "4"){
-      this.especialidad = "Consulta externa"
-    }
 
-  }
+  this.relSrv.getByPerson(this.personId).subscribe(list => {
+    this.relacionados = list;
+  });
+
+  if(idParam == "2"){ this.especialidad = "Odontología"; }
+  if(idParam == "4"){ this.especialidad = "Consulta externa"; }
+
+
+   this.loadingBlocks = true;  
+  setTimeout(() => {
+    this.loadingBlocks = false;
+  }, 2000);
+}
+
 
   ngOnDestroy(): void {
     this.realtime.leaveDay();
     this.subs.forEach(s => s.unsubscribe());
   }
 
-  async onDateChange(date: string) {
+async onDateChange(date: string) {
+
+  // ⬅️ Evita ExpressionChangedAfterItHasBeenCheckedError
+  Promise.resolve().then(() => {
     this.selectedDate = date;
+  });
 
-    this.service.getAvailableBlocks(this.idTypeCitation, date, true)
-      .subscribe(async (list) => {
-        // asignar directamente
-        this.blocks = list;
-        this.separarHorarios();
+  this.service.getAvailableBlocks(this.idTypeCitation, date, true)
+    .subscribe(async (list) => {
+      
+    this.blocks = list;
+this.separarHorarios();
 
-        // set a realtime store
-        this.realtime.setBlocks(list);
+// 🔥 ASIGNAR EL SCHEDULEHOUR REAL
+if (list.length > 0) {
+  this.scheduleHourId = list[0].scheduleHourId;
+}
 
-        await this.realtime.joinDay(this.scheduleHourId, date);
+this.realtime.setBlocks(list);
 
-        this.subs.push(
-          this.realtime.blocksChanges$.subscribe(b => {
-            this.blocks = b;
-            this.separarHorarios();
-          })
-        );
-      });
-  }
+// 🔥 USAR EL ID REAL (NO 0)
+await this.realtime.joinDay(this.scheduleHourId, date);
+
+      this.subs.push(
+        this.realtime.blocksChanges$.subscribe(b => {
+          this.blocks = b;
+          this.separarHorarios();
+        })
+      );
+    },
+    error => {
+      console.error(error);
+    });
+}
+
+
 
   onBlocksLoaded(data: Horario[]) {
     this.blocks = data;
@@ -110,23 +147,20 @@ async seleccionarHorario(h: Horario) {
   if (!this.selectedDate || !h.estaDisponible) return;
 
   try {
+     this.scheduleHourId = h.scheduleHourId;
     const lock = await this.realtime.lock(h.hora);
     if (!lock.locked) {
-      await Swal.fire({
-        icon: 'error',
-        title: 'Horario ocupado',
-        text: `Ya está en uso.`,
-        confirmButtonText: 'Entendido'
-      });
+      await Swal.fire({ icon: 'error', title: 'Horario ocupado', text: 'Ya está en uso.' });
       return;
     }
 
+    // preguntamos si agendar
     const confirmar = await Swal.fire({
       title: '¿Confirmar cita?',
       text: `¿Quieres agendar ${this.formatearHora(h.hora)}?`,
       icon: 'question',
       showCancelButton: true,
-      confirmButtonText: 'Sí, agendar',
+      confirmButtonText: 'Continuar',
       cancelButtonText: 'Cancelar'
     });
 
@@ -135,32 +169,59 @@ async seleccionarHorario(h: Horario) {
       return;
     }
 
-    const res = await this.realtime.confirm(h.hora);
-    if (res.success) {
-      await Swal.fire({
-        icon: 'success',
-        title: '¡Agendado!',
-        text: 'Tu cita ha sido registrada correctamente.',
-        timer: 2000,
-        showConfirmButton: false
-      });
-    } else {
-      debugger;
-      await Swal.fire({
-        icon: 'error',
-        title: 'No se pudo agendar',
-        text: res.reason || 'Intenta nuevamente.',
-        confirmButtonText: 'Ok'
-      });
-    }
+    // abrir modal de selección
+    this.horarioSeleccionado = h; // guardamos el slot seleccionado
+    this.dialog.open(this.relacionadosModal);
+
   } catch (e) {
     console.error(e);
+    await Swal.fire({ icon: 'error', title: 'Error', text: 'Error de red o autenticación.' });
+  }
+}
+
+
+
+async confirmarCitaParaMi() {
+  this.dialog.closeAll();
+
+  const res = await this.realtime.confirm(
+    this.horarioSeleccionado.hora,
+    this.personId
+  );
+
+  await this.finalizarConfirmacion(res);
+}
+
+
+async confirmarCitaRelacionada(relatedId: number) {
+  this.dialog.closeAll();
+
+  const res = await this.realtime.confirm(
+    this.horarioSeleccionado.hora,
+    relatedId
+  );
+
+  await this.finalizarConfirmacion(res);
+}
+
+private async finalizarConfirmacion(res: any) {
+  if (res.success) {
+    await Swal.fire({
+      icon: 'success',
+      title: '¡Agendado!',
+      text: 'La cita se registró correctamente.',
+      timer: 2000,
+      showConfirmButton: false
+    });
+  } else {
     await Swal.fire({
       icon: 'error',
-      title: 'Error',
-      text: 'Error de red o autenticación.',
-      confirmButtonText: 'Ok'
+      title: 'No se pudo agendar',
+      text: res.reason || 'Intenta nuevamente.'
     });
   }
 }
+
+
+
 }

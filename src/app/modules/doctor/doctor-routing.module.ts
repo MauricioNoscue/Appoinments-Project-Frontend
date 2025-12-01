@@ -7,6 +7,7 @@ import { HistoryCitationsComponent } from './pages/history-citations/history-cit
 import { DoctorAgendaComponent } from './pages/doctor-agenda/doctor-agenda.component';
 import { DoctorAppointmentsComponent } from './pages/doctor-appointments/doctor-appointments.component';
 import { authGuard } from '../../../guards/auth.guard';
+import { RequestDoctorComponent } from './pages/request-doctor/request-doctor.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,10 @@ const routes: Routes = [
       { path: 'perfil', component: PerfilComponent },
       { path: 'historial', component: HistoryCitationsComponent },
       { path: 'pendientes', component: DoctorAgendaComponent },  // Nueva ruta para DoctorAgendaComponent
-      { path: 'citas', component: DoctorAppointmentsComponent }
+      { path: 'citas/:date', component: DoctorAppointmentsComponent },
+      { path: 'request', component: RequestDoctorComponent },
+
+      
     ],
   },
 ];

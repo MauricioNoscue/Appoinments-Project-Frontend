@@ -1,10 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 import { ProfileService, UserProfile } from '../../../../shared/services/profile.service';
 import { EditProfileSectionDialogComponent } from '../perfil/edit-profile-section-dialog/edit-profile-section-dialog.component';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../../../../shared/material.module';
+import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { UserService } from '../../../../shared/services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-perfil',
@@ -16,13 +19,19 @@ export class PerfilComponent implements OnInit, OnDestroy {
   user!: UserProfile;
   loading = true;
   private destroy$ = new Subject<void>();
+  private auhtser = inject(AuthService);
+  private serviceU = inject(UserService)
 
   constructor(private profile: ProfileService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    // Por ahora "usuario quemado" (id 42). Luego: usar id desde auth.
+
+  const personId = this.auhtser.getPersonId();
+  if (personId == null) {
+    return; // o puedes redirigir o mostrar error
+  }
     this.profile
-      .loadById(1)
+      .loadById(personId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (u) => {
@@ -105,4 +114,28 @@ export class PerfilComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+
+  onToggleRescheduling(state: boolean) {
+  this.serviceU.Rescheduling().subscribe({
+    next: () => {
+      this.user.rescheduling = state;
+      Swal.fire({
+        icon: 'success',
+        title: 'Actualizado',
+        text: 'Tu preferencia de reprogramación ha sido guardada.',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    },
+    error: () => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudo actualizar la configuración.'
+      });
+    }
+  });
+}
+
 }

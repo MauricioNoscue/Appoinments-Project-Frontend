@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { DoctorService } from '../../../../shared/services/doctor.service';
-import { DoctorCitation } from '../../../../shared/Models/hospital/DoctorListModel';
+import { SheduleList, CitationList } from '../../../../shared/Models/newdoctor';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { DoctorNewService } from '../../../../shared/services/Hospital/doctor-new.service';
 
 @Component({
   selector: 'app-doctor-agenda',
@@ -13,107 +13,55 @@ import { AuthService } from '../../../../shared/services/auth/auth.service';
 })
 export class DoctorAgendaComponent implements OnInit, OnDestroy {
 
-  // TODO: cuando exista autenticación por token, reemplazar por el id real del doctor
-  // private readonly DOCTOR_ID = 1;
- DOCTOR_ID! : number
-  // UI state
+  DOCTOR_ID!: number;
+
   loading = false;
   errorMsg = '';
 
-  // Doctor header
+  // Header
   doctorName = '—';
   specialty = '—';
 
-  // Consultorio del día seleccionado
   consultingRoom = '—';
   roomCode: string | number = '—';
 
-  // Citas
-  allCitations: DoctorCitation[] = [];
-  citationsForDay: DoctorCitation[] = [];
+  // Citas del día
+  citationsForDay: CitationList[] = [];
 
-  // Totales por jornada
-  morningCount = 0;  // 7:00–11:00
-  afternoonCount = 0; // 14:00–16:00
-  totalForDay = 0;
-  upcomingCount = 0; // citas pendientes (no vencidas) para el CTA
+  morningCount = 0;
+  afternoonCount = 0;
+  upcomingCount = 0;
 
-  // ===== Calendario (simple, como tu snippet con señales)
   today = new Date();
   currentYear = signal(this.today.getFullYear());
   currentMonth = signal(this.today.getMonth());
   selected = signal(
     new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate())
   );
+
   monthName = computed(() =>
     new Date(this.currentYear(), this.currentMonth(), 1).toLocaleDateString(
       'es-CO', { month: 'long', year: 'numeric' }
     )
   );
-  weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
-  get monthMatrix(): (Date | null)[] {
-    const y = this.currentYear();
-    const m = this.currentMonth();
-    const first = new Date(y, m, 1);
-    const startIndex = first.getDay();
-    const daysInMonth = new Date(y, m + 1, 0).getDate();
-    const cells: (Date | null)[] = [];
-    for (let i = 0; i < startIndex; i++) cells.push(null);
-    for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(y, m, d));
-    while (cells.length % 7 !== 0) cells.push(null);
-    return cells;
-  }
-  prevMonth() {
-    const m = this.currentMonth(), y = this.currentYear();
-    m === 0 ? (this.currentMonth.set(11), this.currentYear.set(y - 1))
-            : this.currentMonth.set(m - 1);
-  }
-  nextMonth() {
-    const m = this.currentMonth(), y = this.currentYear();
-    m === 11 ? (this.currentMonth.set(0), this.currentYear.set(y + 1))
-             : this.currentMonth.set(m + 1);
-  }
-  isToday(d?: Date | null) {
-    if (!d) return false;
-    const t = this.today;
-    return d.getFullYear() === t.getFullYear()
-        && d.getMonth() === t.getMonth()
-        && d.getDate() === t.getDate();
-  }
-  isSelected(d?: Date | null) {
-    if (!d) return false;
-    const s = this.selected();
-    return d.getFullYear() === s.getFullYear()
-        && d.getMonth() === s.getMonth()
-        && d.getDate() === s.getDate();
-  }
-  isPast(d?: Date | null) {
-    if (!d) return false;
-    const t = this.today;
-    return d < new Date(t.getFullYear(), t.getMonth(), t.getDate());
-  }
-  pick(d?: Date | null) {
-    if (!d || this.isPast(d)) return;
-    this.selected.set(d);
-    this.recomputeForSelectedDay();
-  }
+  weekDays = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
   private destroy$ = new Subject<void>();
 
   constructor(
-    private doctorService: DoctorService,
-    private router: Router,    private authService:AuthService
+    private doctorSrv: DoctorNewService,
+    private router: Router,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
-     const doctorId = this.authService.getDoctorId();
-    if(doctorId){
-    this.DOCTOR_ID = doctorId;
-    }
-    this.loadDoctorHeader();
-    this.loadCitations();
-    
+    const id = this.auth.getDoctorId();
+    if (!id) { this.errorMsg = 'Doctor no identificado.'; return; }
+    this.DOCTOR_ID = id;
+
+    this.loadSchedule();
+    this.loadCitationsForSelectedDay();
   }
 
   ngOnDestroy(): void {
@@ -121,125 +69,140 @@ export class DoctorAgendaComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ======= DATA =======
-  private loadDoctorHeader(): void {
-    this.doctorService.traerDoctorPorId(this.DOCTOR_ID)
+  // =======================
+  // CARGAR CONSULTORIO
+  // =======================
+  private loadSchedule(): void {
+    this.doctorSrv.getSheduleByDoctor(this.DOCTOR_ID)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (doc: any) => {
-          this.doctorName = doc?.fullName || '—';
-          this.specialty = doc?.specialty || '—';
-        },
-        error: () => { /* header fallback */ }
-      });
-  }
-
-  private loadCitations(): void {
-    this.loading = true;
-    this.errorMsg = '';
-    this.doctorService.getCitationsByDoctor(this.DOCTOR_ID)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res: DoctorCitation[]) => {
-          this.allCitations = Array.isArray(res) ? res : [];
-          this.recomputeForSelectedDay();
-          this.loading = false;
-        },
-        error: (err) => {
-          console.error(err);
-          this.errorMsg = 'No fue posible cargar las citas.';
-          this.loading = false;
+        next: (data: SheduleList[]) => {
+          if (data.length) {
+            this.consultingRoom = data[0].consultingRoomName;
+            this.roomCode = data[0].roomNumber;
+            this.doctorName = data[0].nameDoctor;
+            this.specialty = data[0].typeCitationName;
+          }
         }
       });
   }
 
-  // ======= LÓGICA DE FILTRO / CÁLCULOS =======
-  private recomputeForSelectedDay(): void {
-    const sel = this.selected();
-    const y = sel.getFullYear(), m = sel.getMonth(), d = sel.getDate();
+  // =======================
+  // CARGAR CITAS DEL DÍA
+  // =======================
+  private loadCitationsForSelectedDay(): void {
+    this.loading = true;
 
-    // 1) Citas del día seleccionado
-    const sameDay = (iso: string) => {
-      const dt = new Date(iso);
-      return dt.getFullYear() === y && dt.getMonth() === m && dt.getDate() === d;
-    };
+    const date = this.selected().toISOString().slice(0, 10);
 
-    // 2) Solo programadas y no vencidas (ni atendidas/no asistió/canceladas)
-   const isPendingState = (s: string) => {
-    const v = (s || '').toLowerCase().trim();
-    return ['pendiente', 'programada', 'agendada'].some(state => v.includes(state));
-  };
+    this.doctorSrv.getCitationsByDoctor(this.DOCTOR_ID, date)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (items: CitationList[]) => {
+          this.loading = false;
+          this.citationsForDay = (items || []).sort(
+            (a, b) => this.timeToMinutes(a.timeBlock) - this.timeToMinutes(b.timeBlock)
+          );
 
+          this.computeKpis();
+        },
+        error: () => {
+          this.loading = false;
+          this.errorMsg = 'No fue posible cargar las citas.';
+        }
+      });
+  }
+
+  // =======================
+  // KPIs
+  // =======================
+  private computeKpis(): void {
+    const list = this.citationsForDay;
+
+    this.morningCount = list.filter(c => this.isMorning(c.timeBlock)).length;
+    this.afternoonCount = list.filter(c => this.isAfternoon(c.timeBlock)).length;
 
     const now = new Date();
-    const isFutureOrNow = (dateISO: string, timeBlock: string) => {
-      // Si es fecha futura -> OK
-      const appointment = new Date(dateISO);
-      if (appointment > new Date(now.getFullYear(), now.getMonth(), now.getDate())) return true;
-      // Si es hoy -> mostrar TODAS las citas pendientes del día (incluyendo pasadas)
-      if (appointment.toDateString() === now.toDateString()) {
-        return true;
-      }
-      return false; // pasado
-    };
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    let filtered = this.allCitations;
-    filtered = filtered.filter(c => sameDay(c.appointmentDate));
-    filtered = filtered.filter(c => isPendingState(c.state));
-    filtered = filtered.filter(c => isFutureOrNow(c.appointmentDate, c.timeBlock));
-
-    const dayItems = filtered.sort((a, b) => this.timeToMinutes(a.timeBlock) - this.timeToMinutes(b.timeBlock));
-
-    this.citationsForDay = dayItems;
-    console.log('Citas finales para el día:', dayItems);
-
-    // consultorio del día (si hay varias, se toma la primera)
-    if (dayItems.length) {
-      this.consultingRoom = dayItems[0].consultingRoomName || 'Consultorio';
-      this.roomCode = dayItems[0].roomNumber ?? '—';
-    } else {
-      this.consultingRoom = 'Consultorio';
-      this.roomCode = '—';
-    }
-
-    // 3) Filtrar citas futuras del día actual para el CTA
-    const currentTime = new Date();
-    const upcomingItems = dayItems.filter(c => {
-      if (sel.toDateString() !== currentTime.toDateString()) return true; // si no es hoy, todas son futuras
-      const mins = this.timeToMinutes(c.timeBlock);
-      const currentMins = currentTime.getHours() * 60 + currentTime.getMinutes();
-      return mins >= currentMins;
-    });
-
-    // 4) Conteos por jornada
-    const morningItems = dayItems.filter(c => this.isMorning(c.timeBlock));
-    const afternoonItems = dayItems.filter(c => this.isAfternoon(c.timeBlock));
-
-    this.morningCount = morningItems.length;
-    this.afternoonCount = afternoonItems.length;
-    this.totalForDay = dayItems.length;
-    this.upcomingCount = upcomingItems.length;
+    this.upcomingCount = list.filter(c => {
+      const m = this.timeToMinutes(c.timeBlock);
+      return m >= currentMinutes;
+    }).length;
   }
 
-  private timeToMinutes(hhmmss: string): number {
-    const [hh, mm] = (hhmmss || '00:00:00').split(':').map(n => +n);
-    return (hh * 60) + (mm || 0);
-    // Los segundos no afectan para este caso
+  private timeToMinutes(hhmmss: string | null): number {
+    if (!hhmmss) return 0;
+    const [hh, mm] = hhmmss.split(':').map(Number);
+    return hh * 60 + mm;
   }
 
-  private isMorning(hhmmss: string): boolean {
-    const m = this.timeToMinutes(hhmmss);
-    return m >= (7 * 60) && m <= (11 * 60); // 07:00–11:00
+  private isMorning(h: string | null) {
+    const m = this.timeToMinutes(h);
+    return m >= 7 * 60 && m <= 11 * 60;
   }
 
-  private isAfternoon(hhmmss: string): boolean {
-    const m = this.timeToMinutes(hhmmss);
-    return m >= (14 * 60) && m <= (23 * 60); // 14:00–16:00
+  private isAfternoon(h: string | null) {
+    const m = this.timeToMinutes(h);
+    return m >= 14 * 60 && m <= 16 * 60;
   }
 
-  // ======= NAVEGACIÓN =======
-  startDay(): void {
-    const date = this.selected().toISOString().slice(0, 10);
-    this.router.navigate(['/doctor/citas']);
+  // =======================
+  // CALENDARIO
+  // =======================
+  get monthMatrix(): (Date | null)[] {
+    const y = this.currentYear();
+    const m = this.currentMonth();
+    const first = new Date(y, m, 1);
+    const startIndex = first.getDay();
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const cells: (Date | null)[] = [];
+
+    for (let i = 0; i < startIndex; i++) cells.push(null);
+    for (let d = 1; d <= daysInMonth; d++) cells.push(new Date(y, m, d));
+    while (cells.length % 7 !== 0) cells.push(null);
+    return cells;
   }
+
+  pick(d?: Date | null) {
+    if (!d) return;
+    this.selected.set(d);
+    this.loadCitationsForSelectedDay();
+  }
+
+  prevMonth() {
+    const m = this.currentMonth(), y = this.currentYear();
+    m === 0 ? (this.currentMonth.set(11), this.currentYear.set(y - 1))
+            : this.currentMonth.set(m - 1);
+  }
+
+  nextMonth() {
+    const m = this.currentMonth(), y = this.currentYear();
+    m === 11 ? (this.currentMonth.set(0), this.currentYear.set(y + 1))
+             : this.currentMonth.set(m + 1);
+  }
+
+  isToday(d?: Date | null) {
+    if (!d) return false;
+    const t = this.today;
+    return d.toDateString() === t.toDateString();
+  }
+
+  isSelected(d?: Date | null) {
+    if (!d) return false;
+    const s = this.selected();
+    return d.toDateString() === s.toDateString();
+  }
+
+  isPast(d?: Date | null) {
+    if (!d) return false;
+    const t = this.today;
+    return d < new Date(t.getFullYear(), t.getMonth(), t.getDate());
+  }
+
+ startDay(): void {
+  const date = this.selected().toISOString().slice(0, 10);
+  this.router.navigate(['/doctor/citas', date]);
+}
+
 }

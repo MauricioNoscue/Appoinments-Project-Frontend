@@ -12,6 +12,7 @@ import { HomePanelComponent } from './pages/home-panel/home-panel.component';
 import { HomeComponent } from './components/sections/home/home.component';
 import { ManagementComponent } from './components/sections/management/management.component';
 import { AppointmentManagementComponent } from './components/sections/appointment-management-component/appointment-management-component.component';
+import { DoctorsReviewLandingComponent } from './components/sections/doctors-review-landing/doctors-review-landing.component';
 
 
 @NgModule({
@@ -22,7 +23,7 @@ import { AppointmentManagementComponent } from './components/sections/appointmen
     BodyComponent,
     HomePanelComponent,
     HomeComponent,
-    ManagementComponent,AppointmentManagementComponent
+    ManagementComponent,AppointmentManagementComponent,DoctorsReviewLandingComponent
     
     
   ],

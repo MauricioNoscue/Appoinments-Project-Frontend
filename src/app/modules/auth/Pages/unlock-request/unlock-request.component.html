@@ -1,0 +1,39 @@
+<div class="verify-container">
+
+  <mat-card class="verify-card">
+
+    <h2 class="title">Cuenta bloqueada</h2>
+
+    <p class="subtitle">
+      Lo sentimos, tu cuenta ha sido bloqueada debido a un uso inapropiado del sistema.
+      <br>
+      Por favor realiza una solicitud para desbloquearla. Recuerda mantener un buen comportamiento.
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Motivo de la solicitud</mat-label>
+        <textarea 
+          matInput 
+          formControlName="reason" 
+          rows="3" 
+          placeholder="Describe por qué deberíamos desbloquear tu cuenta">
+        </textarea>
+      </mat-form-field>
+
+   
+
+      <button 
+        mat-raised-button 
+        color="primary" 
+        class="btn-verify"
+        [disabled]="form.invalid">
+        Enviar solicitud
+      </button>
+
+    </form>
+
+  </mat-card>
+
+</div>

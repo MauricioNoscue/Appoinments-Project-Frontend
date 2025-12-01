@@ -11,6 +11,9 @@ import { DoctorAppointmentsComponent } from './pages/doctor-appointments/doctor-
 import { ConfirmAttendanceDialogComponent } from './pages/dialogs/confirm-attendance/confirm-attendance.dialog';
 import { ClinicalNotesDialogComponent } from './pages/dialogs/clinical-notes/clinical-notes.dialog';
 import { DoctorAgendaComponent } from './pages/doctor-agenda/doctor-agenda.component';
+import { RequestDoctorComponent } from './pages/request-doctor/request-doctor.component';
+import { RequestDoctorDetailsComponent } from './pages/request-doctor/request-doctor-details/request-doctor-details.component';
+import { RequestDoctorCreateComponent } from './pages/request-doctor/request-doctor-create/request-doctor-create.component';
 
 
 
@@ -23,7 +26,7 @@ import { DoctorAgendaComponent } from './pages/doctor-agenda/doctor-agenda.compo
     DoctorAgendaComponent,
     DoctorAppointmentsComponent,
     ConfirmAttendanceDialogComponent,
-    ClinicalNotesDialogComponent,
+    ClinicalNotesDialogComponent,RequestDoctorComponent,RequestDoctorDetailsComponent,RequestDoctorCreateComponent
   ],
   imports: [CommonModule, DoctorRoutingModule,MaterialModule,SharedModule],
 })

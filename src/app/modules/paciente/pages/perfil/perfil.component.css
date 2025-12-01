@@ -249,3 +249,8 @@
   display: grid;
   place-items: center;
 }
+
+.rescheduling-toggle {
+  margin-top: 12px;
+  text-align: center;
+}

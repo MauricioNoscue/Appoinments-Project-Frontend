@@ -86,29 +86,7 @@
     </div>
   </div>
 
-  <!-- Comportamiento del año -->
-  <div class="chart-card">
-    <div class="chart-header">Comportamiento del año</div>
-    <div class="chart-body">
-      <div class="chart-container">
-        <canvas id="MyChart"></canvas>
-      </div>
-      <div class="legend-side">
-        <div class="legend-head">
-          <span></span>
-          <span>Mes</span>
-          <span>Value</span>
-          <span>%</span>
-        </div>
-        <div class="legend-row" *ngFor="let item of legendData; let i = index">
-          <span class="dot" [style.backgroundColor]="colors[i]"></span>
-          <span class="label">{{ item.label }}</span>
-          <span class="value">{{ item.value }}</span>
-          <span class="pct">{{ item.percent }}%</span>
-        </div>
-      </div>
-    </div>
-  </div>
+ 
 
 </div>
 

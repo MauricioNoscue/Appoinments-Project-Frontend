@@ -4,6 +4,7 @@ import { menuAdmin } from '../../../modules/admin/Menu-config/menu-admin';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import Swal from 'sweetalert2';
+import { SignalRNotificationService } from '../../services/Socket/signal-rnotification.service';
 
 @Component({
   selector: 'app-dashboard-layout-component',
@@ -15,17 +16,33 @@ export class DashboardLayoutComponentComponent implements OnInit {
   menuItems: MenuItem[] = [];
   tipoUsuario: 'admin' | 'doctor' | 'paciente' = 'admin';
   isMobile = false; // SOLO AGREGAR ESTA LÍNEA
+    lastNotification: any | null = null;
 
   @Output() abrirPerfil = new EventEmitter<void>(); // Evento para abrir el perfil
   @Output() onSearch = new EventEmitter<string>(); 
 
   searchTerm = '';
 
-  constructor(private router: Router,private authservice:AuthService) {}
+  constructor(private router: Router,private authservice:AuthService,   private signalR: SignalRNotificationService,) {}
 
-  ngOnInit(): void {
+ ngOnInit(): void {
     this.initializeFromRoute();
-    this.checkScreenSize(); // AGREGAR ESTA LÍNEA
+    this.checkScreenSize();
+
+    // 🔥 Conectamos al hub usando el token
+    const token = this.authservice.getToken();
+
+    if (token) {
+      console.log("📡 Dashboard está iniciando SignalR");
+      this.signalR.startConnection(token);
+
+
+      this.signalR.messages$.subscribe(msg => {
+  console.log("🔥 LLEGÓ A DASHBOARD:", msg);
+  this.lastNotification = msg;
+});
+
+    }
   }
 
     handleSearch() {
