@@ -6,4 +6,7 @@ export interface ColumnDefinition {
   tooltip?: string;           
   icon?: string;              
   format?: (element: any) => string;  
+    hideEdit?: boolean;   
+
+      cssClassFn?: (element: any) => string;
 }

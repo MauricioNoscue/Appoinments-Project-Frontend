@@ -9,6 +9,7 @@ import { MiCitasComponent } from './pages/mi-citas/mi-citas.component';
 import { ReservationComponent } from './pages/reservation/reservation.component';
 import { ReservationViewComponent } from '../../shared/components/PagesShared/reservation-view/reservation-view.component';
 import { authGuard } from '../../../guards/auth.guard';
+import { DoctorReviewComponent } from '../../shared/components/PagesShared/doctor-review/doctor-review.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,8 @@ const routes: Routes = [
       { path: 'micitas', component: MiCitasComponent },
       { path: 'agendar', component: ReservationComponent },
        {path:'CitationAviable/:id', component: ReservationViewComponent},
+       {path:'doctor-review/:id', component: DoctorReviewComponent},
+
 
       
     ],

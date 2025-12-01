@@ -13,14 +13,25 @@ export interface CitationList {
   id: number;
   isDeleted: boolean;
   registrationDate: Date;
-
-  state: string;
+  statustypesName : string;
+  statustypesId: number;
   note: string;
   appointmentDate: Date;
   timeBlock: string | null; // en C# es TimeSpan?, en TS lo manejas como string o null
   scheduleHourId: number;
-
+  doctorId: number;
   nameDoctor: string;
   consultingRoomName: string;
   roomNumber: number;
+  statutypesId: number;
+
+}
+
+
+
+export interface CitationEdit {
+  id: number;                 // Id de la cita
+  statustypesId: number;       // Estado de la cita
+  note: string | null;        // Nota opcional
+  reltedPersonId: number | null; // Persona relacionada opcional
 }

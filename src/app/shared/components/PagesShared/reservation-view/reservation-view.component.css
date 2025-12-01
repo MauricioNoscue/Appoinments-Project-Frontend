@@ -291,3 +291,19 @@
     }
   }
 }
+
+
+.dialog-scroll {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.option-btn {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.related-title {
+  margin: 10px 0 5px;
+  font-weight: 600;
+}

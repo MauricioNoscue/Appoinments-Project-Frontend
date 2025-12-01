@@ -23,55 +23,53 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    console.log('hola');
-    if (this.loginForm.valid) {
-      const loginData: LoginModel = this.loginForm.value;
-      this.service.login(loginData).subscribe({
-        next: (data) => {
-          // 👈 guarda el accessToken en localStorage
-          localStorage.setItem('jwt', data.accessToken);
+  if (this.loginForm.valid) {
+    const loginData: LoginModel = this.loginForm.value;
 
-          // 👈 si quieres guardar la expiración también
-          localStorage.setItem('jwt_expires', data.expiresAtUtc);
+    this.service.login(loginData).subscribe({
+      next: (data) => {
 
-          // 👈 si planeas usar refresh token
-          localStorage.setItem('jwt_refresh', data.refreshToken);
-
-          Swal.fire({
-            icon: 'success',
-            title: '¡Login exitoso!',
-            text: 'Redirigiendo al panel principal...',
-            timer: 2000,
-            showConfirmButton: false,
+        // 🔥 1️⃣ Si está bloqueado
+        if (data.isBlocked) {
+          this.router.navigate(['/auth/unlock-request'], {
+            queryParams: { userId: data.userId }
           });
-
-
-
-  this.redirectByRole();
-
-
-}
-,
-        error: (err) => {
-          console.error('Error de login:', err);
 
           Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Hubo un problema al intentar iniciar sesión. Intenta nuevamente.',
+            title: 'Cuenta bloqueada',
+            text: 'Debes enviar una solicitud para desbloquear tu cuenta.'
           });
-        },
-      });
-    } else {
-      console.log('Formulario inválido');
 
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario inválido',
-        text: 'Por favor, revisa los campos y asegúrate de que sean correctos.',
-      });
-    }
+          return;
+        }
+
+        // 🔥 2️⃣ Si requiere 2FA
+        if (data.requiresTwoFactor) {
+          this.router.navigate(['/auth/verify-2fa'], {
+            queryParams: { userId: data.userId }
+          });
+
+          Swal.fire({
+            icon: 'info',
+            title: 'Verificación requerida',
+            text: 'Revisa tu correo para ingresar el código.'
+          });
+
+          return;
+        }
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Email o contraseña incorrectos.'
+        });
+      }
+    });
   }
+}
+
 
 
 

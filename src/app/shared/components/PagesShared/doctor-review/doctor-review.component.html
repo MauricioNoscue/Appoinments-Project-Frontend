@@ -1,0 +1,129 @@
+<div *ngIf="loading" class="loading">
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+</div>
+
+<div *ngIf="error" class="error">
+  <p>Error cargando información.</p>
+</div>
+
+<div *ngIf="!loading && !error" class="review-container">
+
+  <!-- Header con botón -->
+  <div class="top-section">
+    <h1 class="page-title">Reseñas del Doctor</h1>
+  </div>
+
+  <div class="review-layout">
+
+    <!-- ========== COLUMNA IZQUIERDA ========== -->
+    <div class="left-panel">
+
+      <!-- Card del Doctor -->
+      <div class="doctor-info-card">
+        <img [src]="doctor.image" class="doctor-avatar" alt="doctor" />
+        <h3 class="doctor-full-name">{{ doctor.fullName }} {{ doctor.fullLastName }}</h3>
+        <p class="doctor-specialty">{{ doctor.specialtyName }}</p>
+      </div>
+
+      <!-- Rating general -->
+      <div class="rating-summary-card">
+        <div class="rating-main">
+          <span class="rating-big">{{ doctor.averageRating | number:'1.1-1' }}</span>
+          <div class="rating-stars-block">
+            <div class="stars-display">
+              <mat-icon *ngFor="let s of getStars(Math.round(doctor.averageRating))">star</mat-icon>
+            </div>
+            <span class="total-reviews">{{ doctor.totalReviews }} calificaciones</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribución de calificaciones -->
+      <div class="rating-distribution-card">
+        <h3 class="distribution-title">Calificación de características</h3>
+        
+        <div class="distribution-list">
+          <div class="dist-item" *ngFor="let s of [5,4,3,2,1]">
+            <span class="star-label">{{ s }}</span>
+            <mat-icon class="star-icon">star</mat-icon>
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="getPercent(s)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+       <button mat-flat-button color="primary" (click)="openCreateReview()" class="btn-write-review">
+      Escribir una reseña
+    </button>
+
+    </div>
+
+    <!-- ========== COLUMNA DERECHA ========== -->
+    <div class="right-panel">
+
+      <!-- Cabecera opiniones -->
+      <div class="opinions-header">
+        <h2 class="opinions-title">Opiniones destacadas</h2>
+        <span class="opinions-count">{{ doctor.totalReviews }} comentarios</span>
+      </div>
+
+      <!-- Lista de reseñas -->
+      <div class="reviews-list">
+        <div class="review-item" *ngFor="let r of doctor.reviews">
+          
+          <div class="review-rating">
+            <mat-icon *ngFor="let s of getStars(r.rating)" class="star-filled">star</mat-icon>
+          </div>
+
+          <div class="review-date">
+            {{ r.registrationDate | date:'dd MMM. yyyy' }}
+          </div>
+
+          <div class="review-text">
+            {{ r.comment || 'Sin comentario' }}
+          </div>
+
+          <div class="review-footer">
+            <span class="reviewer-name">{{ r.userName }}</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+<ng-template #reviewDialog>
+  <h2 mat-dialog-title>Escribir reseña</h2>
+
+  <mat-dialog-content>
+
+    <form [formGroup]="reviewForm">
+
+      <div class="star-picker">
+        <mat-icon 
+          *ngFor="let s of [1,2,3,4,5]" 
+          (click)="reviewForm.patchValue({rating: s})"
+          [class.active]="reviewForm.value.rating >= s">
+          star
+        </mat-icon>
+      </div>
+
+      <mat-form-field appearance="outline" class="full">
+        <textarea matInput placeholder="Comentario (opcional)"
+                  formControlName="comment"></textarea>
+      </mat-form-field>
+
+    </form>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="primary" (click)="submitReview()">
+      Guardar
+    </button>
+  </mat-dialog-actions>
+</ng-template>

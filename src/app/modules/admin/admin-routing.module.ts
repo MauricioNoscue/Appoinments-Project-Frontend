@@ -23,6 +23,7 @@ import { MedicalStaffComponent } from './pages/medical-staff/medical-staff/medic
 import { ScheduleComponent } from './pages/schedule/schedule.component';
 import { DashboardComponent } from '../doctor/pages/dashboard/dashboard.component';
 import { authGuard } from '../../../guards/auth.guard';
+import { RequestModificationComponent } from './pages/request-modification/request-modification.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,8 @@ const routes: Routes = [
       {path:'typecitation', component: TypeCitationManagementComponent},
       {path:'typecitation2', component: TypeCitationComponent},
       {path:'CitationAviable/:id', component: ViewCitationAvailableComponent},
+      {path:'solicitudes', component: RequestModificationComponent},
+
       //{ path: 'medical-staff', component: MedicalStaffComponent },
       //{ path: 'medical-staff', component: MedicalStaffComponent },
 

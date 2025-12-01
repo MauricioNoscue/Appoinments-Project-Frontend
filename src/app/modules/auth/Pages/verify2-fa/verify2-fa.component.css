@@ -1,0 +1,27 @@
+.verify-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.verify-card {
+  width: 350px;
+  padding: 25px;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.subtitle {
+  margin-bottom: 20px;
+  color: gray;
+}
+
+.btn-verify {
+  width: 100%;
+  margin-top: 10px;
+}

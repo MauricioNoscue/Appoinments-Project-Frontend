@@ -95,6 +95,22 @@ getDoctorId(): number | null {
 }
 
 
+getPersonId(): number | null {
+  const token = this.getToken();
+  if (!token) return null;
+
+  try {
+    const decoded: JwtPayload = jwtDecode(token);
+
+    const personId = decoded['PersonId'];
+
+    return typeof personId === 'string' ? Number(personId) : personId;
+  } catch {
+    return null;
+  }
+}
+
+
  getUserId(): number | null {
   const token = this.getToken();
   if (!token) return null;

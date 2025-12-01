@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Detalle de Solicitud</h2>
+
+<div mat-dialog-content *ngIf="request">
+
+  <p><strong>Usuario:</strong> {{ request.userName }}</p>
+  <p><strong>Documento:</strong> {{ request.document }}</p>
+
+
+  <p><strong>Razón:</strong> {{ request.reason }}</p>
+
+  <p><strong>Estado:</strong> {{ request.statusTypeName }}</p>
+
+  <p><strong>Inicio:</strong> {{ request.startDate | date:'short' }}</p>
+  <p><strong>Fin:</strong> {{ request.endDate | date:'short' }}</p>
+
+  <p><strong>Observación:</strong></p>
+  <p>{{ request.observation ?? 'Sin observación' }}</p>
+
+</div>
+
+<div mat-dialog-actions align="end">
+
+
+
+  <!-- Botón Cerrar -->
+  <button mat-button (click)="cerrar()">Cerrar</button>
+</div>

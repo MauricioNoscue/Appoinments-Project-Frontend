@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ToolbarComponent } from './toolbar.component';
+import { RequestDoctorComponent } from './request-doctor.component';
 
-describe('ToolbarComponent', () => {
-  let component: ToolbarComponent;
-  let fixture: ComponentFixture<ToolbarComponent>;
+describe('RequestDoctorComponent', () => {
+  let component: RequestDoctorComponent;
+  let fixture: ComponentFixture<RequestDoctorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ToolbarComponent]
+      imports: [RequestDoctorComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ToolbarComponent);
+    fixture = TestBed.createComponent(RequestDoctorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
