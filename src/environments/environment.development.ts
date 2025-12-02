@@ -1,7 +1,7 @@
 export const environment = {
    production: true,
    //apiURL: (window as any)['env']?.API_BASE_URL || 'API_BASE_URL=http://localhost:5200',
-  apiURL: 'http://localhost:5104',
+  apiURL: 'http://localhost:5106',
   //apiURL: 'http://localhost:5200',
 
   hubs: {
