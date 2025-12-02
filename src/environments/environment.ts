@@ -1,6 +1,7 @@
 export const environment = {
  production: true,
-  apiURL: (window as any)['env']?.API_BASE_URL || 'API_BASE_URL=http://localhost:5200',
+    apiURL: 'https://api.cita-hospital.site',
+
   hubs: {
     notification: '/hubs/noti', 
 
